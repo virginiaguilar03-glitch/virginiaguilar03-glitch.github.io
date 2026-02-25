@@ -1,270 +1,362 @@
-<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Posto de Saúde - Sistema de Agendamento</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema UBS - Virgínia Aguilar</title>
+
 <style>
-*{box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#f0f6fb;margin:0;color:#333}
-header{background:#0d6efd;color:#fff;padding:20px;text-align:center}
-nav{background:#084298;padding:10px;text-align:center}
-nav button{background:#fff;border:none;padding:10px 15px;margin:5px;border-radius:6px;font-weight:bold;color:#084298;cursor:pointer}
-nav button:hover{opacity:.9}
-.container{max-width:1000px;margin:auto;padding:20px}
-.card{background:#fff;padding:20px;border-radius:10px;margin-bottom:20px;box-shadow:0 0 8px rgba(0,0,0,.1)}
-h2{color:#084298;margin-top:0}
-label{display:block;margin-top:10px;font-weight:bold}
-input,select{width:100%;padding:8px;margin-top:5px}
-button.action{margin-top:15px;padding:10px 15px;background:#0d6efd;color:#fff;border:none;border-radius:6px;cursor:pointer}
-button.action.danger{background:#dc3545}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{border:1px solid #ccc;padding:8px;text-align:center}
-th{background:#e9f1fb;color:#084298}
-.disponivel{color:green;font-weight:bold}
-.ocupado{color:red;font-weight:bold}
-footer{background:#084298;color:#fff;text-align:center;padding:10px}
-.info{background:#e7f1ff;padding:10px;border-left:4px solid #0d6efd;margin-bottom:10px}
-.badge{display:inline-block;padding:4px 8px;border-radius:6px;background:#eef}
-.hidden{display:none}
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#f4f8ff;
+}
+
+/* TOPO */
+.topo{
+    background:#0d6efd;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 30px;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.emblema{
+    position:relative;
+    width:70px;
+    height:70px;
+    background:white;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+    color:#0d6efd;
+}
+
+.casa{
+    position:absolute;
+    top:-15px;
+    width:40px;
+    height:25px;
+    background:#0d6efd;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+
+
+.foto-perfil{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    border:2px solid white;
+    object-fit:cover;
+    cursor:pointer;
+}
+
+/* LOGIN */
+.container-login{
+    max-width:400px;
+    margin:60px auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+input, select, button{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+button{
+    background:#0d6efd;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#084298;
+}
+
+.logout{
+    background:red;
+}
+
+/* PAINEIS */
+.painel{
+    display:none;
+    padding:30px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    margin:15px 0;
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* CONFIG MODAL */
+#configBox{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+}
+.configContent{
+    background:white;
+    width:400px;
+    margin:100px auto;
+    padding:20px;
+    border-radius:10px;
+}
 </style>
 </head>
+
 <body>
 
-<header>
-  <h1>Posto de Saúde Municipal</h1>
-  <p>Sistema de Agendamento de Consultas</p>
-  <p class="badge" id="statusLogin">Visitante</p>
+<header class="topo">
+    <div class="logo">
+        <div class="emblema">
+            <div class="casa"></div>
+            <div class="cruz"></div>
+            UBS
+        </div>
+        <div>
+            <h2 id="tituloSistema">Sistema UBS - Unidade Básica de Saúde</h2>
+            <p>Criado por Virgínia Aguilar • 2026</p>
+        </div>
+    </div>
+    <div>
+        <img src="https://via.placeholder.com/45" class="foto-perfil" id="fotoPerfil">
+        <input type="file" id="uploadFoto" accept="image/*" style="display:none">
+    </div>
 </header>
 
-<nav>
-  <button onclick="mostrar('capa')">🏥 Início</button>
-  <button onclick="mostrar('login')">🔐 Login</button>
-  <button onclick="mostrar('cadastro')">📝 Cadastro Paciente</button>
-  <button onclick="mostrar('profissionais')">👨‍⚕️ Profissionais</button>
-  <button onclick="mostrar('agenda')">📅 Agenda</button>
-  <button onclick="mostrar('agendar')">➕ Agendar</button>
-  <button onclick="mostrar('lista')">📋 Meus Agendamentos</button>
-  <button onclick="mostrar('admin')">🛠️ Admin</button>
-</nav>
-
-<div class="container">
-
-<!-- CAPA -->
-<div class="card" id="capa">
-  <h2>Bem-vinda, Virgínia 👋</h2>
-  <div class="info">
-    Este é um protótipo acadêmico de um sistema de agendamento para posto de saúde.<br>
-    Funcionalidades: login, cadastro de pacientes e profissionais, agenda por dia/horário, agendamento, cancelamento e área administrativa.
-  </div>
-  <p><b>Curso:</b> Técnico em Informática</p>
-  <p><b>Projeto:</b> Sistema de Agendamento de Consultas</p>
-  <p><b>Autora:</b> Virgínia Aguilar</p>
-</div>
-
 <!-- LOGIN -->
-<div class="card hidden" id="login">
-  <h2>🔐 Login</h2>
-  <label>CPF</label>
-  <input id="loginCpf" placeholder="000.000.000-00">
-  <label>Senha</label>
-  <input id="loginSenha" type="password">
-  <button class="action" onclick="fazerLogin()">Entrar</button>
-  <p id="loginMsg"></p>
-</div>
+<div class="container-login" id="loginBox">
+    <h2>Login</h2>
 
-<!-- CADASTRO PACIENTE -->
-<div class="card hidden" id="cadastro">
-  <h2>📝 Cadastro de Paciente</h2>
-  <label>Nome</label><input id="cadNome">
-  <label>CPF</label><input id="cadCpf">
-  <label>Telefone</label><input id="cadTel">
-  <label>Senha</label><input id="cadSenha" type="password">
-  <button class="action" onclick="cadastrarPaciente()">Cadastrar</button>
-  <p id="cadMsg"></p>
-</div>
+    <select id="tipoLogin">
+        <option value="admin">Administrador</option>
+        <option value="recepcao">Recepção</option>
+        <option value="paciente">Paciente</option>
+    </select>
 
-<!-- PROFISSIONAIS -->
-<div class="card hidden" id="profissionais">
-  <h2>👨‍⚕️ Profissionais</h2>
-  <label>Nome</label><input id="profNome">
-  <label>Especialidade</label><input id="profEsp">
-  <button class="action" onclick="cadastrarProfissional()">Adicionar Profissional</button>
-  <table id="tabelaProfs">
-    <tr><th>Nome</th><th>Especialidade</th></tr>
-  </table>
-</div>
-
-<!-- AGENDA -->
-<div class="card hidden" id="agenda">
-  <h2>📅 Agenda</h2>
-  <div class="info">Escolha o profissional e a data para ver horários.</div>
-  <label>Profissional</label>
-  <select id="profAgenda" onchange="atualizarAgenda()"></select>
-  <label>Data</label>
-  <input type="date" id="dataAgenda" onchange="atualizarAgenda()">
-  <table id="tabelaAgenda">
-    <tr><th>Horário</th><th>Status</th></tr>
-  </table>
-</div>
-
-<!-- AGENDAR -->
-<div class="card hidden" id="agendar">
-  <h2>➕ Agendar Consulta</h2>
-  <label>Profissional</label>
-  <select id="profAgendar"></select>
-  <label>Data</label>
-  <input type="date" id="dataAgendar">
-  <label>Horário</label>
-  <select id="horaAgendar"></select>
-  <button class="action" onclick="agendarConsulta()">Confirmar</button>
-</div>
-
-<!-- LISTA -->
-<div class="card hidden" id="lista">
-  <h2>📋 Meus Agendamentos</h2>
-  <table id="tabelaAgendamentos">
-    <tr><th>Profissional</th><th>Data</th><th>Horário</th><th>Status</th><th>Ação</th></tr>
-  </table>
+    <input type="text" id="usuario" placeholder="Login ou CPF">
+    <input type="password" id="senha" placeholder="Senha (admin/recepção)">
+    <button onclick="login()">Entrar</button>
+    <button onclick="criarConta()">Criar Conta Paciente</button>
 </div>
 
 <!-- ADMIN -->
-<div class="card hidden" id="admin">
-  <h2>🛠️ Área Administrativa</h2>
-  <div class="info">Lista geral de agendamentos (simulação de atendente).</div>
-  <table id="tabelaAdmin">
-    <tr><th>Paciente</th><th>Profissional</th><th>Data</th><th>Hora</th><th>Status</th></tr>
-  </table>
+<div class="painel" id="painelAdmin">
+    <h2>Painel Administrador</h2>
+
+    <div class="card">
+        <h3>Cadastrar Médico</h3>
+        <input id="nomeMedico" placeholder="Nome do médico">
+        <button onclick="cadastrarMedico()">Cadastrar</button>
+    </div>
+
+    <div class="card">
+        <h3>Editar Horários</h3>
+        <input type="date" id="dataHorario">
+        <input type="time" id="horaHorario">
+        <button onclick="salvarHorario()">Salvar Horário</button>
+    </div>
+
+    <div class="card">
+        <h3>Consultas</h3>
+        <button onclick="verConsultas()">Ver Consultas</button>
+        <button onclick="desmarcarConsulta()">Desmarcar Última</button>
+    </div>
+
+    <div class="card">
+        <h3>Configurações</h3>
+        <button onclick="abrirConfig()">Editar Capa</button>
+    </div>
+
+    <button class="logout" onclick="logout()">Sair</button>
 </div>
 
+<!-- RECEPÇÃO -->
+<div class="painel" id="painelRecepcao">
+    <h2>Painel Recepção</h2>
+
+    <div class="card">
+        <button onclick="verConsultas()">Ver Consultas</button>
+    </div>
+
+    <div class="card">
+        <input id="nomeRecepcao" placeholder="Nome do paciente">
+        <input type="date" id="dataRecepcao">
+        <button onclick="marcarConsultaRecepcao()">Agendar</button>
+    </div>
+
+    <button class="logout" onclick="logout()">Sair</button>
 </div>
 
-<footer>
-  Projeto acadêmico - Curso Técnico em Informática | Virgínia
-</footer>
+<!-- PACIENTE -->
+<div class="painel" id="painelPaciente">
+    <h2>Painel Paciente</h2>
+
+    <div class="card">
+        <input type="date" id="dataPaciente">
+        <button onclick="marcarConsultaPaciente()">Marcar Consulta</button>
+        <button onclick="desmarcarConsulta()">Desmarcar Última</button>
+    </div>
+
+    <button class="logout" onclick="logout()">Sair</button>
+</div>
+
+<!-- CONFIGURAÇÕES -->
+<div id="configBox">
+  <div class="configContent">
+    <h3>Configurações</h3>
+    <input type="text" id="novoTitulo" placeholder="Novo título">
+    <input type="color" id="novaCor">
+    <button onclick="salvarConfig()">Salvar</button>
+    <button onclick="fecharConfig()">Fechar</button>
+  </div>
+</div>
 
 <script>
-const horarios = ["08:00","09:00","10:00","11:00","14:00","15:00","16:00"];
-let pacientes = [];
-let profissionais = [
-  {nome:"Dr. João", esp:"Clínico"},
-  {nome:"Dra. Maria", esp:"Pediatra"},
-  {nome:"Dr. Carlos", esp:"Dentista"}
-];
-let agendamentos = [];
-let usuarioLogado = null;
 
-// Navegação
-function mostrar(id){
-  ["capa","login","cadastro","profissionais","agenda","agendar","lista","admin"].forEach(s=>{
-    document.getElementById(s).classList.add("hidden");
-  });
-  document.getElementById(id).classList.remove("hidden");
-}
+// BASE SIMULADA
+let medicos = [];
+let consultas = [];
 
-// Login / Cadastro
-function cadastrarPaciente(){
-  const nome=cadNome.value, cpf=cadCpf.value, tel=cadTel.value, senha=cadSenha.value;
-  if(!nome||!cpf||!senha){ cadMsg.textContent="Preencha os campos obrigatórios."; return; }
-  if(pacientes.some(p=>p.cpf===cpf)){ cadMsg.textContent="CPF já cadastrado."; return; }
-  pacientes.push({nome,cpf,tel,senha});
-  cadMsg.textContent="Cadastro realizado com sucesso!";
-  cadNome.value=cadCpf.value=cadTel.value=cadSenha.value="";
-}
+// LOGIN
+function login(){
+    let tipo = document.getElementById("tipoLogin").value;
+    let user = document.getElementById("usuario").value;
+    let senha = document.getElementById("senha").value;
 
-function fazerLogin(){
-  const cpf=loginCpf.value, senha=loginSenha.value;
-  const user = pacientes.find(p=>p.cpf===cpf && p.senha===senha);
-  if(!user){ loginMsg.textContent="CPF ou senha inválidos."; return; }
-  usuarioLogado = user;
-  document.getElementById("statusLogin").textContent = "Logado: " + user.nome;
-  loginMsg.textContent="Login realizado!";
-  mostrar("capa");
-}
-
-// Profissionais
-function cadastrarProfissional(){
-  if(!profNome.value||!profEsp.value) return;
-  profissionais.push({nome:profNome.value, esp:profEsp.value});
-  profNome.value=profEsp.value="";
-  atualizarProfissionais();
-}
-
-function atualizarProfissionais(){
-  const t = document.getElementById("tabelaProfs");
-  t.innerHTML = "<tr><th>Nome</th><th>Especialidade</th></tr>";
-  profissionais.forEach(p=>{
-    t.innerHTML += `<tr><td>${p.nome}</td><td>${p.esp}</td></tr>`;
-  });
-  // selects
-  const sel1 = document.getElementById("profAgenda");
-  const sel2 = document.getElementById("profAgendar");
-  sel1.innerHTML = sel2.innerHTML = "";
-  profissionais.forEach(p=>{
-    const opt = `<option value="${p.nome}">${p.nome} (${p.esp})</option>`;
-    sel1.innerHTML += opt;
-    sel2.innerHTML += opt;
-  });
-  // horas
-  const selH = document.getElementById("horaAgendar");
-  selH.innerHTML = "";
-  horarios.forEach(h=> selH.innerHTML += `<option>${h}</option>`);
-}
-
-// Agenda
-function atualizarAgenda(){
-  const prof = profAgenda.value;
-  const data = dataAgenda.value;
-  const t = document.getElementById("tabelaAgenda");
-  t.innerHTML = "<tr><th>Horário</th><th>Status</th></tr>";
-  if(!data) return;
-  horarios.forEach(h=>{
-    const ocupado = agendamentos.some(a=>a.prof===prof && a.data===data && a.hora===h && a.status==="Agendado");
-    const st = ocupado ? "<span class='ocupado'>Ocupado</span>" : "<span class='disponivel'>Disponível</span>";
-    t.innerHTML += `<tr><td>${h}</td><td>${st}</td></tr>`;
-  });
-}
-
-// Agendar / Cancelar
-function agendarConsulta(){
-  if(!usuarioLogado){ alert("Faça login primeiro!"); return; }
-  const prof = profAgendar.value;
-  const data = dataAgendar.value;
-  const hora = horaAgendar.value;
-  if(!data){ alert("Escolha uma data"); return; }
-  const existe = agendamentos.some(a=>a.prof===prof && a.data===data && a.hora===hora && a.status==="Agendado");
-  if(existe){ alert("Horário ocupado!"); return; }
-  agendamentos.push({paciente:usuarioLogado.nome, prof, data, hora, status:"Agendado"});
-  atualizarAgenda(); atualizarListas();
-  alert("Agendado com sucesso!");
-  mostrar("lista");
-}
-
-function cancelar(idx){
-  agendamentos[idx].status = "Cancelado";
-  atualizarAgenda(); atualizarListas();
-}
-
-// Listas
-function atualizarListas(){
-  const t = document.getElementById("tabelaAgendamentos");
-  t.innerHTML = "<tr><th>Profissional</th><th>Data</th><th>Horário</th><th>Status</th><th>Ação</th></tr>";
-  agendamentos.forEach((a,i)=>{
-    if(usuarioLogado && a.paciente===usuarioLogado.nome){
-      const btn = a.status==="Agendado" ? `<button class="action danger" onclick="cancelar(${i})">Cancelar</button>` : "-";
-      t.innerHTML += `<tr><td>${a.prof}</td><td>${a.data}</td><td>${a.hora}</td><td>${a.status}</td><td>${btn}</td></tr>`;
+    if(tipo==="admin" && user==="master" && senha==="123admin"){
+        mostrar("painelAdmin");
     }
-  });
-
-  const ta = document.getElementById("tabelaAdmin");
-  ta.innerHTML = "<tr><th>Paciente</th><th>Profissional</th><th>Data</th><th>Hora</th><th>Status</th></tr>";
-  agendamentos.forEach(a=>{
-    ta.innerHTML += `<tr><td>${a.paciente}</td><td>${a.prof}</td><td>${a.data}</td><td>${a.hora}</td><td>${a.status}</td></tr>`;
-  });
+    else if(tipo==="recepcao" && user==="recepcao" && senha==="123recep"){
+        mostrar("painelRecepcao");
+    }
+    else if(tipo==="paciente" && user.length>=11){
+        mostrar("painelPaciente");
+    }
+    else{
+        alert("Login inválido!");
+    }
 }
 
-// Inicialização
-atualizarProfissionais();
+function mostrar(id){
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById(id).style.display="block";
+}
+
+function logout(){ location.reload(); }
+
+// MÉDICO
+function cadastrarMedico(){
+    let nome = document.getElementById("nomeMedico").value;
+    if(nome){
+        medicos.push(nome);
+        alert("Médico cadastrado!");
+    }
+}
+
+// HORÁRIO
+function salvarHorario(){
+    alert("Horário salvo!");
+}
+
+// CONSULTAS
+function marcarConsultaPaciente(){
+    let data = document.getElementById("dataPaciente").value;
+    if(data){
+        consultas.push({nome:"Paciente", data});
+        alert("Consulta marcada!");
+    }
+}
+
+function marcarConsultaRecepcao(){
+    let nome = document.getElementById("nomeRecepcao").value;
+    let data = document.getElementById("dataRecepcao").value;
+    if(nome && data){
+        consultas.push({nome, data});
+        alert("Consulta agendada!");
+    }
+}
+
+function verConsultas(){
+    if(consultas.length===0){
+        alert("Nenhuma consulta.");
+    }else{
+        let lista=consultas.map(c=>c.nome+" - "+c.data).join("\n");
+        alert(lista);
+    }
+}
+
+function desmarcarConsulta(){
+    if(consultas.length>0){
+        consultas.pop();
+        alert("Última consulta removida.");
+    }
+}
+
+// CONFIG
+function abrirConfig(){
+    document.getElementById("configBox").style.display="block";
+}
+function fecharConfig(){
+    document.getElementById("configBox").style.display="none";
+}
+function salvarConfig(){
+    let titulo=document.getElementById("novoTitulo").value;
+    let cor=document.getElementById("novaCor").value;
+    if(titulo){
+        document.getElementById("tituloSistema").innerText=titulo;
+    }
+    if(cor){
+        document.querySelector(".topo").style.background=cor;
+    }
+    fecharConfig();
+}
+
+// FOTO PERFIL
+document.getElementById("fotoPerfil").onclick=function(){
+    document.getElementById("uploadFoto").click();
+};
+
+document.getElementById("uploadFoto").onchange=function(e){
+    let reader=new FileReader();
+    reader.onload=function(){
+        document.getElementById("fotoPerfil").src=reader.result;
+    };
+    reader.readAsDataURL(e.target.files[0]);
+};
+
+// CRIAR CONTA
+function criarConta(){
+    alert("Conta criada (simulação LGPD).");
+}
+
 </script>
 
 </body>
 </html>
+
+
