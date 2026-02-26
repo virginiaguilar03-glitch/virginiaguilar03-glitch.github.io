@@ -21,11 +21,55 @@ body{
     align-items:center;
     padding:15px 30px;
 }
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 
-.logo{
-    display:flex;
-    align-items:center;
-    gap:20px;
+    /* refinamento visual */
+    padding: 8px 12px;
+    border-radius: 8px;
+
+    /* suavidade */
+    transition: all 0.3s ease;
+}
+
+/* imagem ou ícone da logo */
+.logo img,
+.logo svg {
+    height: 40px;
+    width: auto;
+}
+
+/* texto da logo */
+.logo span {
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* efeito hover opcional */
+.logo:hover {
+    transform: scale(1.03);
+    opacity: 0.95;
+}
+
+/* versão responsiva */
+@media (max-width: 480px) {
+    .logo {
+        gap: 10px;
+    }
+
+    .logo span {
+        font-size: 1.1rem;
+    }
+
+    .logo img,
+    .logo svg {
+        height: 32px;
+    }
+}
+
 }
 
 .emblema{
