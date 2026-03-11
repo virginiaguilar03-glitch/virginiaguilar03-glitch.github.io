@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -6,399 +6,396 @@
 <title>Sistema UBS - Virgínia Aguilar</title>
 
 <style>
+
 body{
-    margin:0;
-    font-family: Arial, sans-serif;
-    background:#f4f8ff;
+margin:0;
+font-family: Arial, sans-serif;
+background:#f4f8ff;
 }
 
 /* TOPO */
+
 .topo{
-    background:#0d6efd;
-    color:white;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px 30px;
-}
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-
-    /* refinamento visual */
-    padding: 8px 12px;
-    border-radius: 8px;
-
-    /* suavidade */
-    transition: all 0.3s ease;
+background:#0d6efd;
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 30px;
 }
 
-/* imagem ou ícone da logo */
-.logo img,
-.logo svg {
-    height: 40px;
-    width: auto;
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
 }
 
-/* texto da logo */
-.logo span {
-    font-size: 1.4rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-/* efeito hover opcional */
-.logo:hover {
-    transform: scale(1.03);
-    opacity: 0.95;
-}
-
-/* versão responsiva */
-@media (max-width: 480px) {
-    .logo {
-        gap: 10px;
-    }
-
-    .logo span {
-        font-size: 1.1rem;
-    }
-
-    .logo img,
-    .logo svg {
-        height: 32px;
-    }
-}
-
-}
-
-.emblema{
-    position:relative;
-    width:70px;
-    height:70px;
-    background:white;
-    border-radius:12px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-weight:bold;
-    color:#0d6efd;
-}
-
-.casa{
-    position:absolute;
-    top:-15px;
-    width:40px;
-    height:25px;
-    background:#0d6efd;
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-}
-
-
-
-.foto-perfil{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    border:2px solid white;
-    object-fit:cover;
-    cursor:pointer;
+.logo img{
+height:50px;
 }
 
 /* LOGIN */
+
 .container-login{
-    max-width:400px;
-    margin:60px auto;
-    background:white;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+max-width:400px;
+margin:60px auto;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
 input, select, button{
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    border-radius:6px;
-    border:1px solid #ccc;
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:6px;
+border:1px solid #ccc;
 }
 
 button{
-    background:#0d6efd;
-    color:white;
-    border:none;
-    cursor:pointer;
+background:#0d6efd;
+color:white;
+border:none;
+cursor:pointer;
 }
 
 button:hover{
-    background:#084298;
+background:#084298;
 }
 
 .logout{
-    background:red;
+background:red;
 }
 
 /* PAINEIS */
+
 .painel{
-    display:none;
-    padding:30px;
+display:none;
+padding:30px;
 }
 
 .card{
-    background:white;
-    padding:20px;
-    margin:15px 0;
-    border-radius:10px;
-    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+background:white;
+padding:20px;
+margin:15px 0;
+border-radius:10px;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
 
 /* CONFIG MODAL */
+
 #configBox{
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.5);
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
 }
+
 .configContent{
-    background:white;
-    width:400px;
-    margin:100px auto;
-    padding:20px;
-    border-radius:10px;
+background:white;
+width:400px;
+margin:100px auto;
+padding:20px;
+border-radius:10px;
 }
+
 </style>
 </head>
 
 <body>
 
 <header class="topo">
-    <div class="https://virginiaguilar03-glitch.github.io/logo.png">
-        
-        
-        </div>
-        <div>
-            <h2 id="tituloSistema">Sistema UBS - Unidade Básica de Saúde</h2>
-            <p>Criado por Virgínia Aguilar • 2026</p>
-        </div>
-    </div>
-    <div>
-        <img src="https://virginiaguilar03-glitch.github.io/logo.png" alt="UBS" width="200" height="200" style="central-align:middle">
-        <input type="file" id="uploadFoto" accept="image/*" style="display:none">
-    </div>
+
+<div class="logo">
+<img src="https://virginiaguilar03-glitch.github.io/logo.png">
+<div>
+<h2 id="tituloSistema">Sistema UBS - Unidade Básica de Saúde</h2>
+<p>Criado por Virgínia Aguilar • 2026</p>
+</div>
+</div>
+
 </header>
 
 <!-- LOGIN -->
+
 <div class="container-login" id="loginBox">
-    <h2>Login</h2>
 
-    <select id="tipoLogin">
-        <option value="admin">Administrador</option>
-        <option value="recepcao">Recepção</option>
-        <option value="paciente">Paciente</option>
-    </select>
+<h2>Login</h2>
 
-    <input type="text" id="usuario" placeholder="Login ou CPF">
-    <input type="password" id="senha" placeholder="Senha (admin/recepção)">
-    <button onclick="login()">Entrar</button>
-    <button onclick="criarConta()">Criar Conta Paciente</button>
+<select id="tipoLogin">
+<option value="admin">Administrador</option>
+<option value="recepcao">Recepção</option>
+<option value="paciente">Paciente</option>
+</select>
+
+<input type="text" id="usuario" placeholder="Login ou CPF">
+<input type="password" id="senha" placeholder="Senha (admin/recepção)">
+
+<button onclick="login()">Entrar</button>
+<button onclick="criarConta()">Criar Conta Paciente</button>
+
 </div>
 
 <!-- ADMIN -->
+
 <div class="painel" id="painelAdmin">
-    <h2>Painel Administrador</h2>
 
-    <div class="card">
-        <h3>Cadastrar Médico</h3>
-        <input id="nomeMedico" placeholder="Nome do médico">
-        <button onclick="cadastrarMedico()">Cadastrar</button>
-    </div>
+<h2>Painel Administrador</h2>
 
-    <div class="card">
-        <h3>Editar Horários</h3>
-        <input type="date" id="dataHorario">
-        <input type="time" id="horaHorario">
-        <button onclick="salvarHorario()">Salvar Horário</button>
-    </div>
+<div class="card">
+<h3>Cadastrar Médico</h3>
+<input id="nomeMedico" placeholder="Nome do médico">
+<button onclick="cadastrarMedico()">Cadastrar</button>
+</div>
 
-    <div class="card">
-        <h3>Consultas</h3>
-        <button onclick="verConsultas()">Ver Consultas</button>
-        <button onclick="desmarcarConsulta()">Desmarcar Última</button>
-    </div>
+<div class="card">
+<h3>Editar Horários</h3>
+<input type="date" id="dataHorario">
+<input type="time" id="horaHorario">
+<button onclick="salvarHorario()">Salvar Horário</button>
+</div>
 
-    <div class="card">
-        <h3>Configurações</h3>
-        <button onclick="abrirConfig()">Editar Capa</button>
-    </div>
+<div class="card">
+<h3>Consultas</h3>
+<button onclick="verConsultas()">Ver Consultas</button>
+<button onclick="desmarcarConsulta()">Desmarcar Última</button>
+</div>
 
-    <button class="logout" onclick="logout()">Sair</button>
+<div class="card">
+<h3>Configurações</h3>
+<button onclick="abrirConfig()">Editar Capa</button>
+</div>
+
+<button class="logout" onclick="logout()">Sair</button>
+
 </div>
 
 <!-- RECEPÇÃO -->
+
 <div class="painel" id="painelRecepcao">
-    <h2>Painel Recepção</h2>
 
-    <div class="card">
-        <button onclick="verConsultas()">Ver Consultas</button>
-    </div>
+<h2>Painel Recepção</h2>
 
-    <div class="card">
-        <input id="nomeRecepcao" placeholder="Nome do paciente">
-        <input type="date" id="dataRecepcao">
-        <button onclick="marcarConsultaRecepcao()">Agendar</button>
-    </div>
+<div class="card">
+<button onclick="verConsultas()">Ver Consultas</button>
+</div>
 
-    <button class="logout" onclick="logout()">Sair</button>
+<div class="card">
+<input id="nomeRecepcao" placeholder="Nome do paciente">
+<input type="date" id="dataRecepcao">
+<button onclick="marcarConsultaRecepcao()">Agendar</button>
+</div>
+
+<button class="logout" onclick="logout()">Sair</button>
+
 </div>
 
 <!-- PACIENTE -->
+
 <div class="painel" id="painelPaciente">
-    <h2>Painel Paciente</h2>
 
-    <div class="card">
-        <input type="date" id="dataPaciente">
-        <button onclick="marcarConsultaPaciente()">Marcar Consulta</button>
-        <button onclick="desmarcarConsulta()">Desmarcar Última</button>
-    </div>
+<h2>Painel Paciente</h2>
 
-    <button class="logout" onclick="logout()">Sair</button>
+<div class="card">
+<input type="date" id="dataPaciente">
+<button onclick="marcarConsultaPaciente()">Marcar Consulta</button>
+<button onclick="desmarcarConsulta()">Desmarcar Última</button>
 </div>
 
-<!-- CONFIGURAÇÕES -->
+<button class="logout" onclick="logout()">Sair</button>
+
+</div>
+
+<!-- CONFIG -->
+
 <div id="configBox">
-  <div class="configContent">
-    <h3>Configurações</h3>
-    <input type="text" id="novoTitulo" placeholder="Novo título">
-    <input type="color" id="novaCor">
-    <button onclick="salvarConfig()">Salvar</button>
-    <button onclick="fecharConfig()">Fechar</button>
-  </div>
+
+<div class="configContent">
+
+<h3>Configurações</h3>
+
+<input type="text" id="novoTitulo" placeholder="Novo título">
+<input type="color" id="novaCor">
+
+<button onclick="salvarConfig()">Salvar</button>
+<button onclick="fecharConfig()">Fechar</button>
+
+</div>
+
 </div>
 
 <script>
 
-// BASE SIMULADA
-let medicos = [];
-let consultas = [];
+let medicos=[];
+let consultas=[];
 
-// LOGIN
+/* LOGIN */
+
 function login(){
-    let tipo = document.getElementById("tipoLogin").value;
-    let user = document.getElementById("usuario").value;
-    let senha = document.getElementById("senha").value;
 
-    if(tipo==="admin" && user==="master" && senha==="123admin"){
-        mostrar("painelAdmin");
-    }
-    else if(tipo==="recepcao" && user==="recepcao" && senha==="123recep"){
-        mostrar("painelRecepcao");
-    }
-    else if(tipo==="paciente" && user.length>=11){
-        mostrar("painelPaciente");
-    }
-    else{
-        alert("Login inválido!");
-    }
+let tipo=document.getElementById("tipoLogin").value;
+let user=document.getElementById("usuario").value;
+let senha=document.getElementById("senha").value;
+
+if(tipo==="admin" && user==="master" && senha==="123admin"){
+mostrar("painelAdmin");
+}
+
+else if(tipo==="recepcao" && user==="recepcao" && senha==="123recep"){
+mostrar("painelRecepcao");
+}
+
+else if(tipo==="paciente" && user.length>=11){
+mostrar("painelPaciente");
+}
+
+else{
+alert("Login inválido");
+}
+
 }
 
 function mostrar(id){
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById(id).style.display="block";
+
+document.getElementById("loginBox").style.display="none";
+document.getElementById(id).style.display="block";
+
 }
 
-function logout(){ location.reload(); }
+function logout(){
 
-// MÉDICO
+location.reload();
+
+}
+
+/* MEDICO */
+
 function cadastrarMedico(){
-    let nome = document.getElementById("nomeMedico").value;
-    if(nome){
-        medicos.push(nome);
-        alert("Médico cadastrado!");
-    }
+
+let nome=document.getElementById("nomeMedico").value;
+
+if(nome){
+
+medicos.push(nome);
+alert("Médico cadastrado");
+
 }
 
-// HORÁRIO
+}
+
+/* HORARIO */
+
 function salvarHorario(){
-    alert("Horário salvo!");
+
+alert("Horário salvo");
+
 }
 
-// CONSULTAS
+/* CONSULTAS */
+
 function marcarConsultaPaciente(){
-    let data = document.getElementById("dataPaciente").value;
-    if(data){
-        consultas.push({nome:"Paciente", data});
-        alert("Consulta marcada!");
-    }
+
+let data=document.getElementById("dataPaciente").value;
+
+if(data){
+
+consultas.push({nome:"Paciente",data});
+alert("Consulta marcada");
+
+}
+
 }
 
 function marcarConsultaRecepcao(){
-    let nome = document.getElementById("nomeRecepcao").value;
-    let data = document.getElementById("dataRecepcao").value;
-    if(nome && data){
-        consultas.push({nome, data});
-        alert("Consulta agendada!");
-    }
+
+let nome=document.getElementById("nomeRecepcao").value;
+let data=document.getElementById("dataRecepcao").value;
+
+if(nome && data){
+
+consultas.push({nome,data});
+alert("Consulta agendada");
+
+}
+
 }
 
 function verConsultas(){
-    if(consultas.length===0){
-        alert("Nenhuma consulta.");
-    }else{
-        let lista=consultas.map(c=>c.nome+" - "+c.data).join("\n");
-        alert(lista);
-    }
+
+if(consultas.length===0){
+
+alert("Nenhuma consulta");
+
+}
+
+else{
+
+let lista=consultas.map(c=>c.nome+" - "+c.data).join("\n");
+alert(lista);
+
+}
+
 }
 
 function desmarcarConsulta(){
-    if(consultas.length>0){
-        consultas.pop();
-        alert("Última consulta removida.");
-    }
+
+if(consultas.length>0){
+
+consultas.pop();
+alert("Última consulta removida");
+
 }
 
-// CONFIG
+}
+
+/* CONFIG */
+
 function abrirConfig(){
-    document.getElementById("configBox").style.display="block";
+
+document.getElementById("configBox").style.display="block";
+
 }
+
 function fecharConfig(){
-    document.getElementById("configBox").style.display="none";
+
+document.getElementById("configBox").style.display="none";
+
 }
+
 function salvarConfig(){
-    let titulo=document.getElementById("novoTitulo").value;
-    let cor=document.getElementById("novaCor").value;
-    if(titulo){
-        document.getElementById("tituloSistema").innerText=titulo;
-    }
-    if(cor){
-        document.querySelector(".topo").style.background=cor;
-    }
-    fecharConfig();
+
+let titulo=document.getElementById("novoTitulo").value;
+let cor=document.getElementById("novaCor").value;
+
+if(titulo){
+
+document.getElementById("tituloSistema").innerText=titulo;
+
 }
 
-// FOTO PERFIL
-document.getElementById("fotoPerfil").onclick=function(){
-    document.getElementById("uploadFoto").click();
-};
+if(cor){
 
-document.getElementById("uploadFoto").onchange=function(e){
-    let reader=new FileReader();
-    reader.onload=function(){
-        document.getElementById("fotoPerfil").src=reader.result;
-    };
-    reader.readAsDataURL(e.target.files[0]);
-};
+document.querySelector(".topo").style.background=cor;
 
-// CRIAR CONTA
+}
+
+fecharConfig();
+
+}
+
+/* CRIAR CONTA */
+
 function criarConta(){
-    alert("Conta criada (simulação LGPD).");
+
+alert("Conta criada (simulação)");
+
 }
 
 </script>
 
 </body>
 </html>
-
-
