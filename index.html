@@ -1,351 +1,288 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<body>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema UBS - Virgínia Aguilar</title>
+<title>Sistema Financeiro</title>
 
 <style>
-
 body{
 margin:0;
-font-family: Arial, sans-serif;
-background:#f4f8ff;
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#eef2ff,#f8fafc);
 }
 
-/* TOPO */
-.topo{
-background:#0d6efd;
-color:white;
+/* LOGIN */
+.login{
 display:flex;
-justify-content:space-between;
+justify-content:center;
 align-items:center;
-padding:10px 30px;
+height:100vh;
 }
 
-.logo{
-display:flex;
-align-items:center;
-gap:30px;
-}
-
-.logo img{
-border-radius: 50%;
-height:100px;
-}
-
-/* LOGIN (NÃO ALTERADO) */
-.container-login{
-max-width:400px;
-margin:60px auto;
+.box{
 background:white;
-padding:30px;
-border-radius:25px;
-box-shadow:0 5px 15px rgba(0,0,0,0.1);
+padding:40px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+text-align:center;
 }
 
-input, select, button{
-width:100%;
+.box h2{
+margin-bottom:20px;
+}
+
+input{
 padding:10px;
-margin-top:10px;
-border-radius:6px;
-border:1px solid #ccc;
+margin:10px 0;
+width:100%;
+border-radius:8px;
+border:1px solid #ddd;
 }
 
 button{
-background:#0d6efd;
-color:white;
+padding:10px;
 border:none;
+background:#2563eb;
+color:white;
+border-radius:8px;
 cursor:pointer;
+width:100%;
 }
 
-button:hover{
-background:#084298;
-}
-
-.logout{
-background:red;
-}
-
-/* PAINEIS */
-.painel{
+/* APP */
+#app{
 display:none;
-padding:30px;
+padding:20px;
+}
+
+.topo{
+display:flex;
+align-items:center;
+gap:15px;
+margin-bottom:20px;
+}
+
+/* LOGO */
+.logo{
+width:50px;
+height:50px;
+background:#2563eb;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+font-weight:bold;
+font-size:20px;
+}
+
+/* RESTO */
+.container{
+max-width:1100px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.barra{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
 }
 
 .card{
-background:white;
-padding:20px;
-margin:15px 0;
-border-radius:10px;
-box-shadow:0 3px 10px rgba(0,0,0,0.1);
-}
-
-/* MENU SUS */
-.menu{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-}
-
-.menu button{
-padding:20px;
-font-size:16px;
-border-radius:10px;
-}
-
-/* LISTA */
-.lista{
-margin-top:10px;
+flex:1;
 background:#eef3ff;
-padding:10px;
+padding:15px;
 border-radius:10px;
+text-align:center;
 }
 
-/* CONFIG */
-#configBox{
-display:none;
-position:fixed;
-top:0;
-left:0;
+table{
 width:100%;
-height:100%;
-background:rgba(0,0,0,0.5);
+border-collapse:collapse;
+margin-top:20px;
 }
 
-.configContent{
-background:white;
-width:400px;
-margin:100px auto;
-padding:20px;
-border-radius:10px;
+th{
+background:#2563eb;
+color:white;
+padding:10px;
 }
 
+td{
+padding:10px;
+border-bottom:1px solid #eee;
+}
+
+.ganho{color:green;}
+.gasto{color:red;}
+
+.logout{
+margin-top:10px;
+background:red;
+}
 </style>
 </head>
 
 <body>
 
-<header class="topo">
-<div class="logo">
-<img src="https://virginiaguilar03-glitch.github.io/logo.png">
-<div>
-<h2 id="tituloSistema">Sistema UBS - Unidade Básica de Saúde</h2>
-<p>Criado por Virgínia Aguilar • 2026</p>
+<!-- LOGIN -->
+<div class="login" id="login">
+<div class="box">
+<h2>💼 Sistema Financeiro</h2>
+<input id="user" placeholder="Usuário">
+<input id="pass" type="password" placeholder="Senha">
+<button onclick="entrar()">Entrar</button>
 </div>
 </div>
-</header>
 
-<!-- LOGIN (INTACTO) -->
-<div class="container-login" id="loginBox">
+<!-- APP -->
+<div id="app">
 
-<h2>Login</h2>
+<div class="topo">
+<div class="logo">SF</div>
+<h2>Controle Financeiro</h2>
+</div>
 
-<select id="tipoLogin">
-<option value="admin">Administrador</option>
-<option value="recepcao">Recepção</option>
-<option value="paciente">Paciente</option>
+<div class="container">
+
+<div class="barra">
+<input type="date" id="data">
+<input id="desc" placeholder="Descrição">
+<select id="tipo">
+<option value="ganho">Ganho</option>
+<option value="gasto">Gasto</option>
 </select>
+<input id="cat" placeholder="Categoria">
+<input type="number" id="valor" placeholder="Valor">
 
-<input type="text" id="usuario" placeholder="Login ou CPF">
-<input type="password" id="senha" placeholder="Senha (admin/recepção)">
+<button onclick="add()">Adicionar</button>
+<button onclick="limpar()">Limpar</button>
+</div>
 
-<button onclick="login()">Entrar</button>
-<button onclick="criarConta()">Criar Conta Paciente</button>
+<div class="barra">
+<div class="card">Ganhos: R$ <span id="ganhos">0</span></div>
+<div class="card">Gastos: R$ <span id="gastos">0</span></div>
+<div class="card">Lucro: R$ <span id="lucro">0</span></div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Descrição</th>
+<th>Tipo</th>
+<th>Categoria</th>
+<th>Valor</th>
+<th>Ação</th>
+</tr>
+</thead>
+
+<tbody id="tabela"></tbody>
+</table>
+
+<button class="logout" onclick="sair()">Sair</button>
 
 </div>
 
-<!-- MENU INICIAL -->
-<div class="painel" id="menuInicial">
-
-<h2>Bem-vindo ao Sistema UBS</h2>
-
-<div class="menu">
-<button onclick="mostrar('painelAdmin')">👨‍⚕️ Administração</button>
-<button onclick="mostrar('painelRecepcao')">📋 Recepção</button>
-<button onclick="mostrar('painelPaciente')">🧑 Paciente</button>
-</div>
-
-<button class="logout" onclick="logout()">Sair</button>
-
-</div>
-
-<!-- ADMIN -->
-<div class="painel" id="painelAdmin">
-
-<h2>Painel Administrador</h2>
-
-<div class="card">
-<input id="nomeMedico" placeholder="Nome do médico">
-<button onclick="cadastrarMedico()">Cadastrar Médico</button>
-</div>
-
-<div class="card">
-<input type="date" id="dataHorario">
-<input type="time" id="horaHorario">
-<button onclick="salvarHorario()">Salvar Horário</button>
-</div>
-
-<div class="card">
-<button onclick="desmarcarConsulta()">Desmarcar Última Consulta</button>
-</div>
-
-<div class="lista" id="listaConsultas"></div>
-
-<button onclick="abrirConfig()">Configurações</button>
-<button class="logout" onclick="logout()">Sair</button>
-
-</div>
-
-<!-- RECEPÇÃO -->
-<div class="painel" id="painelRecepcao">
-
-<h2>Recepção</h2>
-
-<div class="card">
-<input id="nomeRecepcao" placeholder="Nome do paciente">
-<input type="date" id="dataRecepcao">
-<button onclick="marcarConsultaRecepcao()">Agendar</button>
-</div>
-
-<div class="lista" id="listaConsultas"></div>
-
-<button class="logout" onclick="logout()">Sair</button>
-
-</div>
-
-<!-- PACIENTE -->
-<div class="painel" id="painelPaciente">
-
-<h2>Paciente</h2>
-
-<div class="card">
-<input type="date" id="dataPaciente">
-<button onclick="marcarConsultaPaciente()">Marcar Consulta</button>
-<button onclick="desmarcarConsulta()">Desmarcar</button>
-</div>
-
-<div class="lista" id="listaConsultas"></div>
-
-<button class="logout" onclick="logout()">Sair</button>
-
-</div>
-
-<!-- CONFIG -->
-<div id="configBox">
-<div class="configContent">
-<input type="text" id="novoTitulo" placeholder="Novo título">
-<input type="color" id="novaCor">
-<button onclick="salvarConfig()">Salvar</button>
-<button onclick="fecharConfig()">Fechar</button>
-</div>
 </div>
 
 <script>
 
-let consultas = JSON.parse(localStorage.getItem("consultas")) || [];
+let dados = JSON.parse(localStorage.getItem("dados")) || [];
 
 /* LOGIN */
-function login(){
-
-let tipo=document.getElementById("tipoLogin").value;
-let user=document.getElementById("usuario").value;
-let senha=document.getElementById("senha").value;
-
-if(
-(tipo==="admin" && user==="master" && senha==="123admin") ||
-(tipo==="recepcao" && user==="recepcao" && senha==="123recep") ||
-(tipo==="paciente" && user.length>=11)
-){
-mostrar("menuInicial");
+function entrar(){
+if(user.value==="admin" && pass.value==="123"){
+login.style.display="none";
+app.style.display="block";
+render();
 }else{
 alert("Login inválido");
 }
 }
 
-/* MOSTRAR */
-function mostrar(id){
-document.getElementById("loginBox").style.display="none";
-document.querySelectorAll(".painel").forEach(p=>p.style.display="none");
-document.getElementById(id).style.display="block";
-atualizarLista();
+function sair(){
+location.reload();
 }
 
-function logout(){ location.reload(); }
+/* ADD */
+function add(){
 
-/* CONSULTAS */
+let item={
+data:data.value,
+desc:desc.value,
+tipo:tipo.value,
+cat:cat.value,
+valor:Number(valor.value)
+};
+
+if(item.data && item.desc && item.valor){
+dados.push(item);
+salvar();
+render();
+}
+}
+
+/* SALVAR */
 function salvar(){
-localStorage.setItem("consultas", JSON.stringify(consultas));
+localStorage.setItem("dados",JSON.stringify(dados));
 }
 
-function atualizarLista(){
-let listas = document.querySelectorAll("#listaConsultas");
-
-listas.forEach(div=>{
-if(consultas.length===0){
-div.innerHTML="Nenhuma consulta";
-}else{
-div.innerHTML = consultas.map(c =>
-"👤 "+c.nome+" - 📅 "+c.data
-).join("<br>");
+/* DELETE */
+function del(i){
+dados.splice(i,1);
+salvar();
+render();
 }
+
+/* LIMPAR */
+function limpar(){
+if(confirm("Deseja apagar tudo?")){
+dados=[];
+salvar();
+render();
+}
+}
+
+/* RENDER */
+function render(){
+
+tabela.innerHTML="";
+let ganho=0,gasto=0;
+
+dados.forEach((d,i)=>{
+
+if(d.tipo==="ganho") ganho+=d.valor;
+else gasto+=d.valor;
+
+tabela.innerHTML+=`
+<tr>
+<td>${d.data}</td>
+<td>${d.desc}</td>
+<td class="${d.tipo}">${d.tipo}</td>
+<td>${d.cat}</td>
+<td>R$ ${d.valor}</td>
+<td><button onclick="del(${i})">X</button></td>
+</tr>
+`;
 });
-}
 
-function marcarConsultaPaciente(){
-let data=dataPaciente.value;
-if(data){
-consultas.push({nome:"Paciente",data});
-salvar(); atualizarLista();
-}
-}
+ganhos.innerText=ganho;
+gastos.innerText=gasto;
+lucro.innerText=ganho-gasto;
 
-function marcarConsultaRecepcao(){
-let nome=nomeRecepcao.value;
-let data=dataRecepcao.value;
-if(nome && data){
-consultas.push({nome,data});
-salvar(); atualizarLista();
-}
-}
-
-function desmarcarConsulta(){
-consultas.pop();
-salvar(); atualizarLista();
-}
-
-/* MÉDICO */
-function cadastrarMedico(){
-alert("Médico cadastrado (simulação)");
-}
-
-/* HORARIO */
-function salvarHorario(){
-alert("Horário salvo");
-}
-
-/* CONFIG */
-function abrirConfig(){
-configBox.style.display="block";
-}
-
-function fecharConfig(){
-configBox.style.display="none";
-}
-
-function salvarConfig(){
-if(novoTitulo.value){
-tituloSistema.innerText=novoTitulo.value;
-}
-if(novaCor.value){
-document.querySelector(".topo").style.background=novaCor.value;
-}
-fecharConfig();
-}
-
-/* CONTA */
-function criarConta(){
-alert("Conta criada (simulação)");
 }
 
 </script>
