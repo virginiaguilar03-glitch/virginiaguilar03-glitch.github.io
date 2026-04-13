@@ -14,7 +14,6 @@ background:#f4f8ff;
 }
 
 /* TOPO */
-
 .topo{
 background:#0d6efd;
 color:white;
@@ -35,8 +34,7 @@ border-radius: 50%;
 height:100px;
 }
 
-/* LOGIN */
-
+/* LOGIN (NÃO ALTERADO) */
 .container-login{
 max-width:400px;
 margin:60px auto;
@@ -70,7 +68,6 @@ background:red;
 }
 
 /* PAINEIS */
-
 .painel{
 display:none;
 padding:30px;
@@ -84,8 +81,28 @@ border-radius:10px;
 box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
 
-/* CONFIG MODAL */
+/* MENU SUS */
+.menu{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+}
 
+.menu button{
+padding:20px;
+font-size:16px;
+border-radius:10px;
+}
+
+/* LISTA */
+.lista{
+margin-top:10px;
+background:#eef3ff;
+padding:10px;
+border-radius:10px;
+}
+
+/* CONFIG */
 #configBox{
 display:none;
 position:fixed;
@@ -110,7 +127,6 @@ border-radius:10px;
 <body>
 
 <header class="topo">
-
 <div class="logo">
 <img src="https://virginiaguilar03-glitch.github.io/logo.png">
 <div>
@@ -118,11 +134,9 @@ border-radius:10px;
 <p>Criado por Virgínia Aguilar • 2026</p>
 </div>
 </div>
-
 </header>
 
-<!-- LOGIN -->
-
+<!-- LOGIN (INTACTO) -->
 <div class="container-login" id="loginBox">
 
 <h2>Login</h2>
@@ -141,49 +155,52 @@ border-radius:10px;
 
 </div>
 
-<!-- ADMIN -->
+<!-- MENU INICIAL -->
+<div class="painel" id="menuInicial">
 
-<div class="painel" id="painelAdmin">
+<h2>Bem-vindo ao Sistema UBS</h2>
 
-<h2>Painel Administrador</h2>
-
-<div class="card">
-<h3>Cadastrar Médico</h3>
-<input id="nomeMedico" placeholder="Nome do médico">
-<button onclick="cadastrarMedico()">Cadastrar</button>
-</div>
-
-<div class="card">
-<h3>Editar Horários</h3>
-<input type="date" id="dataHorario">
-<input type="time" id="horaHorario">
-<button onclick="salvarHorario()">Salvar Horário</button>
-</div>
-
-<div class="card">
-<h3>Consultas</h3>
-<button onclick="verConsultas()">Ver Consultas</button>
-<button onclick="desmarcarConsulta()">Desmarcar Última</button>
-</div>
-
-<div class="card">
-<h3>Configurações</h3>
-<button onclick="abrirConfig()">Editar Capa</button>
+<div class="menu">
+<button onclick="mostrar('painelAdmin')">👨‍⚕️ Administração</button>
+<button onclick="mostrar('painelRecepcao')">📋 Recepção</button>
+<button onclick="mostrar('painelPaciente')">🧑 Paciente</button>
 </div>
 
 <button class="logout" onclick="logout()">Sair</button>
 
 </div>
 
-<!-- RECEPÇÃO -->
+<!-- ADMIN -->
+<div class="painel" id="painelAdmin">
 
-<div class="painel" id="painelRecepcao">
-
-<h2>Painel Recepção</h2>
+<h2>Painel Administrador</h2>
 
 <div class="card">
-<button onclick="verConsultas()">Ver Consultas</button>
+<input id="nomeMedico" placeholder="Nome do médico">
+<button onclick="cadastrarMedico()">Cadastrar Médico</button>
 </div>
+
+<div class="card">
+<input type="date" id="dataHorario">
+<input type="time" id="horaHorario">
+<button onclick="salvarHorario()">Salvar Horário</button>
+</div>
+
+<div class="card">
+<button onclick="desmarcarConsulta()">Desmarcar Última Consulta</button>
+</div>
+
+<div class="lista" id="listaConsultas"></div>
+
+<button onclick="abrirConfig()">Configurações</button>
+<button class="logout" onclick="logout()">Sair</button>
+
+</div>
+
+<!-- RECEPÇÃO -->
+<div class="painel" id="painelRecepcao">
+
+<h2>Recepção</h2>
 
 <div class="card">
 <input id="nomeRecepcao" placeholder="Nome do paciente">
@@ -191,209 +208,144 @@ border-radius:10px;
 <button onclick="marcarConsultaRecepcao()">Agendar</button>
 </div>
 
+<div class="lista" id="listaConsultas"></div>
+
 <button class="logout" onclick="logout()">Sair</button>
 
 </div>
 
 <!-- PACIENTE -->
-
 <div class="painel" id="painelPaciente">
 
-<h2>Painel Paciente</h2>
+<h2>Paciente</h2>
 
 <div class="card">
 <input type="date" id="dataPaciente">
 <button onclick="marcarConsultaPaciente()">Marcar Consulta</button>
-<button onclick="desmarcarConsulta()">Desmarcar Última</button>
+<button onclick="desmarcarConsulta()">Desmarcar</button>
 </div>
+
+<div class="lista" id="listaConsultas"></div>
 
 <button class="logout" onclick="logout()">Sair</button>
 
 </div>
 
 <!-- CONFIG -->
-
 <div id="configBox">
-
 <div class="configContent">
-
-<h3>Configurações</h3>
-
 <input type="text" id="novoTitulo" placeholder="Novo título">
 <input type="color" id="novaCor">
-
 <button onclick="salvarConfig()">Salvar</button>
 <button onclick="fecharConfig()">Fechar</button>
-
 </div>
-
 </div>
 
 <script>
 
-let medicos=[];
-let consultas=[];
+let consultas = JSON.parse(localStorage.getItem("consultas")) || [];
 
 /* LOGIN */
-
 function login(){
 
 let tipo=document.getElementById("tipoLogin").value;
 let user=document.getElementById("usuario").value;
 let senha=document.getElementById("senha").value;
 
-if(tipo==="admin" && user==="master" && senha==="123admin"){
-mostrar("painelAdmin");
-}
-
-else if(tipo==="recepcao" && user==="recepcao" && senha==="123recep"){
-mostrar("painelRecepcao");
-}
-
-else if(tipo==="paciente" && user.length>=11){
-mostrar("painelPaciente");
-}
-
-else{
+if(
+(tipo==="admin" && user==="master" && senha==="123admin") ||
+(tipo==="recepcao" && user==="recepcao" && senha==="123recep") ||
+(tipo==="paciente" && user.length>=11)
+){
+mostrar("menuInicial");
+}else{
 alert("Login inválido");
 }
-
 }
 
+/* MOSTRAR */
 function mostrar(id){
-
 document.getElementById("loginBox").style.display="none";
+document.querySelectorAll(".painel").forEach(p=>p.style.display="none");
 document.getElementById(id).style.display="block";
-
+atualizarLista();
 }
 
-function logout(){
-
-location.reload();
-
-}
-
-/* MEDICO */
-
-function cadastrarMedico(){
-
-let nome=document.getElementById("nomeMedico").value;
-
-if(nome){
-
-medicos.push(nome);
-alert("Médico cadastrado");
-
-}
-
-}
-
-/* HORARIO */
-
-function salvarHorario(){
-
-alert("Horário salvo");
-
-}
+function logout(){ location.reload(); }
 
 /* CONSULTAS */
-
-function marcarConsultaPaciente(){
-
-let data=document.getElementById("dataPaciente").value;
-
-if(data){
-
-consultas.push({nome:"Paciente",data});
-alert("Consulta marcada");
-
+function salvar(){
+localStorage.setItem("consultas", JSON.stringify(consultas));
 }
 
+function atualizarLista(){
+let listas = document.querySelectorAll("#listaConsultas");
+
+listas.forEach(div=>{
+if(consultas.length===0){
+div.innerHTML="Nenhuma consulta";
+}else{
+div.innerHTML = consultas.map(c =>
+"👤 "+c.nome+" - 📅 "+c.data
+).join("<br>");
+}
+});
+}
+
+function marcarConsultaPaciente(){
+let data=dataPaciente.value;
+if(data){
+consultas.push({nome:"Paciente",data});
+salvar(); atualizarLista();
+}
 }
 
 function marcarConsultaRecepcao(){
-
-let nome=document.getElementById("nomeRecepcao").value;
-let data=document.getElementById("dataRecepcao").value;
-
+let nome=nomeRecepcao.value;
+let data=dataRecepcao.value;
 if(nome && data){
-
 consultas.push({nome,data});
-alert("Consulta agendada");
-
+salvar(); atualizarLista();
 }
-
-}
-
-function verConsultas(){
-
-if(consultas.length===0){
-
-alert("Nenhuma consulta");
-
-}
-
-else{
-
-let lista=consultas.map(c=>c.nome+" - "+c.data).join("\n");
-alert(lista);
-
-}
-
 }
 
 function desmarcarConsulta(){
-
-if(consultas.length>0){
-
 consultas.pop();
-alert("Última consulta removida");
-
+salvar(); atualizarLista();
 }
 
+/* MÉDICO */
+function cadastrarMedico(){
+alert("Médico cadastrado (simulação)");
+}
+
+/* HORARIO */
+function salvarHorario(){
+alert("Horário salvo");
 }
 
 /* CONFIG */
-
 function abrirConfig(){
-
-document.getElementById("configBox").style.display="block";
-
+configBox.style.display="block";
 }
 
 function fecharConfig(){
-
-document.getElementById("configBox").style.display="none";
-
+configBox.style.display="none";
 }
 
 function salvarConfig(){
-
-let titulo=document.getElementById("novoTitulo").value;
-let cor=document.getElementById("novaCor").value;
-
-if(titulo){
-
-document.getElementById("tituloSistema").innerText=titulo;
-
+if(novoTitulo.value){
+tituloSistema.innerText=novoTitulo.value;
 }
-
-if(cor){
-
-document.querySelector(".topo").style.background=cor;
-
+if(novaCor.value){
+document.querySelector(".topo").style.background=novaCor.value;
 }
-
 fecharConfig();
-
 }
 
-/* CRIAR CONTA */
-
+/* CONTA */
 function criarConta(){
-
 alert("Conta criada (simulação)");
-
 }
 
 </script>
