@@ -1,9 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
 <title>Bar Rocha - Sistema</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body{
@@ -11,15 +12,6 @@ margin:0;
 font-family:'Segoe UI',sans-serif;
 background:#000;
 color:white;
-overflow:hidden;
-}
-
-/* FUNDO ANIMADO */
-canvas{
-position:fixed;
-top:0;
-left:0;
-z-index:0;
 }
 
 /* LOGIN */
@@ -28,47 +20,18 @@ display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-position:relative;
-z-index:1;
 }
 
-/* BOX */
 .box{
 text-align:center;
-max-width:400px;
 width:90%;
+max-width:400px;
 }
 
-/* LOGO */
 .logo-login{
-width:230px;
-max-width:80%;
+width:220px;
+border-radius:20px; /* arredondado leve */
 margin-bottom:20px;
-border-radius:50%;
-box-shadow:0 0 25px #2563eb;
-animation:entrada 1.5s ease, brilho 2s infinite alternate;
-}
-
-/* ANIMAÇÕES */
-@keyframes entrada{
-0%{transform:scale(0.7);opacity:0;}
-100%{transform:scale(1);opacity:1;}
-}
-
-@keyframes brilho{
-from{box-shadow:0 0 10px #2563eb;}
-to{box-shadow:0 0 35px #3b82f6;}
-}
-
-/* TEXTO */
-.titulo{
-font-size:32px;
-margin:10px 0 0;
-}
-
-.sub{
-color:#aaa;
-margin-bottom:30px;
 }
 
 /* INPUT */
@@ -78,7 +41,6 @@ margin:10px 0;
 width:100%;
 border-radius:8px;
 border:none;
-outline:none;
 }
 
 /* BOTÃO */
@@ -90,28 +52,23 @@ color:white;
 border-radius:8px;
 cursor:pointer;
 width:100%;
-font-size:15px;
-transition:0.3s;
-}
-
-button:hover{
-background:#1e40af;
+margin-top:5px;
 }
 
 /* APP */
 #app{
 display:none;
 padding:20px;
-background:linear-gradient(135deg,#eef2ff,#f8fafc);
+background:#f1f5f9;
 color:black;
 min-height:100vh;
 }
 
-/* RESTO */
+/* TOPO */
 .topo{
 display:flex;
+justify-content:space-between;
 align-items:center;
-gap:15px;
 margin-bottom:20px;
 }
 
@@ -119,16 +76,15 @@ margin-bottom:20px;
 width:50px;
 height:50px;
 border-radius:50%;
-object-fit:cover;
 }
 
+/* CONTAINER */
 .container{
 max-width:1100px;
 margin:auto;
 background:white;
 padding:25px;
 border-radius:20px;
-box-shadow:0 10px 30px rgba(0,0,0,0.1);
 }
 
 .barra{
@@ -147,8 +103,8 @@ text-align:center;
 
 table{
 width:100%;
-border-collapse:collapse;
 margin-top:20px;
+border-collapse:collapse;
 }
 
 th{
@@ -162,47 +118,54 @@ padding:10px;
 border-bottom:1px solid #eee;
 }
 
+.logout{
+background:red;
+width:auto;
+padding:10px 20px;
+}
+
 .ganho{color:green;}
 .gasto{color:red;}
-
-.logout{
-margin-top:10px;
-background:red;
-}
 </style>
 </head>
 
 <body>
 
-<!-- FUNDO -->
-<canvas id="bg"></canvas>
-
 <!-- LOGIN -->
 <div class="login" id="login">
-  <div class="box">
+<div class="box">
 
-    <img src="logo.png" class="logo-login">
+<img src="logo.png" class="logo-login">
 
-    <h1 class="titulo">Bar Rocha</h1>
-    <p class="sub">Desde 2010</p>
+<h1>Bar Rocha</h1>
+<p>Sistema financeiro</p>
 
-    <input id="user" placeholder="Usuário">
-    <input id="pass" type="password" placeholder="Senha">
+<input id="user" placeholder="Usuário">
+<input id="pass" type="password" placeholder="Senha">
 
-    <button onclick="entrar()">Entrar</button>
+<button onclick="entrar()">Entrar</button>
 
-  </div>
+</div>
 </div>
 
 <!-- APP -->
 <div id="app">
+
 <div class="topo">
+<div style="display:flex;align-items:center;gap:10px;">
 <img src="logo.png" class="logo-img">
 <h2>Controle Financeiro</h2>
 </div>
 
+<div>
+<button onclick="abrirSenha()">Trocar Senha</button>
+<button class="logout" onclick="sair()">Sair</button>
+</div>
+</div>
+
 <div class="container">
 
+<!-- FORM -->
 <div class="barra">
 <input type="date" id="data">
 <input id="desc" placeholder="Descrição">
@@ -217,12 +180,17 @@ background:red;
 <button onclick="limpar()">Limpar</button>
 </div>
 
+<!-- RESUMO -->
 <div class="barra">
 <div class="card">Ganhos: R$ <span id="ganhos">0</span></div>
 <div class="card">Gastos: R$ <span id="gastos">0</span></div>
 <div class="card">Lucro: R$ <span id="lucro">0</span></div>
 </div>
 
+<!-- GRÁFICO -->
+<canvas id="grafico" height="100"></canvas>
+
+<!-- TABELA -->
 <table>
 <thead>
 <tr>
@@ -237,58 +205,21 @@ background:red;
 <tbody id="tabela"></tbody>
 </table>
 
-<button class="logout" onclick="sair()">Sair</button>
-
 </div>
 </div>
 
 <script>
 
-/* FUNDO ANIMADO */
-const canvas = document.getElementById("bg");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles = [];
-
-for(let i=0;i<80;i++){
-particles.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-r:Math.random()*2,
-dx:(Math.random()-0.5),
-dy:(Math.random()-0.5)
-});
+/* SENHA */
+if(!localStorage.getItem("senha")){
+localStorage.setItem("senha","123");
 }
 
-function draw(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-particles.forEach(p=>{
-ctx.beginPath();
-ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-ctx.fillStyle="white";
-ctx.fill();
-
-p.x+=p.dx;
-p.y+=p.dy;
-
-if(p.x<0||p.x>canvas.width) p.dx*=-1;
-if(p.y<0||p.y>canvas.height) p.dy*=-1;
-});
-
-requestAnimationFrame(draw);
-}
-
-draw();
-
-/* SISTEMA */
-let dados = JSON.parse(localStorage.getItem("dados")) || [];
-
+/* LOGIN */
 function entrar(){
-if(user.value==="admin" && pass.value==="123"){
+let senha = localStorage.getItem("senha");
+
+if(user.value==="admin" && pass.value===senha){
 login.style.display="none";
 app.style.display="block";
 render();
@@ -297,7 +228,29 @@ alert("Login inválido");
 }
 }
 
-function sair(){ location.reload(); }
+/* TROCAR SENHA */
+function abrirSenha(){
+let atual = prompt("Digite a senha atual:");
+let senha = localStorage.getItem("senha");
+
+if(atual === senha){
+let nova = prompt("Digite a nova senha:");
+if(nova){
+localStorage.setItem("senha",nova);
+alert("Senha alterada!");
+}
+}else{
+alert("Senha incorreta");
+}
+}
+
+/* SAIR */
+function sair(){
+location.reload();
+}
+
+/* DADOS */
+let dados = JSON.parse(localStorage.getItem("dados")) || [];
 
 function add(){
 let item={
@@ -333,11 +286,32 @@ render();
 }
 }
 
+/* GRÁFICO */
+let chart;
+
+function atualizarGrafico(ganho,gasto){
+
+if(chart) chart.destroy();
+
+chart = new Chart(document.getElementById("grafico"),{
+type:'bar',
+data:{
+labels:['Ganhos','Gastos'],
+datasets:[{
+data:[ganho,gasto]
+}]
+}
+});
+}
+
+/* RENDER */
 function render(){
+
 tabela.innerHTML="";
 let ganho=0,gasto=0;
 
 dados.forEach((d,i)=>{
+
 if(d.tipo==="ganho") ganho+=d.valor;
 else gasto+=d.valor;
 
@@ -349,13 +323,17 @@ tabela.innerHTML+=`
 <td>${d.cat}</td>
 <td>R$ ${d.valor}</td>
 <td><button onclick="del(${i})">X</button></td>
-</tr>`;
+</tr>
+`;
 });
 
 ganhos.innerText=ganho;
 gastos.innerText=gasto;
 lucro.innerText=ganho-gasto;
+
+atualizarGrafico(ganho,gasto);
 }
+
 </script>
 
 </body>
