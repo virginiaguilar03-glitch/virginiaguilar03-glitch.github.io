@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Sistema Financeiro - Bar Rocha</title>
+<title>Bar Rocha - Sistema</title>
 
 <style>
 body{
@@ -10,45 +11,61 @@ margin:0;
 font-family:'Segoe UI',sans-serif;
 background:#000;
 color:white;
+overflow:hidden;
 }
 
-/* LOGIN FULL SCREEN */
+/* FUNDO ANIMADO */
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:0;
+}
+
+/* LOGIN */
 .login{
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-background:#000;
+position:relative;
+z-index:1;
 }
 
-/* BOX CENTRAL */
+/* BOX */
 .box{
 text-align:center;
-width:100%;
 max-width:400px;
+width:90%;
 }
 
-/* LOGO GRANDE */
+/* LOGO */
 .logo-login{
-width:220px;
+width:230px;
 max-width:80%;
 margin-bottom:20px;
-animation:zoom 2s ease;
+border-radius:50%;
+box-shadow:0 0 25px #2563eb;
+animation:entrada 1.5s ease, brilho 2s infinite alternate;
 }
 
-/* ANIMAÇÃO */
-@keyframes zoom{
-0%{transform:scale(0.8);opacity:0;}
+/* ANIMAÇÕES */
+@keyframes entrada{
+0%{transform:scale(0.7);opacity:0;}
 100%{transform:scale(1);opacity:1;}
 }
 
-/* TITULO */
+@keyframes brilho{
+from{box-shadow:0 0 10px #2563eb;}
+to{box-shadow:0 0 35px #3b82f6;}
+}
+
+/* TEXTO */
 .titulo{
 font-size:32px;
 margin:10px 0 0;
 }
 
-/* SUB */
 .sub{
 color:#aaa;
 margin-bottom:30px;
@@ -90,7 +107,7 @@ color:black;
 min-height:100vh;
 }
 
-/* TOPO */
+/* RESTO */
 .topo{
 display:flex;
 align-items:center;
@@ -98,7 +115,6 @@ gap:15px;
 margin-bottom:20px;
 }
 
-/* LOGO PEQUENA */
 .logo-img{
 width:50px;
 height:50px;
@@ -106,7 +122,6 @@ border-radius:50%;
 object-fit:cover;
 }
 
-/* CONTAINER */
 .container{
 max-width:1100px;
 margin:auto;
@@ -159,6 +174,9 @@ background:red;
 
 <body>
 
+<!-- FUNDO -->
+<canvas id="bg"></canvas>
+
 <!-- LOGIN -->
 <div class="login" id="login">
   <div class="box">
@@ -178,7 +196,6 @@ background:red;
 
 <!-- APP -->
 <div id="app">
-
 <div class="topo">
 <img src="logo.png" class="logo-img">
 <h2>Controle Financeiro</h2>
@@ -217,7 +234,6 @@ background:red;
 <th>Ação</th>
 </tr>
 </thead>
-
 <tbody id="tabela"></tbody>
 </table>
 
@@ -228,9 +244,49 @@ background:red;
 
 <script>
 
+/* FUNDO ANIMADO */
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<80;i++){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2,
+dx:(Math.random()-0.5),
+dy:(Math.random()-0.5)
+});
+}
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+particles.forEach(p=>{
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fillStyle="white";
+ctx.fill();
+
+p.x+=p.dx;
+p.y+=p.dy;
+
+if(p.x<0||p.x>canvas.width) p.dx*=-1;
+if(p.y<0||p.y>canvas.height) p.dy*=-1;
+});
+
+requestAnimationFrame(draw);
+}
+
+draw();
+
+/* SISTEMA */
 let dados = JSON.parse(localStorage.getItem("dados")) || [];
 
-/* LOGIN */
 function entrar(){
 if(user.value==="admin" && pass.value==="123"){
 login.style.display="none";
@@ -241,13 +297,9 @@ alert("Login inválido");
 }
 }
 
-function sair(){
-location.reload();
-}
+function sair(){ location.reload(); }
 
-/* ADD */
 function add(){
-
 let item={
 data:data.value,
 desc:desc.value,
@@ -263,19 +315,16 @@ render();
 }
 }
 
-/* SALVAR */
 function salvar(){
 localStorage.setItem("dados",JSON.stringify(dados));
 }
 
-/* DELETE */
 function del(i){
 dados.splice(i,1);
 salvar();
 render();
 }
 
-/* LIMPAR */
 function limpar(){
 if(confirm("Deseja apagar tudo?")){
 dados=[];
@@ -284,14 +333,11 @@ render();
 }
 }
 
-/* RENDER */
 function render(){
-
 tabela.innerHTML="";
 let ganho=0,gasto=0;
 
 dados.forEach((d,i)=>{
-
 if(d.tipo==="ganho") ganho+=d.valor;
 else gasto+=d.valor;
 
@@ -303,16 +349,13 @@ tabela.innerHTML+=`
 <td>${d.cat}</td>
 <td>R$ ${d.valor}</td>
 <td><button onclick="del(${i})">X</button></td>
-</tr>
-`;
+</tr>`;
 });
 
 ganhos.innerText=ganho;
 gastos.innerText=gasto;
 lucro.innerText=ganho-gasto;
-
 }
-
 </script>
 
 </body>
