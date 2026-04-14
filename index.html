@@ -1,57 +1,67 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Sistema Financeiro</title>
+<title>Sistema Financeiro - Bar Rocha</title>
 
 <style>
 body{
 margin:0;
 font-family:'Segoe UI',sans-serif;
-background:linear-gradient(135deg,#dbeafe,#93c5fd);
+background:#000;
+color:white;
 }
 
-/* LOGIN */
+/* LOGIN FULL SCREEN */
 .login{
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
+background:#000;
 }
 
+/* BOX CENTRAL */
 .box{
-background:rgba(255,255,255,0.8);
-backdrop-filter:blur(10px);
-padding:40px;
-border-radius:25px;
-box-shadow:0 15px 40px rgba(0,0,0,0.2);
 text-align:center;
-width:300px;
+width:100%;
+max-width:400px;
 }
 
-/* LOGO */
+/* LOGO GRANDE */
 .logo-login{
-width:90px;
-margin-bottom:15px;
+width:220px;
+max-width:80%;
+margin-bottom:20px;
+animation:zoom 2s ease;
+}
+
+/* ANIMAÇÃO */
+@keyframes zoom{
+0%{transform:scale(0.8);opacity:0;}
+100%{transform:scale(1);opacity:1;}
 }
 
 /* TITULO */
-.box h2{
-margin-bottom:20px;
-color:#1e293b;
+.titulo{
+font-size:32px;
+margin:10px 0 0;
+}
+
+/* SUB */
+.sub{
+color:#aaa;
+margin-bottom:30px;
 }
 
 /* INPUT */
-.input-group{
-position:relative;
-}
-
 input{
 padding:12px;
 margin:10px 0;
 width:100%;
-border-radius:10px;
-border:1px solid #ccc;
+border-radius:8px;
+border:none;
 outline:none;
 }
 
@@ -59,25 +69,29 @@ outline:none;
 button{
 padding:12px;
 border:none;
-background:linear-gradient(90deg,#2563eb,#3b82f6);
+background:#2563eb;
 color:white;
-border-radius:12px;
+border-radius:8px;
 cursor:pointer;
 width:100%;
-font-weight:bold;
+font-size:15px;
 transition:0.3s;
 }
 
 button:hover{
-opacity:0.9;
+background:#1e40af;
 }
 
 /* APP */
 #app{
 display:none;
 padding:20px;
+background:linear-gradient(135deg,#eef2ff,#f8fafc);
+color:black;
+min-height:100vh;
 }
 
+/* TOPO */
 .topo{
 display:flex;
 align-items:center;
@@ -85,6 +99,7 @@ gap:15px;
 margin-bottom:20px;
 }
 
+/* LOGO PEQUENA */
 .logo-img{
 width:50px;
 height:50px;
@@ -92,7 +107,7 @@ border-radius:50%;
 object-fit:cover;
 }
 
-/* RESTO */
+/* CONTAINER */
 .container{
 max-width:1100px;
 margin:auto;
@@ -149,9 +164,10 @@ background:red;
 <div class="login" id="login">
   <div class="box">
 
-    <img src="logo.png" alt="Logo" class="logo-login">
+    <img src="logo.png" class="logo-login">
 
-    <h2>Bem-vindo ao Sistema</h2>
+    <h1 class="titulo">Bar Rocha</h1>
+    <p class="sub">Desde 2010</p>
 
     <input id="user" placeholder="Usuário">
     <input id="pass" type="password" placeholder="Senha">
@@ -165,7 +181,7 @@ background:red;
 <div id="app">
 
 <div class="topo">
-<img src="logo.png" alt="Logo" class="logo-img">
+<img src="logo.png" class="logo-img">
 <h2>Controle Financeiro</h2>
 </div>
 
@@ -302,3 +318,4 @@ lucro.innerText=ganho-gasto;
 
 </body>
 </html>
+```
