@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -164,9 +165,34 @@ padding:10px 20px;
 <img src="logo.png" class="logo-login">
 <h1>Vircel</h1>
 <p>Sistema financeiro</p>
+
 <input id="user" placeholder="Usuário">
 <input id="pass" type="password" placeholder="Senha">
+
 <button onclick="entrar()">Entrar</button>
+
+<p style="margin-top:10px;">
+Não tem conta? 
+<span style="color:#60a5fa; cursor:pointer;" onclick="abrirCadastro()">Criar conta</span>
+</p>
+</div>
+</div>
+
+<!-- CADASTRO -->
+<div class="login" id="cadastro" style="display:none;">
+<div class="box">
+<img src="logo.png" class="logo-login">
+<h1>Criar Conta</h1>
+
+<input id="novoUserCad" placeholder="Usuário">
+<input id="novaSenhaCad" type="password" placeholder="Senha">
+
+<button onclick="criarConta()">Cadastrar</button>
+
+<p style="margin-top:10px;">
+Já tem conta? 
+<span style="color:#60a5fa; cursor:pointer;" onclick="voltarLogin()">Entrar</span>
+</p>
 </div>
 </div>
 
@@ -276,14 +302,22 @@ padding:10px 20px;
 
 <script>
 
-/* LOGIN CONFIG */
-if(!localStorage.getItem("user")){
-localStorage.setItem("user","admin");
-localStorage.setItem("senha","123");
+/* SISTEMA DE USUÁRIOS */
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+if(usuarios.length === 0){
+usuarios.push({user:"admin", senha:"123"});
+localStorage.setItem("usuarios", JSON.stringify(usuarios));
 }
 
+/* LOGIN */
 function entrar(){
-if(user.value===localStorage.getItem("user") && pass.value===localStorage.getItem("senha")){
+let u = user.value;
+let s = pass.value;
+
+let achou = usuarios.find(x => x.user === u && x.senha === s);
+
+if(achou){
 login.style.display="none";
 app.style.display="block";
 render();
@@ -293,6 +327,46 @@ alert("Login inválido");
 }
 
 function sair(){location.reload();}
+
+/* CADASTRO */
+function abrirCadastro(){
+login.style.display="none";
+cadastro.style.display="flex";
+}
+
+function voltarLogin(){
+cadastro.style.display="none";
+login.style.display="flex";
+}
+
+function criarConta(){
+let u = novoUserCad.value;
+let s = novaSenhaCad.value;
+
+if(!u || !s){
+alert("Preencha tudo!");
+return;
+}
+
+let existe = usuarios.find(x => x.user === u);
+
+if(existe){
+alert("Usuário já existe!");
+return;
+}
+
+usuarios.push({user:u, senha:s});
+localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+alert("Conta criada com sucesso!");
+voltarLogin();
+}
+
+/* RESTANTE DO SEU SISTEMA (INALTERADO) */
+if(!localStorage.getItem("user")){
+localStorage.setItem("user","admin");
+localStorage.setItem("senha","123");
+}
 
 function abrirConfig(){
 app.style.display="none";
@@ -482,3 +556,4 @@ plugins:{legend:{display:false}}
 
 </body>
 </html>
+```
