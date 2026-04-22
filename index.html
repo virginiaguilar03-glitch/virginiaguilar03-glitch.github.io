@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Viscontrol- Sistema</title>
+<title>Viscontrol - Sistema</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -14,7 +14,6 @@ background:#000;
 color:white;
 }
 
-/* LOGIN */
 .login{
 display:flex;
 justify-content:center;
@@ -53,11 +52,9 @@ width:100%;
 margin-top:5px;
 }
 
-/* APP */
 #app{
 display:none;
 padding:20px;
-background:#000;
 min-height:100vh;
 }
 
@@ -79,16 +76,26 @@ max-width:1100px;
 margin:auto;
 }
 
-/* NOVO DASHBOARD */
-.grid{
-display:grid;
-grid-template-columns: 1fr 1fr;
-gap:20px;
-margin-top:20px;
+.barra{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:20px;
 }
 
-.full{
-grid-column:1 / -1;
+.card{
+flex:1;
+background:#1e293b;
+padding:20px;
+border-radius:12px;
+text-align:center;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+margin-top:20px;
 }
 
 .section{
@@ -100,26 +107,6 @@ border-radius:15px;
 .section h3{
 margin-bottom:10px;
 color:#60a5fa;
-}
-
-.barra{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-}
-
-.barra input,
-.barra select{
-flex:1;
-min-width:120px;
-}
-
-.card{
-flex:1;
-background:#1e293b;
-padding:15px;
-border-radius:10px;
-text-align:center;
 }
 
 canvas{
@@ -136,7 +123,6 @@ border-collapse:collapse;
 
 th{
 background:#2563eb;
-color:white;
 padding:10px;
 }
 
@@ -170,9 +156,9 @@ padding:10px 20px;
 
 <button onclick="entrar()">Entrar</button>
 
-<p style="margin-top:10px;">
+<p>
 Não tem conta? 
-<span style="color:#60a5fa; cursor:pointer;" onclick="abrirCadastro()">Criar conta</span>
+<span onclick="abrirCadastro()" style="color:#60a5fa;cursor:pointer;">Criar conta</span>
 </p>
 </div>
 </div>
@@ -188,9 +174,9 @@ Não tem conta?
 
 <button onclick="criarConta()">Cadastrar</button>
 
-<p style="margin-top:10px;">
+<p>
 Já tem conta? 
-<span style="color:#60a5fa; cursor:pointer;" onclick="voltarLogin()">Entrar</span>
+<span onclick="voltarLogin()" style="color:#60a5fa;cursor:pointer;">Entrar</span>
 </p>
 </div>
 </div>
@@ -199,7 +185,7 @@ Já tem conta?
 <div id="app">
 
 <div class="topo">
-<div style="display:flex;align-items:center;gap:10px;">
+<div style="display:flex;gap:10px;align-items:center;">
 <img src="logo.png" class="logo-img">
 <h2>Controle Financeiro</h2>
 </div>
@@ -212,8 +198,16 @@ Já tem conta?
 
 <div class="container">
 
+<!-- RESUMO -->
+<div class="barra">
+<div class="card">💰 Ganhos<br><strong>R$ <span id="ganhos">0</span></strong></div>
+<div class="card">💸 Gastos<br><strong>R$ <span id="gastos">0</span></strong></div>
+<div class="card">📊 Lucro<br><strong>R$ <span id="lucro">0</span></strong></div>
+</div>
+
+<!-- NOVO -->
 <div class="section">
-<h3>➕ Adicionar Lançamento</h3>
+<h3>➕ Novo Lançamento</h3>
 <div class="barra">
 <input type="date" id="data">
 <input id="desc" placeholder="Descrição">
@@ -224,48 +218,67 @@ Já tem conta?
 <input id="cat" placeholder="Categoria">
 <input type="number" id="valor" placeholder="Valor">
 <button onclick="add()">Adicionar</button>
-<button onclick="limpar()">Limpar</button>
 </div>
 </div>
 
-<div class="barra">
-<div class="card">Ganhos: R$ <span id="ganhos">0</span></div>
-<div class="card">Gastos: R$ <span id="gastos">0</span></div>
-<div class="card">Lucro: R$ <span id="lucro">0</span></div>
-</div>
-
+<!-- GRÁFICOS -->
 <div class="grid">
-
 <div class="section">
 <h3>📊 Resumo</h3>
-<canvas id="grafico" height="150"></canvas>
+<canvas id="grafico"></canvas>
 </div>
 
 <div class="section">
-<h3>📈 Mensal</h3>
-<canvas id="graficoMes" height="150"></canvas>
+<h3>📈 Evolução Mensal</h3>
+<canvas id="graficoMes"></canvas>
+</div>
 </div>
 
-<div class="section full">
-<h3>📁 Ações</h3>
+<!-- AÇÕES -->
+<div class="grid">
+<div class="section">
+<h3>⚙️ Ações</h3>
 <div class="barra">
 <button onclick="exportar()">Exportar Excel</button>
-<button onclick="fechamento()">Fechar Caixa do Dia</button>
+<button onclick="fechamento()">Fechar Caixa</button>
+<button onclick="limpar()">Limpar Tudo</button>
 </div>
 </div>
 
-<div class="section full">
-<h3>📅 Filtro</h3>
+<div class="section">
+<h3>🔎 Filtro</h3>
 <div class="barra">
 <input type="date" id="filtroData">
 <button onclick="filtrar()">Filtrar</button>
 <button onclick="limparFiltro()">Limpar</button>
 </div>
 </div>
+</div>
 
-<div class="section full">
-<h3>📋 Lançamentos</h3>
+<!-- RELATÓRIO -->
+<div class="section">
+<h3>🧾 Gerar Relatório</h3>
 
+<div class="barra">
+<select id="tipoRelatorio">
+<option value="mes">Mês atual</option>
+<option value="ano">Ano atual</option>
+<option value="personalizado">Personalizado</option>
+</select>
+
+<input type="date" id="inicioRelatorio">
+<input type="date" id="fimRelatorio">
+
+<button onclick="gerarRelatorio()">Gerar</button>
+<button onclick="exportarRelatorio()">Exportar</button>
+</div>
+
+<div id="resultadoRelatorio"></div>
+</div>
+
+<!-- TABELA -->
+<div class="section">
+<h3>📋 Histórico</h3>
 <table>
 <thead>
 <tr>
@@ -279,29 +292,19 @@ Já tem conta?
 </thead>
 <tbody id="tabela"></tbody>
 </table>
-
 </div>
 
 </div>
-</div>
-</div>
-
-<!-- CONFIG -->
-<div id="config" style="display:none; padding:20px; background:#000; min-height:100vh;">
-<h2>⚙️ Configurações</h2>
-
-<div style="max-width:400px; margin:auto;">
-<input id="novoUser" placeholder="Novo usuário">
-<input id="novaSenha" type="password" placeholder="Nova senha">
-<button onclick="salvarConfig()">Salvar</button>
-<button onclick="voltar()">Voltar</button>
-</div>
-
 </div>
 
 <script>
 
-/* SISTEMA DE USUÁRIOS */
+/* ELEMENTOS */
+const loginDiv = document.getElementById("login");
+const appDiv = document.getElementById("app");
+const cadastroDiv = document.getElementById("cadastro");
+
+/* USUÁRIOS */
 let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
 if(usuarios.length === 0){
@@ -311,14 +314,14 @@ localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
 /* LOGIN */
 function entrar(){
-let u = user.value;
-let s = pass.value;
+let u = document.getElementById("user").value;
+let s = document.getElementById("pass").value;
 
 let achou = usuarios.find(x => x.user === u && x.senha === s);
 
 if(achou){
-login.style.display="none";
-app.style.display="block";
+loginDiv.style.display="none";
+appDiv.style.display="block";
 render();
 }else{
 alert("Login inválido");
@@ -329,58 +332,29 @@ function sair(){location.reload();}
 
 /* CADASTRO */
 function abrirCadastro(){
-login.style.display="none";
-cadastro.style.display="flex";
+loginDiv.style.display="none";
+cadastroDiv.style.display="flex";
 }
 
 function voltarLogin(){
-cadastro.style.display="none";
-login.style.display="flex";
+cadastroDiv.style.display="none";
+loginDiv.style.display="flex";
 }
 
 function criarConta(){
-let u = novoUserCad.value;
-let s = novaSenhaCad.value;
+let u = document.getElementById("novoUserCad").value;
+let s = document.getElementById("novaSenhaCad").value;
 
-if(!u || !s){
-alert("Preencha tudo!");
-return;
-}
+if(!u || !s){alert("Preencha tudo");return;}
 
 let existe = usuarios.find(x => x.user === u);
-
-if(existe){
-alert("Usuário já existe!");
-return;
-}
+if(existe){alert("Já existe");return;}
 
 usuarios.push({user:u, senha:s});
 localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
-alert("Conta criada com sucesso!");
+alert("Conta criada");
 voltarLogin();
-}
-
-/* RESTANTE DO SEU SISTEMA (INALTERADO) */
-if(!localStorage.getItem("user")){
-localStorage.setItem("user","admin");
-localStorage.setItem("senha","123");
-}
-
-function abrirConfig(){
-app.style.display="none";
-config.style.display="block";
-}
-
-function voltar(){
-config.style.display="none";
-app.style.display="block";
-}
-
-function salvarConfig(){
-if(novoUser.value) localStorage.setItem("user",novoUser.value);
-if(novaSenha.value) localStorage.setItem("senha",novaSenha.value);
-alert("Atualizado!");
 }
 
 /* DADOS */
@@ -413,81 +387,74 @@ render();
 }
 
 function limpar(){
-if(confirm("Deseja apagar tudo?")){
+if(confirm("Apagar tudo?")){
 dados=[];
 salvar();
 render();
 }
 }
 
-/* EXPORTAR */
-function exportar(){
+/* RELATÓRIO */
+let relatorioAtual=[];
+
+function gerarRelatorio(){
+let tipo=document.getElementById("tipoRelatorio").value;
+let hoje=new Date();
+
+if(tipo==="mes"){
+let mes=hoje.toISOString().slice(0,7);
+relatorioAtual=dados.filter(d=>d.data.startsWith(mes));
+}
+else if(tipo==="ano"){
+let ano=hoje.getFullYear();
+relatorioAtual=dados.filter(d=>d.data.startsWith(ano));
+}
+else{
+let i=document.getElementById("inicioRelatorio").value;
+let f=document.getElementById("fimRelatorio").value;
+relatorioAtual=dados.filter(d=>d.data>=i && d.data<=f);
+}
+
+let ganhos=0,gastos=0;
+
+relatorioAtual.forEach(d=>{
+if(d.tipo==="ganho") ganhos+=d.valor;
+else gastos+=d.valor;
+});
+
+let lucro=ganhos-gastos;
+
+document.getElementById("resultadoRelatorio").innerHTML=
+`<div class="card">
+Ganhos: R$ ${ganhos}<br>
+Gastos: R$ ${gastos}<br>
+Lucro: R$ ${lucro}
+</div>`;
+}
+
+function exportarRelatorio(){
+if(relatorioAtual.length===0){
+alert("Gere primeiro!");
+return;
+}
+
 let csv="Data,Descricao,Tipo,Categoria,Valor\n";
-dados.forEach(d=>{
+relatorioAtual.forEach(d=>{
 csv+=`${d.data},${d.desc},${d.tipo},${d.cat},${d.valor}\n`;
 });
+
 let blob=new Blob([csv]);
 let a=document.createElement("a");
 a.href=URL.createObjectURL(blob);
-a.download="dados.csv";
+a.download="relatorio.csv";
 a.click();
-}
-
-/* FECHAMENTO */
-function fechamento(){
-let hoje=new Date().toISOString().split("T")[0];
-let g=0,s=0;
-
-dados.forEach(d=>{
-if(d.data===hoje){
-if(d.tipo==="ganho") g+=d.valor;
-else s+=d.valor;
-}
-});
-
-alert(`Hoje\nGanhos: ${g}\nGastos: ${s}\nSaldo: ${g-s}`);
-}
-
-/* FILTRO */
-function filtrar(){
-let f=filtroData.value;
-let lista=dados.filter(d=>d.data===f);
-renderLista(lista);
-}
-
-function limparFiltro(){
-render();
-}
-
-function renderLista(lista){
-tabela.innerHTML="";
-let g=0,s=0;
-
-lista.forEach((d,i)=>{
-if(d.tipo==="ganho") g+=d.valor;
-else s+=d.valor;
-
-tabela.innerHTML+=`
-<tr>
-<td>${d.data}</td>
-<td>${d.desc}</td>
-<td class="${d.tipo}">${d.tipo}</td>
-<td>${d.cat}</td>
-<td>${d.valor}</td>
-<td><button onclick="del(${i})">X</button></td>
-</tr>`;
-});
-
-ganhos.innerText=g;
-gastos.innerText=s;
-lucro.innerText=g-s;
 }
 
 /* GRÁFICOS */
 let chart, chartMes;
 
 function render(){
-
+let tabela=document.getElementById("tabela");
 tabela.innerHTML="";
 let g=0,s=0;
 
@@ -506,20 +473,18 @@ tabela.innerHTML+=`
 </tr>`;
 });
 
-ganhos.innerText=g;
-gastos.innerText=s;
-lucro.innerText=g-s;
+document.getElementById("ganhos").innerText=g;
+document.getElementById("gastos").innerText=s;
+document.getElementById("lucro").innerText=g-s;
 
 if(chart) chart.destroy();
-chart=new Chart(grafico,{
+chart=new Chart(document.getElementById("grafico"),{
 type:'bar',
 data:{
 labels:['Ganhos','Gastos'],
 datasets:[{data:[g,s]}]
 },
-options:{
-plugins:{legend:{display:false}}
-}
+options:{plugins:{legend:{display:false}}}
 });
 
 graficoMesFunc();
@@ -539,15 +504,13 @@ let labels=Object.keys(meses);
 let valores=Object.values(meses);
 
 if(chartMes) chartMes.destroy();
-chartMes=new Chart(graficoMes,{
+chartMes=new Chart(document.getElementById("graficoMes"),{
 type:'line',
 data:{
 labels:labels,
 datasets:[{data:valores}]
 },
-options:{
-plugins:{legend:{display:false}}
-}
+options:{plugins:{legend:{display:false}}}
 });
 }
 
