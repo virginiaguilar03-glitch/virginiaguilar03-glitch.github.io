@@ -1,339 +1,217 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TriageAI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jacinto Táxi</title>
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, sans-serif;
+    }
 
-body{
-font-family:Arial,sans-serif;
-background:#eef5ff;
-color:#333;
-}
+    body{
+      background:#f4f4f4;
+      color:#333;
+    }
 
-header{
-background:#0d6efd;
-color:white;
-padding:20px;
-text-align:center;
-box-shadow:0 2px 10px rgba(0,0,0,.2);
-}
+    header{
+      background:#111;
+      color:white;
+      padding:20px;
+      text-align:center;
+    }
 
-.container{
-max-width:1200px;
-margin:auto;
-padding:20px;
-}
+    header h1{
+      font-size:32px;
+    }
 
-.card{
-background:white;
-padding:25px;
-border-radius:16px;
-box-shadow:0 0 10px rgba(0,0,0,.1);
-margin-bottom:20px;
-}
+    .hero{
+      background:linear-gradient(to right,#111,#444);
+      color:white;
+      padding:60px 20px;
+      text-align:center;
+    }
 
-.hidden{display:none;}
+    .hero h2{
+      font-size:42px;
+      margin-bottom:15px;
+    }
 
-label{
-display:block;
-margin-top:15px;
-font-weight:bold;
-}
+    .hero p{
+      font-size:18px;
+      margin-bottom:30px;
+    }
 
-input,select{
-width:100%;
-padding:12px;
-margin-top:5px;
-border-radius:8px;
-border:1px solid #ccc;
-}
+    .btn{
+      background:#ffd000;
+      color:#111;
+      padding:15px 30px;
+      border:none;
+      border-radius:8px;
+      font-size:18px;
+      cursor:pointer;
+      transition:0.3s;
+    }
 
-button.action{
-margin-top:20px;
-padding:12px;
-border:none;
-border-radius:8px;
-background:#0d6efd;
-color:white;
-font-weight:bold;
-cursor:pointer;
-width:100%;
-}
+    .btn:hover{
+      background:#ffb300;
+    }
 
-button.secondary{
-background:#6c757d;
-}
+    .container{
+      max-width:1200px;
+      margin:auto;
+      padding:40px 20px;
+    }
 
-.triagem-box{
-padding:25px;
-border-radius:16px;
-text-align:center;
-font-size:22px;
-font-weight:bold;
-color:white;
-margin-top:20px;
-}
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:20px;
+    }
 
-.painel{
-background:#111;
-color:#00ff88;
-padding:30px;
-border-radius:16px;
-text-align:center;
-font-size:30px;
-font-weight:bold;
-margin-top:20px;
-}
+    .card{
+      background:white;
+      padding:25px;
+      border-radius:12px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      text-align:center;
+    }
 
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-}
+    .card h3{
+      margin-bottom:15px;
+      color:#111;
+    }
 
-th,td{
-border:1px solid #ccc;
-padding:10px;
-text-align:center;
-}
+    .ride-box{
+      background:white;
+      margin-top:40px;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    }
 
-th{
-background:#e9f1fb;
-}
-</style>
+    .ride-box h2{
+      margin-bottom:20px;
+    }
+
+    .input-group{
+      margin-bottom:20px;
+    }
+
+    .input-group label{
+      display:block;
+      margin-bottom:8px;
+      font-weight:bold;
+    }
+
+    .input-group input{
+      width:100%;
+      padding:12px;
+      border:1px solid #ccc;
+      border-radius:8px;
+      font-size:16px;
+    }
+
+    .result{
+      margin-top:20px;
+      font-size:20px;
+      font-weight:bold;
+      color:green;
+    }
+
+    footer{
+      background:#111;
+      color:white;
+      text-align:center;
+      padding:20px;
+      margin-top:40px;
+    }
+
+  </style>
 </head>
-
 <body>
 
-<header>
-<h1>🩺 TriageAI</h1>
-<p>Sistema Inteligente</p>
-</header>
+  <header>
+    <h1>Jacinto Táxi</h1>
+    <p>Seu transporte rápido e seguro</p>
+  </header>
 
-<div class="container">
+  <section class="hero">
+    <h2>Peça seu Táxi Online</h2>
+    <button class="btn">Baixar Aplicativo</button>
+  </section>
 
-<!-- LOGIN -->
-<div class="card" id="inicio">
+  <div class="container">
 
-<h2>Login</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Motoristas Verificados</h3>
+        <p>Todos os motoristas passam por validação.</p>
+      </div>
 
-<input id="loginCpf" placeholder="CPF">
-<input type="password" id="loginSenha" placeholder="Senha">
+      <div class="card">
+        <h3>Corridas Rápidas</h3>
+        <p>Encontre um táxi em poucos minutos.</p>
+      </div>
 
-<button class="action" onclick="fazerLogin()">Entrar</button>
+      <div class="card">
+        <h3>Pagamento Fácil</h3>
+        <p>Pix, dinheiro e cartão.</p>
+      </div>
+    </div>
 
-<p id="loginMsg"></p>
+    <div class="ride-box">
+      <h2>Solicitar Corrida</h2>
 
-<hr>
+      <div class="input-group">
+        <label>Local de Partida</label>
+        <input type="text" id="origem" placeholder="Digite o endereço">
+      </div>
 
-<button class="action secondary" onclick="mostrar('cadastro')">
-Criar Conta
-</button>
+      <div class="input-group">
+        <label>Destino</label>
+        <input type="text" id="destino" placeholder="Digite o destino">
+      </div>
 
-</div>
+      <div class="input-group">
+        <label>Distância (KM)</label>
+        <input type="number" id="km" placeholder="Ex: 10">
+      </div>
 
-<!-- CADASTRO -->
-<div class="card hidden" id="cadastro">
+      <button class="btn" onclick="calcularCorrida()">
+        Calcular Valor
+      </button>
 
-<h2>Criar Conta</h2>
+      <div class="result" id="resultado"></div>
+    </div>
 
-<label>Nome</label>
-<input id="cadNome">
+  </div>
 
-<label>CPF</label>
-<input id="cadCpf">
+  <footer>
+    © 2026 Pirapora Táxi - Todos os direitos reservados
+  </footer>
 
-<label>Telefone</label>
-<input id="cadTel">
+  <script>
 
-<label>Idade</label>
-<input type="number" id="cadIdade">
+    function calcularCorrida(){
 
-<label>Senha</label>
-<input type="password" id="cadSenha">
+      let km = document.getElementById("km").value;
 
-<button class="action" onclick="cadastrarPaciente()">
-Criar Conta
-</button>
+      let tarifaBase = 8;
+      let valorKm = 3.5;
 
-<p id="cadMsg"></p>
+      let total = tarifaBase + (km * valorKm);
 
-<button class="action secondary" onclick="mostrar('inicio')">
-⬅ Voltar
-</button>
+      document.getElementById("resultado").innerHTML =
+        "Valor estimado da corrida: R$ " + total.toFixed(2);
 
-</div>
+    }
 
-<!-- SISTEMA -->
-<div class="card hidden" id="sistema">
-
-<h2>🩺 Triagem</h2>
-
-<input type="number" id="temperatura" placeholder="Temperatura">
-<input type="number" id="idadePaciente" placeholder="Idade">
-<input type="number" id="pressaoSis" placeholder="Pressão Sistólica">
-<input type="number" id="saturacao" placeholder="Saturação">
-<input type="number" id="batimentos" placeholder="Batimentos">
-
-<select id="dor">
-<option value="0">Sem dor</option>
-<option value="1">Leve</option>
-<option value="2">Moderada</option>
-<option value="3">Intensa</option>
-</select>
-
-<select id="faltaAr">
-<option>Não</option>
-<option>Sim</option>
-</select>
-
-<button class="action" onclick="avaliarTriagem()">
-Avaliar Triagem
-</button>
-
-<div id="resultadoTriagem"></div>
-
-<hr>
-
-<button class="action" onclick="gerarSenha()">
-Gerar Senha
-</button>
-
-<div id="senhaGerada"></div>
-
-<hr>
-
-<button class="action secondary" onclick="logout()">
-Sair
-</button>
-
-</div>
-
-</div>
-
-<script>
-
-let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-let fila = JSON.parse(localStorage.getItem("fila")) || [];
-let usuarioLogado = null;
-let ultimaClassificacao = "";
-
-function salvar(){
-localStorage.setItem("usuarios",JSON.stringify(usuarios));
-localStorage.setItem("fila",JSON.stringify(fila));
-}
-
-function mostrar(id){
-["inicio","cadastro","sistema"].forEach(e=>{
-document.getElementById(e).classList.add("hidden");
-});
-document.getElementById(id).classList.remove("hidden");
-}
-
-function cadastrarPaciente(){
-
-if(!cadNome.value || !cadCpf.value || !cadSenha.value){
-cadMsg.innerText="Preencha os campos obrigatórios.";
-cadMsg.style.color="red";
-return;
-}
-
-if(usuarios.find(u=>u.cpf===cadCpf.value)){
-cadMsg.innerText="CPF já cadastrado.";
-cadMsg.style.color="red";
-return;
-}
-
-usuarios.push({
-nome:cadNome.value,
-cpf:cadCpf.value,
-telefone:cadTel.value,
-idade:cadIdade.value,
-senha:cadSenha.value
-});
-
-salvar();
-
-cadMsg.innerText="Conta criada!";
-cadMsg.style.color="green";
-
-setTimeout(()=>mostrar("inicio"),1000);
-}
-
-function fazerLogin(){
-
-let user=usuarios.find(
-u=>u.cpf===loginCpf.value && u.senha===loginSenha.value
-);
-
-if(!user){
-loginMsg.innerText="CPF ou senha inválidos.";
-loginMsg.style.color="red";
-return;
-}
-
-usuarioLogado=user;
-
-mostrar("sistema");
-}
-
-function avaliarTriagem(){
-
-let pontos=0;
-
-if(temperatura.value>=38)pontos+=2;
-if(idadePaciente.value>=60)pontos+=2;
-if(pressaoSis.value>=160)pontos+=3;
-if(saturacao.value<=90)pontos+=4;
-if(batimentos.value>=120)pontos+=3;
-pontos+=parseInt(dor.value);
-if(faltaAr.value==="Sim")pontos+=4;
-
-if(pontos>=10)ultimaClassificacao="🔴 EMERGÊNCIA";
-else if(pontos>=7)ultimaClassificacao="🟠 URGENTE";
-else if(pontos>=4)ultimaClassificacao="🟡 ATENÇÃO";
-else ultimaClassificacao="🟢 BAIXO";
-
-resultadoTriagem.innerHTML=
-"<div class='triagem-box' style='background:#0d6efd'>"+
-ultimaClassificacao+
-"</div>";
-}
-
-function gerarSenha(){
-
-if(!usuarioLogado){alert("Faça login.");return;}
-
-if(!ultimaClassificacao){alert("Faça triagem.");return;}
-
-let numero="S"+(fila.length+1);
-
-fila.push({
-senha:numero,
-paciente:usuarioLogado.nome,
-prioridade:ultimaClassificacao
-});
-
-salvar();
-
-senhaGerada.innerHTML=
-"<h2>"+numero+"</h2>";
-}
-
-function logout(){
-location.reload();
-}
-
-</script>
+  </script>
 
 </body>
 </html>
