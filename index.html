@@ -1,477 +1,338 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
 <meta charset="UTF-8">
-<title>Viscontrol - Sistema</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TriageAI</title>
 
 <style>
-body{
+*{
 margin:0;
-font-family:'Segoe UI',sans-serif;
-background:#000;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#eef5ff;
+color:#333;
+}
+
+header{
+background:#0d6efd;
 color:white;
-}
-
-/* LOGIN */
-.login{
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
-
-.box{
-text-align:center;
-width:90%;
-max-width:400px;
-}
-
-.logo-login{
-width:220px;
-margin-bottom:20px;
-}
-
-/* INPUT */
-input, select{
-padding:12px;
-margin:10px 0;
-width:100%;
-border-radius:8px;
-border:none;
-}
-
-button{
-padding:12px;
-border:none;
-background:#2563eb;
-color:white;
-border-radius:8px;
-cursor:pointer;
-}
-
-.logout{background:red}
-
-/* APP */
-#app{
-display:none;
 padding:20px;
-min-height:100vh;
+text-align:center;
+box-shadow:0 2px 10px rgba(0,0,0,.2);
 }
 
 .container{
-max-width:1100px;
+max-width:1200px;
 margin:auto;
-}
-
-/* TOPO */
-.topo{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
-}
-
-/* CARDS */
-.barra{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-margin-bottom:20px;
+padding:20px;
 }
 
 .card{
-flex:1;
-background:#1e293b;
-padding:20px;
-border-radius:12px;
+background:white;
+padding:25px;
+border-radius:16px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+margin-bottom:20px;
+}
+
+.hidden{display:none;}
+
+label{
+display:block;
+margin-top:15px;
+font-weight:bold;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin-top:5px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+button.action{
+margin-top:20px;
+padding:12px;
+border:none;
+border-radius:8px;
+background:#0d6efd;
+color:white;
+font-weight:bold;
+cursor:pointer;
+width:100%;
+}
+
+button.secondary{
+background:#6c757d;
+}
+
+.triagem-box{
+padding:25px;
+border-radius:16px;
 text-align:center;
+font-size:22px;
+font-weight:bold;
+color:white;
+margin-top:20px;
 }
 
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:20px;
-margin-bottom:20px;
+.painel{
+background:#111;
+color:#00ff88;
+padding:30px;
+border-radius:16px;
+text-align:center;
+font-size:30px;
+font-weight:bold;
+margin-top:20px;
 }
 
-.section{
-background:#0f172a;
-padding:20px;
-border-radius:15px;
-margin-bottom:20px;
-}
-
-.section h3{
-margin-top:0;
-color:#60a5fa;
-}
-
-/* TABELA */
 table{
 width:100%;
 border-collapse:collapse;
+margin-top:20px;
+}
+
+th,td{
+border:1px solid #ccc;
+padding:10px;
+text-align:center;
 }
 
 th{
-background:#2563eb;
-padding:10px;
+background:#e9f1fb;
 }
-
-td{
-padding:10px;
-border-bottom:1px solid #333;
-}
-
-.ganho{color:#22c55e;}
-.gasto{color:#ef4444;}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div class="login" id="login">
-<div class="box">
-<img src="logo.png" class="logo-login">
-<h1>Viscontrol</h1>
-
-<input id="user" placeholder="Usuário">
-<input id="pass" type="password" placeholder="Senha">
-
-<button onclick="entrar()">Entrar</button>
-
-<p>
-<span onclick="abrirCadastro()" style="cursor:pointer;color:#60a5fa;">Criar conta</span>
-</p>
-</div>
-</div>
-
-<!-- CADASTRO -->
-<div class="login" id="cadastro" style="display:none;">
-<div class="box">
-<h2>Criar Conta</h2>
-
-<input id="novoUserCad" placeholder="Usuário">
-<input id="novaSenhaCad" type="password" placeholder="Senha">
-
-<button onclick="criarConta()">Cadastrar</button>
-
-<p onclick="voltarLogin()" style="cursor:pointer;">Voltar</p>
-</div>
-</div>
-
-<!-- APP -->
-<div id="app">
-
-<div class="topo">
-<h2>Controle Financeiro</h2>
-<div>
-<button onclick="abrirConfig()">Configurações</button>
-<button class="logout" onclick="sair()">Sair</button>
-</div>
-</div>
+<header>
+<h1>🩺 TriageAI</h1>
+<p>Sistema Inteligente</p>
+</header>
 
 <div class="container">
 
-<!-- RESUMO -->
-<div class="barra">
-<div class="card">💰 Ganhos: R$ <span id="ganhos">0</span></div>
-<div class="card">💸 Gastos: R$ <span id="gastos">0</span></div>
-<div class="card">📊 Lucro: R$ <span id="lucro">0</span></div>
+<!-- LOGIN -->
+<div class="card" id="inicio">
+
+<h2>Login</h2>
+
+<input id="loginCpf" placeholder="CPF">
+<input type="password" id="loginSenha" placeholder="Senha">
+
+<button class="action" onclick="fazerLogin()">Entrar</button>
+
+<p id="loginMsg"></p>
+
+<hr>
+
+<button class="action secondary" onclick="mostrar('cadastro')">
+Criar Conta
+</button>
+
 </div>
 
-<!-- LANÇAMENTO -->
-<div class="section">
-<h3>➕ Adicionar Lançamento</h3>
-<div class="barra">
-<input type="date" id="data">
-<input id="desc" placeholder="Descrição">
-<select id="tipo">
-<option value="ganho">Ganho</option>
-<option value="gasto">Gasto</option>
+<!-- CADASTRO -->
+<div class="card hidden" id="cadastro">
+
+<h2>Criar Conta</h2>
+
+<label>Nome</label>
+<input id="cadNome">
+
+<label>CPF</label>
+<input id="cadCpf">
+
+<label>Telefone</label>
+<input id="cadTel">
+
+<label>Idade</label>
+<input type="number" id="cadIdade">
+
+<label>Senha</label>
+<input type="password" id="cadSenha">
+
+<button class="action" onclick="cadastrarPaciente()">
+Criar Conta
+</button>
+
+<p id="cadMsg"></p>
+
+<button class="action secondary" onclick="mostrar('inicio')">
+⬅ Voltar
+</button>
+
+</div>
+
+<!-- SISTEMA -->
+<div class="card hidden" id="sistema">
+
+<h2>🩺 Triagem</h2>
+
+<input type="number" id="temperatura" placeholder="Temperatura">
+<input type="number" id="idadePaciente" placeholder="Idade">
+<input type="number" id="pressaoSis" placeholder="Pressão Sistólica">
+<input type="number" id="saturacao" placeholder="Saturação">
+<input type="number" id="batimentos" placeholder="Batimentos">
+
+<select id="dor">
+<option value="0">Sem dor</option>
+<option value="1">Leve</option>
+<option value="2">Moderada</option>
+<option value="3">Intensa</option>
 </select>
-<input id="cat" placeholder="Categoria">
-<input type="number" id="valor" placeholder="Valor">
-<button onclick="add()">Adicionar</button>
-<button onclick="limpar()">Limpar</button>
-</div>
-</div>
 
-<!-- GRÁFICOS -->
-<div class="grid">
-<div class="section">
-<h3>📊 Resumo</h3>
-<canvas id="grafico"></canvas>
-</div>
-
-<div class="section">
-<h3>📈 Evolução Mensal</h3>
-<canvas id="graficoMes"></canvas>
-</div>
-</div>
-
-<!-- RELATÓRIO -->
-<div class="section">
-<h3>🧾 Relatório</h3>
-
-<select id="tipoRelatorio">
-<option value="mes">Mês atual</option>
-<option value="ano">Ano</option>
-<option value="personalizado">Personalizado</option>
+<select id="faltaAr">
+<option>Não</option>
+<option>Sim</option>
 </select>
 
-<input type="date" id="inicioRelatorio">
-<input type="date" id="fimRelatorio">
+<button class="action" onclick="avaliarTriagem()">
+Avaliar Triagem
+</button>
 
-<button onclick="gerarRelatorio()">Gerar</button>
-<button onclick="exportarRelatorio()">Gerar PDF</button>
+<div id="resultadoTriagem"></div>
 
-<div id="resultadoRelatorio"></div>
-</div>
+<hr>
 
-<!-- TABELA -->
-<div class="section">
-<h3>📋 Lançamentos</h3>
+<button class="action" onclick="gerarSenha()">
+Gerar Senha
+</button>
 
-<table>
-<thead>
-<tr>
-<th>Data</th>
-<th>Descrição</th>
-<th>Tipo</th>
-<th>Categoria</th>
-<th>Valor</th>
-<th>Ação</th>
-</tr>
-</thead>
-<tbody id="tabela"></tbody>
-</table>
-</div>
+<div id="senhaGerada"></div>
+
+<hr>
+
+<button class="action secondary" onclick="logout()">
+Sair
+</button>
 
 </div>
-</div>
 
-<!-- CONFIG -->
-<div id="config" style="display:none; padding:20px;">
-<h2>⚙️ Configurações</h2>
-
-<div style="max-width:400px;margin:auto;">
-<input id="novoUser" placeholder="Novo usuário">
-<input id="novaSenha" type="password" placeholder="Nova senha">
-
-<button onclick="salvarConfig()">Salvar</button>
-<button onclick="voltar()">Voltar</button>
-</div>
 </div>
 
 <script>
-const { jsPDF } = window.jspdf;
 
-/* USUÁRIOS */
 let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-
-if(usuarios.length===0){
-usuarios.push({user:"admin",senha:"123"});
-localStorage.setItem("usuarios",JSON.stringify(usuarios));
-}
-
-/* LOGIN */
-function entrar(){
-let u=user.value;
-let s=pass.value;
-
-let ok=usuarios.find(x=>x.user===u && x.senha===s);
-
-if(ok){
-login.style.display="none";
-app.style.display="block";
-render();
-}else alert("Login inválido");
-}
-
-function sair(){location.reload();}
-
-/* CONFIG */
-function abrirConfig(){
-app.style.display="none";
-config.style.display="block";
-}
-
-function voltar(){
-config.style.display="none";
-app.style.display="block";
-}
-
-function salvarConfig(){
-if(novoUser.value) localStorage.setItem("user",novoUser.value);
-if(novaSenha.value) localStorage.setItem("senha",novaSenha.value);
-alert("Atualizado!");
-}
-
-/* CADASTRO */
-function abrirCadastro(){
-login.style.display="none";
-cadastro.style.display="flex";
-}
-
-function voltarLogin(){
-cadastro.style.display="none";
-login.style.display="flex";
-}
-
-function criarConta(){
-let u=novoUserCad.value;
-let s=novaSenhaCad.value;
-
-if(!u||!s){alert("Preencha tudo");return;}
-
-if(usuarios.find(x=>x.user===u)){
-alert("Já existe");return;
-}
-
-usuarios.push({user:u,senha:s});
-localStorage.setItem("usuarios",JSON.stringify(usuarios));
-
-alert("Conta criada!");
-voltarLogin();
-}
-
-/* DADOS */
-let dados = JSON.parse(localStorage.getItem("dados")) || [];
+let fila = JSON.parse(localStorage.getItem("fila")) || [];
+let usuarioLogado = null;
+let ultimaClassificacao = "";
 
 function salvar(){
-localStorage.setItem("dados",JSON.stringify(dados));
+localStorage.setItem("usuarios",JSON.stringify(usuarios));
+localStorage.setItem("fila",JSON.stringify(fila));
 }
 
-function add(){
-let item={
-data:data.value,
-desc:desc.value,
-tipo:tipo.value,
-cat:cat.value,
-valor:Number(valor.value)
-};
-
-if(item.data && item.desc && item.valor){
-dados.push(item);
-salvar();
-render();
-}
-}
-
-function del(i){
-dados.splice(i,1);
-salvar();
-render();
-}
-
-function limpar(){
-if(confirm("Apagar tudo?")){
-dados=[];
-salvar();
-render();
-}
-}
-
-/* RELATÓRIO + PDF */
-let relatorioAtual=[];
-
-function gerarRelatorio(){
-let tipo=tipoRelatorio.value;
-let hoje=new Date();
-
-if(tipo==="mes"){
-let m=hoje.toISOString().slice(0,7);
-relatorioAtual=dados.filter(d=>d.data.startsWith(m));
-}
-else if(tipo==="ano"){
-let a=hoje.getFullYear();
-relatorioAtual=dados.filter(d=>d.data.startsWith(a));
-}
-else{
-relatorioAtual=dados.filter(d=>d.data>=inicioRelatorio.value && d.data<=fimRelatorio.value);
-}
-
-let g=0,s=0;
-
-relatorioAtual.forEach(d=>{
-if(d.tipo==="ganho") g+=d.valor;
-else s+=d.valor;
+function mostrar(id){
+["inicio","cadastro","sistema"].forEach(e=>{
+document.getElementById(e).classList.add("hidden");
 });
-
-resultadoRelatorio.innerHTML=`Ganhos: ${g} | Gastos: ${s} | Lucro: ${g-s}`;
+document.getElementById(id).classList.remove("hidden");
 }
 
-function exportarRelatorio(){
-if(relatorioAtual.length===0){
-alert("Gere primeiro!");
+function cadastrarPaciente(){
+
+if(!cadNome.value || !cadCpf.value || !cadSenha.value){
+cadMsg.innerText="Preencha os campos obrigatórios.";
+cadMsg.style.color="red";
 return;
 }
 
-let doc=new jsPDF();
-doc.text("Relatório Financeiro",20,20);
-
-let y=40;
-
-relatorioAtual.forEach(d=>{
-doc.text(`${d.data} ${d.desc} ${d.tipo} R$${d.valor}`,20,y);
-y+=10;
-});
-
-doc.save("relatorio.pdf");
+if(usuarios.find(u=>u.cpf===cadCpf.value)){
+cadMsg.innerText="CPF já cadastrado.";
+cadMsg.style.color="red";
+return;
 }
 
-/* GRÁFICOS */
-let chart,chartMes;
-
-function render(){
-
-tabela.innerHTML="";
-let g=0,s=0;
-
-dados.forEach((d,i)=>{
-if(d.tipo==="ganho") g+=d.valor;
-else s+=d.valor;
-
-tabela.innerHTML+=`
-<tr>
-<td>${d.data}</td>
-<td>${d.desc}</td>
-<td class="${d.tipo}">${d.tipo}</td>
-<td>${d.cat}</td>
-<td>${d.valor}</td>
-<td><button onclick="del(${i})">X</button></td>
-</tr>`;
+usuarios.push({
+nome:cadNome.value,
+cpf:cadCpf.value,
+telefone:cadTel.value,
+idade:cadIdade.value,
+senha:cadSenha.value
 });
 
-ganhos.innerText=g;
-gastos.innerText=s;
-lucro.innerText=g-s;
+salvar();
 
-if(chart) chart.destroy();
-chart=new Chart(grafico,{
-type:'bar',
-data:{labels:['Ganhos','Gastos'],datasets:[{data:[g,s]}]}
-});
+cadMsg.innerText="Conta criada!";
+cadMsg.style.color="green";
 
-let meses={};
-
-dados.forEach(d=>{
-let m=d.data.substring(0,7);
-if(!meses[m]) meses[m]=0;
-meses[m]+= d.tipo==="ganho"?d.valor:-d.valor;
-});
-
-if(chartMes) chartMes.destroy();
-chartMes=new Chart(graficoMes,{
-type:'line',
-data:{labels:Object.keys(meses),datasets:[{data:Object.values(meses)}]}
-});
+setTimeout(()=>mostrar("inicio"),1000);
 }
+
+function fazerLogin(){
+
+let user=usuarios.find(
+u=>u.cpf===loginCpf.value && u.senha===loginSenha.value
+);
+
+if(!user){
+loginMsg.innerText="CPF ou senha inválidos.";
+loginMsg.style.color="red";
+return;
+}
+
+usuarioLogado=user;
+
+mostrar("sistema");
+}
+
+function avaliarTriagem(){
+
+let pontos=0;
+
+if(temperatura.value>=38)pontos+=2;
+if(idadePaciente.value>=60)pontos+=2;
+if(pressaoSis.value>=160)pontos+=3;
+if(saturacao.value<=90)pontos+=4;
+if(batimentos.value>=120)pontos+=3;
+pontos+=parseInt(dor.value);
+if(faltaAr.value==="Sim")pontos+=4;
+
+if(pontos>=10)ultimaClassificacao="🔴 EMERGÊNCIA";
+else if(pontos>=7)ultimaClassificacao="🟠 URGENTE";
+else if(pontos>=4)ultimaClassificacao="🟡 ATENÇÃO";
+else ultimaClassificacao="🟢 BAIXO";
+
+resultadoTriagem.innerHTML=
+"<div class='triagem-box' style='background:#0d6efd'>"+
+ultimaClassificacao+
+"</div>";
+}
+
+function gerarSenha(){
+
+if(!usuarioLogado){alert("Faça login.");return;}
+
+if(!ultimaClassificacao){alert("Faça triagem.");return;}
+
+let numero="S"+(fila.length+1);
+
+fila.push({
+senha:numero,
+paciente:usuarioLogado.nome,
+prioridade:ultimaClassificacao
+});
+
+salvar();
+
+senhaGerada.innerHTML=
+"<h2>"+numero+"</h2>";
+}
+
+function logout(){
+location.reload();
+}
+
 </script>
 
 </body>
