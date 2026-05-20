@@ -72,9 +72,17 @@ transform:scale(1.03);
 transition:0.2s;
 }
 
+.page{
+display:none;
+margin-top:30px;
+}
+
+.active{
+display:block;
+}
+
 .ride-box{
 background:white;
-margin-top:40px;
 padding:30px;
 border-radius:12px;
 box-shadow:0 4px 10px rgba(0,0,0,0.1);
@@ -115,13 +123,6 @@ border-radius:6px;
 cursor:pointer;
 }
 
-.result{
-margin-top:20px;
-font-size:20px;
-font-weight:bold;
-color:green;
-}
-
 footer{
 background:#111;
 color:white;
@@ -146,31 +147,93 @@ margin-top:40px;
 
 <div class="container">
 
+<!-- MENU -->
 <div class="cards">
 
-<div class="card" onclick="mostrarMotoristas()">
+<div class="card" onclick="abrirPagina('motoristas')">
 <h3>Motoristas Verificados</h3>
-<p>Clique para ver motoristas disponíveis.</p>
+<p>Click para ver o motorista disponível.</p>
 </div>
 
-<div class="card" onclick="alert('Corridas rápidas em desenvolvimento.')">
+<div class="card" onclick="abrirPagina('rotas')">
 <h3>Corridas Rápidas</h3>
-<p>Encontre um táxi em poucos minutos.</p>
+<p>Viaje de forma rápida</p>
 </div>
 
-<div class="card" onclick="alert('Aceitamos Pix, dinheiro e cartão.')">
-<h3>Pagamento Fácil</h3>
-<p>Pix, dinheiro e cartão.</p>
+<div class="card" onclick="abrirPagina('pagamentos')">
+<h3>Pagamentos</h3>
+<p>Realize o pagamento de forma segura</p>
+</div>
+
+<div class="card" onclick="abrirPagina('cadastro')">
+<h3>Cadastro Taxista</h3>
+<p>Deseja fazer parte da nossa equipe</p>
 </div>
 
 </div>
 
-<!-- LISTA DE MOTORISTAS -->
-<div class="ride-box">
+<!-- MOTORISTAS -->
+<div id="motoristas" class="page">
 <h2>Motoristas Disponíveis</h2>
+<div id="listaMotoristas" class="driver-list ride-box"></div>
+</div>
 
-<div id="listaMotoristas" class="driver-list"></div>
+<!-- ROTAS -->
+<div id="rotas" class="page">
+<div class="ride-box">
 
+<h2>Corridas Rápidas</h2>
+
+<select id="cidade" style="width:100%;padding:14px;margin-top:15px;">
+<option value="">Selecione a cidade</option>
+<option>Jacinto</option>
+<option>Joaíma</option>
+<option>Almenara</option>
+<option>Santa Helena</option>
+</select>
+
+<button class="btn" style="width:100%;margin-top:15px;" onclick="buscar()">
+Buscar Táxis
+</button>
+
+<div id="resultado" style="margin-top:20px;"></div>
+
+</div>
+</div>
+
+<!-- PAGAMENTOS -->
+<div id="pagamentos" class="page">
+<div class="ride-box">
+<h2>Pagamentos</h2>
+<p>✔ Pix<br>✔ Cartão<br>✔ Dinheiro</p>
+</div>
+</div>
+
+<!-- CADASTRO -->
+<div id="cadastro" class="page">
+<div class="ride-box">
+
+<h2>Cadastro de Taxista</h2>
+
+<input style="width:100%;padding:14px;margin-top:10px;" placeholder="Nome">
+
+<input style="width:100%;padding:14px;margin-top:10px;" placeholder="Telefone">
+
+<input style="width:100%;padding:14px;margin-top:10px;" placeholder="Placa">
+
+<select style="width:100%;padding:14px;margin-top:10px;">
+<option>Urbano</option>
+<option>Intermunicipal</option>
+
+<input style="width:100%;padding:14px;margin-top:10px;" type="file">
+
+</select>
+
+<button class="btn" style="width:100%;margin-top:15px;">
+Enviar Cadastro
+</button>
+
+</div>
 </div>
 
 </div>
@@ -181,7 +244,6 @@ margin-top:40px;
 
 <script>
 
-/* DADOS DOS MOTORISTAS */
 const motoristas = [
 {
 nome:"Carlos Silva",
@@ -199,14 +261,23 @@ foto:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiOCk1npOFheOChOocbe
 }
 ];
 
+function abrirPagina(id){
+
+document.querySelectorAll('.page').forEach(p=>{
+p.classList.remove('active');
+});
+
+document.getElementById(id).classList.add('active');
+
+if(id === "motoristas"){
+mostrarMotoristas();
+}
+
+}
+
 function mostrarMotoristas(){
 
 let lista = document.getElementById("listaMotoristas");
-
-if(lista.style.display === "block"){
-lista.style.display = "none";
-return;
-}
 
 lista.style.display = "block";
 lista.innerHTML = "";
@@ -227,6 +298,41 @@ WhatsApp
 </button>
 </div>
 `;
+
+});
+
+}
+
+function buscar(){
+
+let cidade = document.getElementById("cidade").value;
+let resultado = document.getElementById("resultado");
+
+if(!cidade){
+resultado.innerHTML = "<p style='color:red;'>Selecione uma cidade</p>";
+return;
+}
+
+resultado.innerHTML = "";
+
+motoristas.forEach(m => {
+
+if(m.frete === "Intermunicipal"){
+
+resultado.innerHTML += `
+<div style="background:#f8f8f8;padding:15px;margin-top:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
+<div>
+<strong>${m.nome}</strong><br>
+<small>${cidade}</small>
+</div>
+<button style="background:green;color:white;border:none;padding:10px;border-radius:6px;"
+onclick="window.open('https://wa.me/${m.telefone}','_blank')">
+Chamar
+</button>
+</div>
+`;
+
+}
 
 });
 
