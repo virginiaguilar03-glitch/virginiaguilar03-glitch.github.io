@@ -1,242 +1,621 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>VaidBoa</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
+
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family: Arial, sans-serif;
+font-family:'Poppins',sans-serif;
 }
 
 body{
-background:#f4f4f4;
-color:#333;
+background:#0f0f0f;
+color:white;
+overflow-x:hidden;
 }
+
+/* HEADER */
 
 header{
-background:#111;
-color:white;
-padding:20px;
-text-align:center;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 8%;
+background:#121212;
+position:sticky;
+top:0;
+z-index:1000;
+border-bottom:1px solid #222;
 }
 
-.hero{
-background:linear-gradient(to right,#111,#444);
-color:white;
-padding:60px 20px;
-text-align:center;
+.logo{
+display:flex;
+align-items:center;
+gap:12px;
 }
+
+.logo-icon{
+width:45px;
+height:45px;
+background:#ffd000;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+font-weight:bold;
+color:#111;
+}
+
+.logo h1{
+font-size:28px;
+font-weight:700;
+}
+
+nav{
+display:flex;
+gap:25px;
+}
+
+nav a{
+text-decoration:none;
+color:white;
+font-weight:500;
+transition:0.3s;
+}
+
+nav a:hover{
+color:#ffd000;
+}
+
+/* HERO */
+
+.hero{
+min-height:90vh;
+display:flex;
+align-items:center;
+padding:0 8%;
+background:
+linear-gradient(to right,rgba(0,0,0,.85),rgba(0,0,0,.4)),
+url('https://images.unsplash.com/photo-1519003722824-194d4455a60c?q=80&w=2070&auto=format&fit=crop');
+
+background-size:cover;
+background-position:center;
+}
+
+.hero-text{
+max-width:600px;
+}
+
+.hero-text h2{
+font-size:60px;
+line-height:1.1;
+margin-bottom:20px;
+}
+
+.hero-text span{
+color:#ffd000;
+}
+
+.hero-text p{
+font-size:18px;
+color:#ccc;
+margin-bottom:30px;
+line-height:1.7;
+}
+
+/* BOTÃO */
 
 .btn{
 background:#ffd000;
 color:#111;
-padding:15px 30px;
+padding:16px 28px;
 border:none;
-border-radius:8px;
-font-size:18px;
+border-radius:14px;
+font-size:16px;
+font-weight:600;
 cursor:pointer;
+transition:0.3s;
 }
 
 .btn:hover{
-background:#ffb300;
+transform:translateY(-3px);
+background:#ffbb00;
 }
+
+/* CONTAINER */
 
 .container{
-max-width:1200px;
-margin:auto;
-padding:40px 20px;
+padding:80px 8%;
 }
 
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
+/* TÍTULOS */
+
+.section-title{
+font-size:42px;
+margin-bottom:40px;
 }
 
-.card{
-background:white;
-padding:25px;
-border-radius:12px;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
-text-align:center;
-cursor:pointer;
-}
-
-.card:hover{
-transform:scale(1.03);
-transition:0.2s;
-}
+/* PÁGINAS */
 
 .page{
 display:none;
-margin-top:30px;
+animation:fade 0.4s ease;
 }
 
-.active{
+.page.active{
 display:block;
 }
 
-.ride-box{
-background:white;
-padding:30px;
-border-radius:12px;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
+@keyframes fade{
+
+from{
+opacity:0;
+transform:translateY(20px);
 }
 
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+/* CARDS */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:25px;
+margin-top:50px;
+}
+
+.card{
+background:#1a1a1a;
+padding:30px;
+border-radius:24px;
+transition:0.3s;
+border:1px solid #222;
+}
+
+.card:hover{
+transform:translateY(-8px);
+border-color:#ffd000;
+}
+
+.card-icon{
+font-size:42px;
+margin-bottom:20px;
+}
+
+.card h3{
+font-size:24px;
+margin-bottom:10px;
+}
+
+.card p{
+color:#aaa;
+line-height:1.6;
+}
+
+/* MOTORISTAS */
+
 .driver-list{
-margin-top:20px;
-display:none;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:25px;
 }
 
 .driver{
-background:#f8f8f8;
-padding:20px;
-border-radius:10px;
-margin-bottom:15px;
-display:flex;
-align-items:center;
-gap:15px;
+background:#1a1a1a;
+border-radius:24px;
+overflow:hidden;
+border:1px solid #222;
+transition:0.3s;
+}
+
+.driver:hover{
+transform:translateY(-5px);
 }
 
 .driver img{
-width:100px;
-height:70px;
+width:100%;
+height:220px;
 object-fit:cover;
-border-radius:8px;
 }
 
-.driver-info{
-flex:1;
+.driver-content{
+padding:25px;
 }
 
-.driver button{
-background:green;
+.driver-content h3{
+font-size:24px;
+margin-bottom:10px;
+}
+
+.info{
+margin-bottom:8px;
+color:#bbb;
+}
+
+.status{
+display:inline-block;
+padding:8px 14px;
+background:rgba(0,255,0,.15);
+color:#00ff88;
+border-radius:999px;
+font-size:14px;
+margin-top:10px;
+}
+
+/* FORMULÁRIO */
+
+.form-box{
+background:#1a1a1a;
+padding:40px;
+border-radius:24px;
+border:1px solid #222;
+max-width:700px;
+margin:auto;
+}
+
+.form-box h2{
+margin-bottom:25px;
+font-size:32px;
+}
+
+.input{
+width:100%;
+padding:16px;
+margin-bottom:18px;
+background:#111;
+border:1px solid #333;
+border-radius:14px;
 color:white;
-padding:10px 15px;
-border:none;
-border-radius:6px;
-cursor:pointer;
+font-size:15px;
 }
+
+.input:focus{
+outline:none;
+border-color:#ffd000;
+}
+
+/* FOOTER */
 
 footer{
-background:#111;
-color:white;
+margin-top:100px;
+padding:40px;
 text-align:center;
-padding:20px;
-margin-top:40px;
+background:#111;
+border-top:1px solid #222;
+color:#888;
 }
+
+/* RESPONSIVO */
+
+@media(max-width:900px){
+
+.hero{
+text-align:center;
+justify-content:center;
+}
+
+.hero-text h2{
+font-size:42px;
+}
+
+nav{
+display:none;
+}
+
+}
+
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
+
 <header>
+
+<div class="logo">
+
+<div class="logo-icon">
+🚕
+</div>
+
 <h1>VaidBoa</h1>
-<p>Seu transporte rápido e seguro</p>
+
+</div>
+
+<nav>
+
+<a href="#" onclick="abrirPagina('inicio')">
+Início
+</a>
+
+<a href="#" onclick="abrirPagina('motoristasPage')">
+Motoristas
+</a>
+
+<a href="#" onclick="abrirPagina('corridaPage')">
+Corridas
+</a>
+
+<a href="#" onclick="abrirPagina('pagamentoPage')">
+Pagamentos
+</a>
+
+<a href="#" onclick="abrirPagina('cadastroPage')">
+Cadastro
+</a>
+
+</nav>
+
 </header>
 
+<!-- INÍCIO -->
+
+<div id="inicio" class="page active">
+
 <section class="hero">
-<h2>Peça seu Táxi Online</h2>
-<button class="btn">Baixar Aplicativo</button>
+
+<div class="hero-text">
+
+<h2>
+Seu Táxi <span>rápido</span><br>
+seguro e moderno
+</h2>
+
+<p>
+Peça corridas online com motoristas verificados da sua região.
+Viagens urbanas e intermunicipais com segurança.
+</p>
+
+<button class="btn" onclick="abrirPagina('corridaPage')">
+Solicitar Corrida
+</button>
+
+</div>
+
 </section>
 
-<div class="container">
+<section class="container">
 
-<!-- MENU -->
+<h2 class="section-title">
+Nossos Serviços
+</h2>
+
 <div class="cards">
 
-<div class="card" onclick="abrirPagina('motoristas')">
-<h3>Motoristas Verificados</h3>
-<p>Click para ver o motorista disponível.</p>
+<div class="card">
+
+<div class="card-icon">
+🚖
 </div>
 
-<div class="card" onclick="abrirPagina('rotas')">
-<h3>Corridas Rápidas</h3>
-<p>Viaje de forma rápida</p>
+<h3>
+Corridas Urbanas
+</h3>
+
+<p>
+Transporte rápido dentro da cidade.
+</p>
+
 </div>
 
-<div class="card" onclick="abrirPagina('pagamentos')">
-<h3>Pagamentos</h3>
-<p>Realize o pagamento de forma segura</p>
+<div class="card">
+
+<div class="card-icon">
+🛣️
 </div>
 
-<div class="card" onclick="abrirPagina('cadastro')">
-<h3>Cadastro Taxista</h3>
-<p>Deseja fazer parte da nossa equipe</p>
+<h3>
+Viagens
+</h3>
+
+<p>
+Viagens intermunicipais seguras.
+</p>
+
 </div>
+
+<div class="card">
+
+<div class="card-icon">
+💳
+</div>
+
+<h3>
+Pagamento Fácil
+</h3>
+
+<p>
+Pix, cartão e dinheiro.
+</p>
+
+</div>
+
+<div class="card">
+
+<div class="card-icon">
+⭐
+</div>
+
+<h3>
+Motoristas Verificados
+</h3>
+
+<p>
+Todos passam por análise.
+</p>
+
+</div>
+
+</div>
+
+</section>
 
 </div>
 
 <!-- MOTORISTAS -->
-<div id="motoristas" class="page">
-<h2>Motoristas Disponíveis</h2>
-<div id="listaMotoristas" class="driver-list ride-box"></div>
+
+<div id="motoristasPage" class="page">
+
+<section class="container">
+
+<h2 class="section-title">
+Motoristas Disponíveis
+</h2>
+
+<div class="driver-list" id="motoristas">
+
 </div>
 
-<!-- ROTAS -->
-<div id="rotas" class="page">
-<div class="ride-box">
+</section>
 
-<h2>Corridas Rápidas</h2>
+</div>
 
-<select id="cidade" style="width:100%;padding:14px;margin-top:15px;">
-<option value="">Selecione a cidade</option>
-<option>Jacinto</option>
-<option>Joaíma</option>
-<option>Almenara</option>
-<option>Santa Helena</option>
+<!-- CORRIDAS -->
+
+<div id="corridaPage" class="page">
+
+<section class="container">
+
+<div class="form-box">
+
+<h2>
+Solicitar Corrida
+</h2>
+
+<input class="input" placeholder="Seu nome">
+
+<input class="input" placeholder="Local de saída">
+
+<input class="input" placeholder="Destino">
+
+<select class="input">
+
+<option>
+Forma de pagamento
+</option>
+
+<option>
+Pix
+</option>
+
+<option>
+Cartão
+</option>
+
+<option>
+Dinheiro
+</option>
+
 </select>
 
-<button class="btn" style="width:100%;margin-top:15px;" onclick="buscar()">
-Buscar Táxis
+<button class="btn" style="width:100%;">
+Chamar Táxi
 </button>
 
-<div id="resultado" style="margin-top:20px;"></div>
-
 </div>
+
+</section>
+
 </div>
 
 <!-- PAGAMENTOS -->
-<div id="pagamentos" class="page">
-<div class="ride-box">
-<h2>Pagamentos</h2>
-<p>✔ Pix<br>✔ Cartão<br>✔ Dinheiro</p>
+
+<div id="pagamentoPage" class="page">
+
+<section class="container">
+
+<div class="form-box">
+
+<h2>
+Pagamentos
+</h2>
+
+<p style="line-height:2;color:#ccc;">
+
+✔ Pix<br>
+✔ Cartão de Crédito<br>
+✔ Dinheiro
+
+</p>
+
 </div>
+
+</section>
+
 </div>
 
 <!-- CADASTRO -->
-<div id="cadastro" class="page">
-<div class="ride-box">
 
-<h2>Cadastro de Taxista</h2>
+<div id="cadastroPage" class="page">
 
-<input style="width:100%;padding:14px;margin-top:10px;" placeholder="Nome">
+<section class="container">
 
-<input style="width:100%;padding:14px;margin-top:10px;" placeholder="Telefone">
+<div class="form-box">
 
-<input style="width:100%;padding:14px;margin-top:10px;" placeholder="Placa">
+<h2>
+Cadastro de Taxista
+</h2>
 
-<select style="width:100%;padding:14px;margin-top:10px;">
-<option>Urbano</option>
-<option>Intermunicipal</option>
+<form id="cadastroForm">
 
-<input style="width:100%;padding:14px;margin-top:10px;" type="file">
+<input class="input"
+id="nome"
+placeholder="Nome completo">
+
+<input class="input"
+id="telefone"
+placeholder="Telefone">
+
+<input class="input"
+id="placa"
+placeholder="Placa do veículo">
+
+<select class="input" id="tipo">
+
+<option>
+Urbano
+</option>
+
+<option>
+Intermunicipal
+</option>
 
 </select>
 
-<button class="btn" style="width:100%;margin-top:15px;">
+<input class="input" type="file">
+
+<button class="btn" style="width:100%;">
 Enviar Cadastro
 </button>
 
-</div>
-</div>
+</form>
 
 </div>
+
+</section>
+
+</div>
+
+<!-- FOOTER -->
 
 <footer>
 © 2026 VaidBoa - Todos os direitos reservados
@@ -244,7 +623,10 @@ Enviar Cadastro
 
 <script>
 
+/* MOTORISTAS */
+
 const motoristas = [
+
 {
 nome:"Carlos Silva",
 placa:"ABC-1234",
@@ -252,6 +634,7 @@ telefone:"553899999999",
 frete:"Urbano",
 foto:"https://cotac.com.br/wp-content/uploads/2024/07/onix-plus-taxi.webp"
 },
+
 {
 nome:"João Souza",
 placa:"XYZ-5678",
@@ -259,84 +642,117 @@ telefone:"553887777777",
 frete:"Intermunicipal",
 foto:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiOCk1npOFheOChOocbeA5kjWbXnMHiM2YZw&s"
 }
+
 ];
 
-function abrirPagina(id){
+const lista = document.getElementById("motoristas");
 
-document.querySelectorAll('.page').forEach(p=>{
-p.classList.remove('active');
-});
+/* MOSTRAR MOTORISTAS */
 
-document.getElementById(id).classList.add('active');
+function renderizarMotoristas(){
 
-if(id === "motoristas"){
-mostrarMotoristas();
-}
-
-}
-
-function mostrarMotoristas(){
-
-let lista = document.getElementById("listaMotoristas");
-
-lista.style.display = "block";
 lista.innerHTML = "";
 
 motoristas.forEach(m => {
 
 lista.innerHTML += `
+
 <div class="driver">
+
 <img src="${m.foto}">
-<div class="driver-info">
-<strong>${m.nome}</strong><br>
-Placa: ${m.placa}<br>
-Telefone: ${m.telefone}<br>
-Frete: ${m.frete}
+
+<div class="driver-content">
+
+<h3>${m.nome}</h3>
+
+<div class="info">
+🚘 ${m.placa}
 </div>
-<button onclick="window.open('https://wa.me/${m.telefone}','_blank')">
-WhatsApp
-</button>
+
+<div class="info">
+📞 ${m.telefone}
 </div>
-`;
 
-});
-
-}
-
-function buscar(){
-
-let cidade = document.getElementById("cidade").value;
-let resultado = document.getElementById("resultado");
-
-if(!cidade){
-resultado.innerHTML = "<p style='color:red;'>Selecione uma cidade</p>";
-return;
-}
-
-resultado.innerHTML = "";
-
-motoristas.forEach(m => {
-
-if(m.frete === "Intermunicipal"){
-
-resultado.innerHTML += `
-<div style="background:#f8f8f8;padding:15px;margin-top:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
-<div>
-<strong>${m.nome}</strong><br>
-<small>${cidade}</small>
+<div class="info">
+🛣️ ${m.frete}
 </div>
-<button style="background:green;color:white;border:none;padding:10px;border-radius:6px;"
+
+<div class="status">
+Disponível Agora
+</div>
+
+<br><br>
+
+<button class="btn"
 onclick="window.open('https://wa.me/${m.telefone}','_blank')">
-Chamar
-</button>
-</div>
-`;
 
-}
+Chamar no WhatsApp
+
+</button>
+
+</div>
+
+</div>
+
+`;
 
 });
 
 }
+
+renderizarMotoristas();
+
+/* TROCAR PÁGINAS */
+
+function abrirPagina(id){
+
+document.querySelectorAll('.page')
+.forEach(page => {
+
+page.classList.remove('active');
+
+});
+
+document.getElementById(id)
+.classList.add('active');
+
+window.scrollTo({
+top:0,
+behavior:'smooth'
+});
+
+}
+
+/* CADASTRO */
+
+document.getElementById("cadastroForm")
+.addEventListener("submit",function(e){
+
+e.preventDefault();
+
+let novoMotorista = {
+
+nome:document.getElementById("nome").value,
+
+telefone:document.getElementById("telefone").value,
+
+placa:document.getElementById("placa").value,
+
+frete:document.getElementById("tipo").value,
+
+foto:"https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/ai-generated-man-driving-a-car-free-photo.jpg"
+
+};
+
+motoristas.push(novoMotorista);
+
+renderizarMotoristas();
+
+alert("Cadastro enviado com sucesso!");
+
+this.reset();
+
+});
 
 </script>
 
