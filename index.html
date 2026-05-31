@@ -11,10 +11,6 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <style>
 
 *{
@@ -344,18 +340,6 @@ padding:20px;
 border-radius:24px;
 border:1px solid #222;
 overflow:hidden;
-}
-#mapa{
-height:600px;
-width:100%;
-border-radius:20px;
-}
-
-.mapa-box{
-background:#1a1a1a;
-padding:20px;
-border-radius:24px;
-border:1px solid #222;
 }
 
 /* RESPONSIVO */
@@ -706,25 +690,6 @@ loading="lazy">
 </section>
 
 </div>
-<!-- MAPA -->
-
-<div id="mapaPage" class="page">
-
-<section class="container">
-
-<h2 class="section-title">
-Mapa dos Táxis
-</h2>
-
-<div class="mapa-box">
-
-<div id="mapa"></div>
-
-</div>
-
-</section>
-
-</div>
 
 <footer class="footer">
 
@@ -860,10 +825,6 @@ document.querySelectorAll('.page')
 
 page.classList.remove('active');
 
-if(id === "mapaPage"){
-setTimeout(criarMapa,100);
-}
-
 });
 
 document.getElementById(id)
@@ -900,32 +861,6 @@ foto:"https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/a
 motoristas.push(novoMotorista);
 
 renderizarMotoristas();
-let mapaCriado = false;
-
-function criarMapa(){
-
-if(mapaCriado) return;
-
-mapaCriado = true;
-
-const mapa = L.map('mapa').setView([-16.142, -40.295], 13);
-
-L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{
-attribution:'© OpenStreetMap'
-}
-).addTo(mapa);
-
-L.marker([-16.142, -40.295])
-.addTo(mapa)
-.bindPopup('🚕 Carlos Silva');
-
-L.marker([-16.150, -40.290])
-.addTo(mapa)
-.bindPopup('🚕 João Souza');
-
-}
 
 alert("Cadastro enviado com sucesso!");
 
