@@ -294,13 +294,37 @@ border-color:#ffd000;
 
 /* FOOTER */
 
+.footer{
+    margin-top:100px;
+    background:#000;
+    padding:70px 8%;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:50px;
+    border-top:1px solid #222;
+}
+
+.footer-col h3{
+    color:#fff;
+    margin-bottom:25px;
+    font-size:28px;
+}
+
+.footer-col a{
+    display:block;
+    color:#d1d1d1;
+    text-decoration:none;
+    margin-bottom:18px;
+    font-size:18px;
+    transition:.3s;
+}
+
+.footer-col a:hover{
+    color:#ffd000;
+}
+
 footer{
-margin-top:100px;
-padding:40px;
-text-align:center;
-background:#111;
-border-top:1px solid #222;
-color:#888;
+    margin-top:0;
 }
 
 /* RESPONSIVO */
@@ -615,10 +639,47 @@ Enviar Cadastro
 
 </div>
 
-<!-- FOOTER -->
+<footer class="footer">
 
-<footer>
+    <div class="footer-col">
+        <h3>Empresa</h3>
+
+        <a href="#">Quem somos</a>
+        <a href="#">O que oferecemos</a>
+        <a href="#">Contato</a>
+        <a href="#">Blog</a>
+        <a href="#">Carreiras</a>
+    </div>
+
+    <div class="footer-col">
+        <h3>Passageiros</h3>
+
+        <a href="#" onclick="abrirPagina('corridaPage')">Solicitar Corrida</a>
+        <a href="#" onclick="abrirPagina('pagamentoPage')">Pagamentos</a>
+        <a href="#">Segurança</a>
+        <a href="#">Ajuda</a>
+    </div>
+
+    <div class="footer-col">
+        <h3>Motoristas</h3>
+
+        <a href="#" onclick="abrirPagina('motoristasPage')">Motoristas</a>
+        <a href="#" onclick="abrirPagina('cadastroPage')">Seja Motorista</a>
+        <a href="#">Ganhos</a>
+        <a href="#">Suporte</a>
+    </div>
+
+    <div class="footer-col">
+        <h3>Legal</h3>
+
+        <a href="#">Termos de Uso</a>
+        <a href="#">Privacidade</a>
+        <a href="#">Cookies</a>
+    </div>
+
+<div class="copyright">
 © 2026 VaidBoa - Todos os direitos reservados
+</div>
 </footer>
 
 <script>
