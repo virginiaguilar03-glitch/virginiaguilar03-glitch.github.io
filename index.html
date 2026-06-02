@@ -361,10 +361,51 @@ justify-content:center;
 font-size:42px;
 }
 
-nav{
-display:none;
+header{
+flex-direction:column;
+gap:15px;
 }
 
+nav{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:15px;
+}
+@media(max-width:768px){
+
+.hero-text h2{
+font-size:32px;
+}
+
+.hero-text p{
+font-size:16px;
+}
+
+.logo{
+flex-direction:column;
+}
+
+.logo h1{
+font-size:24px;
+}
+
+.logo-icon{
+width:70px;
+height:70px;
+}
+
+.btn{
+width:100%;
+}
+
+.container{
+padding:50px 5%;
+}
+
+.driver img{
+height:180px;
+}
 }
 
 </style>
