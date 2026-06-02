@@ -399,6 +399,10 @@ Corridas
 Pagamentos
 </a>
 
+<a href="#" onclick="abrirPagina('historicoPage')">
+Histórico
+</a>
+
 <a href="#" onclick="abrirPagina('cadastroPage')">
 Cadastro
 </a>
@@ -525,6 +529,12 @@ Todos passam por análise.
 Motoristas Disponíveis
 </h2>
 
+<input
+class="input"
+id="pesquisaMotorista"
+placeholder="Pesquisar motorista..."
+onkeyup="filtrarMotoristas()">
+
 <div class="driver-list" id="motoristas">
 
 </div>
@@ -546,6 +556,10 @@ Solicitar Corrida
 </h2>
 
 <input class="input" placeholder="Seu nome">
+
+<select class="input" id="motoristaEscolhido">
+    <option>Escolha um motorista</option>
+</select>
 
 <input class="input" placeholder="Local de saída">
 
@@ -600,6 +614,34 @@ Pagamentos
 ✔ Dinheiro
 
 </p>
+
+</div>
+
+<div id="historicoPage" class="page">
+
+<section class="container">
+
+<h2 class="section-title">
+Histórico de Corridas
+</h2>
+
+<div class="card">
+
+<h3>
+05/06/2026
+</h3>
+
+<p>
+Jacinto → Almenara
+</p>
+
+<p>
+R$ 80,00
+</p>
+
+</div>
+
+</section>
 
 </div>
 
@@ -740,6 +782,8 @@ nome:"Brian O'Conner",
 placa:"ABC-1234",
 telefone:"553899999999",
 frete:"Urbano",
+status:"Disponível",
+avaliacao:"4.9",
 foto:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD12kfyQyuPs3MEDFi-Y5ThPtLk40vShOY7A&s"
 },
 
@@ -748,6 +792,8 @@ nome:"Dominic Toretto",
 placa:"XYZ-5678",
 telefone:"553887777777",
 frete:"Intermunicipal",
+status:"Disponível",
+avaliacao:"4.9",
 foto:"https://fotos.jornaldocarro.estadao.com.br/jornal-do-carro/imagens/noticia/charger-1970.JPG"
 }
 
@@ -785,8 +831,12 @@ lista.innerHTML += `
 🛣️ ${m.frete}
 </div>
 
+<div class="info">
+⭐ ${m.avaliacao}
+</div>
+
 <div class="status">
-Disponível Agora
+${m.status}
 </div>
 
 <br><br>
@@ -797,6 +847,17 @@ onclick="window.open('https://wa.me/${m.telefone}','_blank')">
 Chamar no WhatsApp
 
 </button>
+
+<br><br>
+
+<a
+href="tel:${m.telefone}"
+class="btn"
+style="text-decoration:none;display:inline-block;">
+
+Ligar
+
+</a>
 
 </div>
 
@@ -809,6 +870,22 @@ Chamar no WhatsApp
 }
 
 renderizarMotoristas();
+
+function carregarMotoristasNoSelect(){
+
+let select =
+document.getElementById("motoristaEscolhido");
+
+motoristas.forEach(m => {
+
+select.innerHTML +=
+`<option>${m.nome}</option>`;
+
+});
+
+}
+
+carregarMotoristasNoSelect();
 
 /* TROCAR PÁGINAS */
 
@@ -861,6 +938,32 @@ alert("Cadastro enviado com sucesso!");
 this.reset();
 
 });
+
+function filtrarMotoristas(){
+
+let texto =
+document.getElementById("pesquisaMotorista")
+.value
+.toLowerCase();
+
+let cards =
+document.querySelectorAll(".driver");
+
+cards.forEach(card => {
+
+let nome =
+card.querySelector("h3")
+.innerText
+.toLowerCase();
+
+card.style.display =
+nome.includes(texto)
+? "block"
+: "none";
+
+});
+
+}
 
 </script>
 
