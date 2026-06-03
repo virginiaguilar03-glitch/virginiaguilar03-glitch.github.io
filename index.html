@@ -75,6 +75,13 @@ display:flex;
 gap:25px;
 }
 
+.menu-btn{
+display:none;
+font-size:32px;
+cursor:pointer;
+color:#ffd000;
+}
+
 nav a{
 text-decoration:none;
 color:white;
@@ -362,50 +369,26 @@ font-size:42px;
 }
 
 header{
-flex-direction:column;
-gap:15px;
+flex-wrap:wrap;
+}
+
+.menu-btn{
+display:block;
 }
 
 nav{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
+display:none;
+width:100%;
+flex-direction:column;
+align-items:center;
+padding-top:20px;
 gap:15px;
 }
-@media(max-width:768px){
 
-.hero-text h2{
-font-size:32px;
+nav.active{
+display:flex;
 }
 
-.hero-text p{
-font-size:16px;
-}
-
-.logo{
-flex-direction:column;
-}
-
-.logo h1{
-font-size:24px;
-}
-
-.logo-icon{
-width:70px;
-height:70px;
-}
-
-.btn{
-width:100%;
-}
-
-.container{
-padding:50px 5%;
-}
-
-.driver img{
-height:180px;
-}
 }
 
 </style>
@@ -426,6 +409,9 @@ height:180px;
 <span class="amarelo"><i>Vai</i></span><i>dboa</i>
 </h1>
 
+</div>
+<div class="menu-btn" onclick="toggleMenu()">
+☰
 </div>
 
 <nav>
@@ -1011,7 +997,14 @@ nome.includes(texto)
 });
 
 }
+function toggleMenu(){
 
+document
+.querySelector("nav")
+.classList
+.toggle("active");
+
+}
 </script>
 
 </body>
