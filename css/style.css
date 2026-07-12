@@ -420,3 +420,16 @@ footer p{
     background:#ffbf00;
 
 }
+/* ============================
+   HEADER AO ROLAR
+============================ */
+
+.header-scroll{
+
+    background:#111111;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
+
+    transition:.3s;
+
+}
