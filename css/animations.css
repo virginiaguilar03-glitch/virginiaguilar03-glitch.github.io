@@ -1,0 +1,281 @@
+/* ==========================================
+   ANIMATIONS.CSS
+   Vai dBoa Táxi
+========================================== */
+
+/* ===============================
+   ANIMAÇÃO FADE UP
+================================ */
+
+@keyframes fadeUp {
+
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+/* ===============================
+   FADE LEFT
+================================ */
+
+@keyframes fadeLeft{
+
+    from{
+        opacity:0;
+        transform:translateX(-50px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+
+}
+
+/* ===============================
+   FADE RIGHT
+================================ */
+
+@keyframes fadeRight{
+
+    from{
+        opacity:0;
+        transform:translateX(50px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+
+}
+
+/* ===============================
+   ZOOM
+================================ */
+
+@keyframes zoom{
+
+    from{
+        opacity:0;
+        transform:scale(.8);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+
+/* ===============================
+   FLUTUAR
+================================ */
+
+@keyframes floating{
+
+    0%{
+        transform:translateY(0px);
+    }
+
+    50%{
+        transform:translateY(-12px);
+    }
+
+    100%{
+        transform:translateY(0px);
+    }
+
+}
+
+/* ===============================
+   BRILHO
+================================ */
+
+@keyframes pulse{
+
+    0%{
+        box-shadow:0 0 0 rgba(255,208,0,0);
+    }
+
+    50%{
+        box-shadow:0 0 30px rgba(255,208,0,.45);
+    }
+
+    100%{
+        box-shadow:0 0 0 rgba(255,208,0,0);
+    }
+
+}
+
+/* ===============================
+   HERO
+================================ */
+
+.hero-text{
+
+    animation:fadeLeft .9s ease;
+
+}
+
+.hero-image{
+
+    animation:fadeRight 1s ease;
+
+}
+
+.hero-image img{
+
+    animation:floating 5s ease-in-out infinite;
+
+}
+
+/* ===============================
+   BOTÕES
+================================ */
+
+.btn,
+.btn-outline{
+
+    transition:.35s ease;
+
+}
+
+.btn:hover{
+
+    transform:translateY(-5px);
+
+    animation:pulse 1s;
+
+}
+
+.btn-outline:hover{
+
+    transform:translateY(-5px);
+
+}
+
+/* ===============================
+   LOGO
+================================ */
+
+.logo img{
+
+    transition:.4s;
+
+}
+
+.logo:hover img{
+
+    transform:rotate(-8deg) scale(1.08);
+
+}
+
+/* ===============================
+   MENU
+================================ */
+
+nav a{
+
+    position:relative;
+
+}
+
+nav a::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    bottom:-6px;
+
+    width:0;
+
+    height:2px;
+
+    background:#FFD000;
+
+    transition:.3s;
+
+}
+
+nav a:hover::after,
+nav a.active::after{
+
+    width:100%;
+
+}
+
+/* ===============================
+   CARDS
+================================ */
+
+.card{
+
+    animation:fadeUp .8s ease;
+
+}
+
+.card:hover{
+
+    transform:translateY(-10px);
+
+    box-shadow:0 18px 35px rgba(0,0,0,.45);
+
+}
+
+/* ===============================
+   IMAGENS
+================================ */
+
+img{
+
+    transition:.4s;
+
+}
+
+.card:hover img{
+
+    transform:scale(1.05);
+
+}
+
+/* ===============================
+   FOOTER
+================================ */
+
+footer{
+
+    animation:fadeUp 1s;
+
+}
+
+/* ===============================
+   CLASSE PARA JAVASCRIPT
+================================ */
+
+.hidden{
+
+    opacity:0;
+
+    transform:translateY(40px);
+
+}
+
+.show{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+    transition:.8s ease;
+
+}
