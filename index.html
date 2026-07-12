@@ -2,1017 +2,157 @@
 <html lang="pt-BR">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Vaidboa</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>Vai dBoa | Táxi</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Fonte -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-<style>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-body{
-background:#0f0f0f;
-color:white;
-overflow-x:hidden;
-}
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-/* HEADER */
+    <!-- CSS -->
 
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 8%;
-background:#121212;
-position:relative;
-top:0;
-z-index:1000;
-border-bottom:1px solid #222;
-}
+    <link rel="stylesheet" href="css/style.css">
 
-.logo{
-display:flex;
-align-items:center;
-gap:12px;
-}
+    <link rel="stylesheet" href="css/responsive.css">
 
-.logo-icon{
-width:60px;
-height:60px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:none;
-}
+    <link rel="stylesheet" href="css/animations.css">
 
-.logo-icon img{
-width:100%;
-height:100%;
-object-fit:contain;
-}
-
-.logo h1{
-font-size:28px;
-font-weight:700;
-font-style:italic;
-}
-    .amarelo{
-    color:#ffd000;
-}
-
-nav{
-display:flex;
-gap:25px;
-}
-
-.menu-btn{
-display:none;
-font-size:32px;
-cursor:pointer;
-color:#ffd000;
-}
-
-nav a{
-text-decoration:none;
-color:white;
-font-weight:500;
-transition:0.3s;
-}
-
-nav a:hover{
-color:#ffd000;
-}
-
-/* HERO */
-
-.hero{
-min-height:90vh;
-display:flex;
-align-items:center;
-padding:0 8%;
-background:
-linear-gradient(to right,rgba(0,0,0,.85),rgba(0,0,0,.4)),
-url('ChatGPT Image 29 de mai. de 2026, 14_25_42.png');
-
-background-size:cover;
-background-position:center;
-}
-
-.hero-text{
-max-width:600px;
-}
-
-.hero-text h2{
-font-size:60px;
-line-height:1.1;
-margin-bottom:20px;
-}
-
-.hero-text span{
-color:#ffd000;
-}
-
-.hero-text p{
-font-size:18px;
-color:#ccc;
-margin-bottom:30px;
-line-height:1.7;
-}
-
-/* BOTÃO */
-
-.btn{
-background:#ffd000;
-color:#111;
-padding:16px 28px;
-border:none;
-border-radius:14px;
-font-size:16px;
-font-weight:600;
-cursor:pointer;
-transition:0.3s;
-}
-
-.btn:hover{
-transform:translateY(-3px);
-background:#ffbb00;
-}
-
-/* CONTAINER */
-
-.container{
-padding:80px 8%;
-}
-
-/* TÍTULOS */
-
-.section-title{
-font-size:42px;
-margin-bottom:40px;
-}
-
-/* PÁGINAS */
-
-.page{
-display:none;
-animation:fade 0.4s ease;
-}
-
-.page.active{
-display:block;
-}
-
-@keyframes fade{
-
-from{
-opacity:0;
-transform:translateY(20px);
-}
-
-to{
-opacity:1;
-transform:translateY(0);
-}
-
-}
-
-/* CARDS */
-
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:25px;
-margin-top:50px;
-}
-
-.card{
-background:#1a1a1a;
-padding:30px;
-border-radius:24px;
-transition:0.3s;
-border:1px solid #222;
-}
-
-.card:hover{
-transform:translateY(-8px);
-border-color:#ffd000;
-}
-
-.card-icon{
-font-size:42px;
-margin-bottom:20px;
-}
-
-.card h3{
-font-size:24px;
-margin-bottom:10px;
-}
-
-.card p{
-color:#aaa;
-line-height:1.6;
-}
-
-/* MOTORISTAS */
-
-.driver-list{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:25px;
-}
-
-.driver{
-background:#1a1a1a;
-border-radius:24px;
-overflow:hidden;
-border:1px solid #222;
-transition:0.3s;
-}
-
-.driver:hover{
-transform:translateY(-5px);
-}
-
-.driver img{
-width:100%;
-height:220px;
-object-fit:cover;
-}
-
-.driver-content{
-padding:25px;
-}
-
-.driver-content h3{
-font-size:24px;
-margin-bottom:10px;
-}
-
-.info{
-margin-bottom:8px;
-color:#bbb;
-}
-
-.status{
-display:inline-block;
-padding:8px 14px;
-background:rgba(0,255,0,.15);
-color:#00ff88;
-border-radius:999px;
-font-size:14px;
-margin-top:10px;
-}
-
-/* FORMULÁRIO */
-
-.form-box{
-background:#1a1a1a;
-padding:40px;
-border-radius:24px;
-border:1px solid #222;
-max-width:700px;
-margin:auto;
-}
-
-.form-box h2{
-margin-bottom:25px;
-font-size:32px;
-}
-
-.input{
-width:100%;
-padding:16px;
-margin-bottom:18px;
-background:#111;
-border:1px solid #333;
-border-radius:14px;
-color:white;
-font-size:15px;
-}
-
-.input:focus{
-outline:none;
-border-color:#ffd000;
-}
-
-/* FOOTER */
-
-.footer{
-    margin-top:100px;
-    background:#000;
-    padding:70px 8%;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:50px;
-    border-top:1px solid #222;
-}
-
-.footer-col h3{
-    color:#fff;
-    margin-bottom:25px;
-    font-size:28px;
-}
-
-.footer-col a{
-    display:block;
-    color:#d1d1d1;
-    text-decoration:none;
-    margin-bottom:18px;
-    font-size:18px;
-    transition:.3s;
-}
-
-.footer-col a:hover{
-    color:#ffd000;
-}
-
-footer{
-    margin-top:0;
-}
-    .copyright{
-    background:#000;
-    border-top:1px solid #222;
-    text-align:center;
-    padding:25px;
-    color:#888;
-    width:100%;
-}
-.mapa-box{
-background:#1a1a1a;
-padding:20px;
-border-radius:24px;
-border:1px solid #222;
-overflow:hidden;
-}
-
-/* RESPONSIVO */
-
-@media(max-width:900px){
-
-.hero{
-text-align:center;
-justify-content:center;
-}
-
-.hero-text h2{
-font-size:42px;
-}
-
-header{
-flex-wrap:wrap;
-}
-
-.menu-btn{
-display:block;
-}
-
-nav{
-display:none;
-width:220px;
-flex-direction:column;
-align-items:flex-start;
-position:absolute;
-top:90px;
-right:20px;
-background:#1a1a1a;
-padding:20px;
-border-radius:15px;
-border:1px solid #333;
-box-shadow:0 5px 20px rgba(0,0,0,.4);
-gap:15px;
-}
-
-nav.active{
-display:flex;
-}
-
-}
-
-</style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-
 <header>
 
-<div class="logo">
+    <div class="container">
 
-<div class="logo-icon">
-<img src="logo-vdb.png" alt="VDB Logo">
-</div>
-<h1>
-<span class="amarelo"><i>Vai</i></span><i>dboa</i>
-</h1>
+        <a href="index.html" class="logo">
 
-</div>
-<div class="menu-btn" onclick="toggleMenu()">
-☰
-</div>
+            <img src="img/logo.png" alt="Vai dBoa">
 
-<nav>
+            <h1>Vai <span>dBoa</span></h1>
 
-<a href="#" onclick="abrirPagina('inicio')">
-Início
-</a>
+        </a>
 
-<a href="#" onclick="abrirPagina('motoristasPage')">
-Motoristas
-</a>
+        <nav>
 
-<a href="#" onclick="abrirPagina('corridaPage')">
-Corridas
-</a>
+            <a href="index.html" class="active">Início</a>
 
-<a href="#" onclick="abrirPagina('pagamentoPage')">
-Pagamentos
-</a>
+            <a href="motoristas.html">Motoristas</a>
 
-<a href="#" onclick="abrirPagina('historicoPage')">
-Histórico
-</a>
+            <a href="corrida.html">Corridas</a>
 
-<a href="#" onclick="abrirPagina('cadastroPage')">
-Cadastro
-</a>
+            <a href="pagamentos.html">Pagamentos</a>
 
-<a href="#" onclick="abrirPagina('mapaPage')">
-🗺️ Mapa
-</a>
+            <a href="contato.html">Contato</a>
 
-</nav>
+        </nav>
+
+        <div class="header-buttons">
+
+            <a href="login.html" class="btn-outline">
+
+                Entrar
+
+            </a>
+
+            <a href="cadastro.html" class="btn">
+
+                Cadastre-se
+
+            </a>
+
+        </div>
+
+        <div id="menu-mobile">
+
+            <i class="fa-solid fa-bars"></i>
+
+        </div>
+
+    </div>
 
 </header>
 
-<!-- INÍCIO -->
+<main>
 
-<div id="inicio" class="page active">
+    <!-- HERO -->
 
-<section class="hero">
+    <section class="hero">
 
-<div class="hero-text">
+        <div class="container hero-content">
 
-<h2>
-Seu Táxi <span>rápido</span><br>
-seguro e moderno
-</h2>
+            <div class="hero-text">
 
-<p>
-Peça corridas online com motoristas verificados da sua região.
-Viagens urbanas e intermunicipais com segurança.
-</p>
+                <h2>
 
-<button class="btn" onclick="abrirPagina('corridaPage')">
-Solicitar Corrida
-</button>
+                    O jeito mais fácil de pedir um táxi.
 
-</div>
+                </h2>
 
-</section>
+                <p>
 
-<section class="container">
+                    Solicite corridas com rapidez, segurança e motoristas verificados.
 
-<h2 class="section-title">
-Nossos Serviços
-</h2>
+                </p>
 
-<div class="cards">
+                <div class="hero-buttons">
 
-<div class="card">
+                    <a href="corrida.html" class="btn">
 
-<div class="card-icon">
-🚖
-</div>
+                        Solicitar Corrida
 
-<h3>
-Corridas Urbanas
-</h3>
+                    </a>
 
-<p>
-Transporte rápido dentro da cidade.
-</p>
+                    <a href="motoristas.html" class="btn-outline">
 
-</div>
+                        Conhecer Motoristas
 
-<div class="card">
+                    </a>
 
-<div class="card-icon">
-🛣️
-</div>
+                </div>
 
-<h3>
-Viagens
-</h3>
+            </div>
 
-<p>
-Viagens intermunicipais seguras.
-</p>
+            <div class="hero-image">
 
-</div>
+                <img src="img/hero.png" alt="Vai dBoa">
 
-<div class="card">
+            </div>
 
-<div class="card-icon">
-💳
-</div>
+        </div>
 
-<h3>
-Pagamento Fácil
-</h3>
+    </section>
 
-<p>
-Pix, cartão e dinheiro.
-</p>
+</main>
 
-</div>
+<footer>
 
-<div class="card">
+    <div class="container">
 
-<div class="card-icon">
-⭐
-</div>
+        <p>
 
-<h3>
-Motoristas Verificados
-</h3>
+            © 2026 Vai dBoa Táxi - Todos os direitos reservados.
 
-<p>
-Todos passam por análise.
-</p>
+        </p>
 
-</div>
-
-</div>
-
-</section>
-
-</div>
-
-<!-- MOTORISTAS -->
-
-<div id="motoristasPage" class="page">
-
-<section class="container">
-
-<h2 class="section-title">
-Motoristas Disponíveis
-</h2>
-
-<input
-class="input"
-id="pesquisaMotorista"
-placeholder="Pesquisar motorista..."
-onkeyup="filtrarMotoristas()">
-
-<div class="driver-list" id="motoristas">
-
-</div>
-
-</section>
-
-</div>
-
-<!-- CORRIDAS -->
-
-<div id="corridaPage" class="page">
-
-<section class="container">
-
-<div class="form-box">
-
-<h2>
-Solicitar Corrida
-</h2>
-
-<input class="input" placeholder="Seu nome">
-
-<select class="input" id="motoristaEscolhido">
-    <option>Escolha um motorista</option>
-</select>
-
-<input class="input" placeholder="Local de saída">
-
-<input class="input" placeholder="Destino">
-
-<select class="input">
-
-<option>
-Forma de pagamento
-</option>
-
-<option>
-Pix
-</option>
-
-<option>
-Cartão
-</option>
-
-<option>
-Dinheiro
-</option>
-
-</select>
-
-<button class="btn" style="width:100%;">
-Chamar Táxi
-</button>
-
-</div>
-
-</section>
-
-</div>
-
-<!-- PAGAMENTOS -->
-
-<div id="pagamentoPage" class="page">
-
-<section class="container">
-
-<div class="form-box">
-
-<h2>
-Pagamentos
-</h2>
-
-<p style="line-height:2;color:#ccc;">
-
-✔ Pix<br>
-✔ Cartão de Crédito<br>
-✔ Dinheiro
-
-</p>
-
-</div>
-
-<div id="historicoPage" class="page">
-
-<section class="container">
-
-<h2 class="section-title">
-Histórico de Corridas
-</h2>
-
-<div class="card">
-
-<h3>
-05/06/2026
-</h3>
-
-<p>
-Jacinto → Almenara
-</p>
-
-<p>
-R$ 80,00
-</p>
-
-</div>
-
-</section>
-
-</div>
-
-</section>
-
-</div>
-
-<!-- CADASTRO -->
-
-<div id="cadastroPage" class="page">
-
-<section class="container">
-
-<div class="form-box">
-
-<h2>
-Cadastro de Taxista
-</h2>
-
-<form id="cadastroForm">
-
-<input class="input"
-id="nome"
-placeholder="Nome completo">
-
-<input class="input"
-id="telefone"
-placeholder="Telefone">
-
-<input class="input"
-id="placa"
-placeholder="Placa do veículo">
-
-<select class="input" id="tipo">
-
-<option>
-Urbano
-</option>
-
-<option>
-Intermunicipal
-</option>
-
-</select>
-
-<input class="input" type="file">
-
-<button class="btn" style="width:100%;">
-Enviar Cadastro
-</button>
-
-</form>
-
-</div>
-
-</section>
-
-</div>
-<!-- MAPA -->
-
-<div id="mapaPage" class="page">
-
-<section class="container">
-
-<h2 class="section-title">
-Mapa da Cidade
-</h2>
-
-<div class="mapa-box">
-
-<iframe
-src="https://www.google.com/maps?q=Jacinto+MG&output=embed"
-width="100%"
-height="500"
-style="border:0;border-radius:20px;"
-allowfullscreen=""
-loading="lazy">
-</iframe>
-
-</div>
-
-</section>
-
-</div>
-
-<footer class="footer">
-
-    <div class="footer-col">
-        <h3>Empresa</h3>
-
-        <a href="#">Quem somos</a>
-        <a href="#">O que oferecemos</a>
-        <a href="#">Contato</a>
-        <a href="#">Blog</a>
-        <a href="#">Carreiras</a>
-    </div>
-
-    <div class="footer-col">
-        <h3>Passageiros</h3>
-
-        <a href="#" onclick="abrirPagina('corridaPage')">Solicitar Corrida</a>
-        <a href="#" onclick="abrirPagina('pagamentoPage')">Pagamentos</a>
-        <a href="#">Segurança</a>
-        <a href="#">Ajuda</a>
-    </div>
-
-    <div class="footer-col">
-        <h3>Motoristas</h3>
-
-        <a href="#" onclick="abrirPagina('motoristasPage')">Motoristas</a>
-        <a href="#" onclick="abrirPagina('cadastroPage')">Seja Motorista</a>
-        <a href="#">Ganhos</a>
-        <a href="#">Suporte</a>
-    </div>
-
-    <div class="footer-col">
-        <h3>Legal</h3>
-
-        <a href="#">Termos de Uso</a>
-        <a href="#">Privacidade</a>
-        <a href="#">Cookies</a>
     </div>
 
 </footer>
 
-<div class="copyright">
-    © 2026 Vaidboa - Todos os direitos reservados
-</div>
+<script src="js/menu.js"></script>
 
-<script>
-
-/* MOTORISTAS */
-
-const motoristas = [
-
-{
-nome:"Brian O'Conner",
-placa:"ABC-1234",
-telefone:"553899999999",
-frete:"Urbano",
-status:"Disponível",
-avaliacao:"4.9",
-foto:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD12kfyQyuPs3MEDFi-Y5ThPtLk40vShOY7A&s"
-},
-
-{
-nome:"Dominic Toretto",
-placa:"XYZ-5678",
-telefone:"553887777777",
-frete:"Intermunicipal",
-status:"Disponível",
-avaliacao:"4.9",
-foto:"https://fotos.jornaldocarro.estadao.com.br/jornal-do-carro/imagens/noticia/charger-1970.JPG"
-}
-
-];
-
-const lista = document.getElementById("motoristas");
-
-/* MOSTRAR MOTORISTAS */
-
-function renderizarMotoristas(){
-
-lista.innerHTML = "";
-
-motoristas.forEach(m => {
-
-lista.innerHTML += `
-
-<div class="driver">
-
-<img src="${m.foto}">
-
-<div class="driver-content">
-
-<h3>${m.nome}</h3>
-
-<div class="info">
-🚘 ${m.placa}
-</div>
-
-<div class="info">
-📞 ${m.telefone}
-</div>
-
-<div class="info">
-🛣️ ${m.frete}
-</div>
-
-<div class="info">
-⭐ ${m.avaliacao}
-</div>
-
-<div class="status">
-${m.status}
-</div>
-
-<br><br>
-
-<button class="btn"
-onclick="window.open('https://wa.me/${m.telefone}','_blank')">
-
-Chamar no WhatsApp
-
-</button>
-
-<br><br>
-
-<a
-href="tel:${m.telefone}"
-class="btn"
-style="text-decoration:none;display:inline-block;">
-
-Ligar
-
-</a>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-}
-
-renderizarMotoristas();
-
-function carregarMotoristasNoSelect(){
-
-let select =
-document.getElementById("motoristaEscolhido");
-
-motoristas.forEach(m => {
-
-select.innerHTML +=
-`<option>${m.nome}</option>`;
-
-});
-
-}
-
-carregarMotoristasNoSelect();
-
-/* TROCAR PÁGINAS */
-
-function abrirPagina(id){
-
-document.querySelectorAll('.page')
-.forEach(page => {
-
-page.classList.remove('active');
-
-});
-
-document.getElementById(id)
-.classList.add('active');
-
-window.scrollTo({
-top:0,
-behavior:'smooth'
-});
-
-}
-
-/* CADASTRO */
-
-document.getElementById("cadastroForm")
-.addEventListener("submit",function(e){
-
-e.preventDefault();
-
-let novoMotorista = {
-
-nome:document.getElementById("nome").value,
-
-telefone:document.getElementById("telefone").value,
-
-placa:document.getElementById("placa").value,
-
-frete:document.getElementById("tipo").value,
-
-foto:"https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/ai-generated-man-driving-a-car-free-photo.jpg"
-
-};
-
-motoristas.push(novoMotorista);
-
-renderizarMotoristas();
-
-alert("Cadastro enviado com sucesso!");
-
-this.reset();
-
-});
-
-function filtrarMotoristas(){
-
-let texto =
-document.getElementById("pesquisaMotorista")
-.value
-.toLowerCase();
-
-let cards =
-document.querySelectorAll(".driver");
-
-cards.forEach(card => {
-
-let nome =
-card.querySelector("h3")
-.innerText
-.toLowerCase();
-
-card.style.display =
-nome.includes(texto)
-? "block"
-: "none";
-
-});
-
-}
-function toggleMenu(){
-
-document
-.querySelector("nav")
-.classList
-.toggle("active");
-
-}
-</script>
+<script src="js/app.js"></script>
 
 </body>
+
 </html>
