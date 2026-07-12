@@ -474,3 +474,72 @@ footer p{
     line-height:1.7;
 
 }
+/* ==========================================
+   ESTATÍSTICAS
+========================================== */
+
+.stats{
+
+    background:#111;
+
+}
+
+.stats-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:30px;
+
+}
+
+.stat-card{
+
+    background:#1b1b1b;
+
+    padding:40px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    border:1px solid #2d2d2d;
+
+    transition:.3s;
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#FFD000;
+
+}
+
+.stat-card i{
+
+    font-size:55px;
+
+    color:#FFD000;
+
+    margin-bottom:20px;
+
+}
+
+.stat-card h2{
+
+    font-size:42px;
+
+    margin-bottom:10px;
+
+}
+
+.stat-card p{
+
+    color:#cfcfcf;
+
+    font-size:18px;
+
+}
