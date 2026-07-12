@@ -433,3 +433,44 @@ footer p{
     transition:.3s;
 
 }
+/* ==========================================
+   SERVIÇOS
+========================================== */
+
+.services{
+
+    background:#181818;
+
+}
+
+.services .card{
+
+    text-align:center;
+
+}
+
+.services .card i{
+
+    font-size:55px;
+
+    margin-bottom:20px;
+
+    color:#FFD000;
+
+}
+
+.services .card h3{
+
+    margin-bottom:15px;
+
+    font-size:24px;
+
+}
+
+.services .card p{
+
+    color:#c9c9c9;
+
+    line-height:1.7;
+
+}
