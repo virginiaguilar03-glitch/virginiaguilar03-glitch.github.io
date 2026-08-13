@@ -420,3 +420,23 @@ footer p{
     background:#ffbf00;
 
 }
+
+/* =========================================
+   BANNER DAS PÁGINAS
+   ========================================= */
+
+.page-banner {
+    width: 100%;
+    min-height: 350px;
+
+    display: flex;
+    align-items: center;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.page-banner .container {
+    width: 100%;
+}
