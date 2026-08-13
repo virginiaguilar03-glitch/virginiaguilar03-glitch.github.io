@@ -203,15 +203,7 @@ nav a.active{
 
     align-items:center;
 
-    background:linear-gradient(
-        rgba(0,0,0,.80),
-        rgba(0,0,0,.80)
-    ),
-    url("../img/banner.jpg");
-
-    background-size:cover;
-
-    background-position:center;
+    background:#111111;
 
 }
 
@@ -298,6 +290,7 @@ nav a.active{
     display:block;
 
 }
+
 
 /* ======================================================
    TÍTULOS
