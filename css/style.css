@@ -547,16 +547,30 @@ footer p{
    BANNER DAS PÁGINAS
 ====================================================== */
 
-.page-banner{
+.page-banner {
 
-    padding:140px 0 60px;
+    width: 100%;
+    min-height: 350px;
 
-    background:#181818;
+    padding: 140px 0 60px;
 
-    border-bottom:1px solid #2b2b2b;
+    display: flex;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,.60),
+            rgba(0,0,0,.60)
+        ),
+       url("../img/taxi-banner.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    border-bottom: 1px solid #2b2b2b;
 
 }
-
 .page-banner h1{
 
     font-size:48px;
