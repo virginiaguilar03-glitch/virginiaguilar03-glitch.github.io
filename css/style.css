@@ -1,9 +1,11 @@
 /* ======================================================
-   VAI DBOA TÁXI
+   VAIDTÁXI
    Arquivo: style.css
    ====================================================== */
 
-/* RESET */
+/* ======================================================
+   RESET
+====================================================== */
 
 *{
     margin:0;
@@ -22,7 +24,9 @@ body{
     overflow-x:hidden;
 }
 
-/* CONTAINER */
+/* ======================================================
+   CONTAINER
+====================================================== */
 
 .container{
     width:90%;
@@ -30,19 +34,25 @@ body{
     margin:auto;
 }
 
-/* LINKS */
+/* ======================================================
+   LINKS
+====================================================== */
 
 a{
     text-decoration:none;
 }
 
-/* LISTAS */
+/* ======================================================
+   LISTAS
+====================================================== */
 
 ul{
     list-style:none;
 }
 
-/* IMAGENS */
+/* ======================================================
+   IMAGENS
+====================================================== */
 
 img{
     max-width:100%;
@@ -51,7 +61,7 @@ img{
 
 /* ======================================================
    HEADER
-   ====================================================== */
+====================================================== */
 
 header{
     width:100%;
@@ -71,13 +81,14 @@ header .container{
     align-items:center;
 }
 
-/* LOGO */
+/* ======================================================
+   LOGO
+====================================================== */
 
 .logo{
     display:flex;
     align-items:center;
     gap:12px;
-
     color:#fff;
 }
 
@@ -94,7 +105,9 @@ header .container{
     color:#FFD000;
 }
 
-/* MENU */
+/* ======================================================
+   MENU
+====================================================== */
 
 nav{
     display:flex;
@@ -114,7 +127,9 @@ nav a.active{
     color:#FFD000;
 }
 
-/* BOTÕES HEADER */
+/* ======================================================
+   BOTÕES DO HEADER
+====================================================== */
 
 .header-buttons{
     display:flex;
@@ -122,7 +137,9 @@ nav a.active{
     gap:15px;
 }
 
-/* BOTÃO PADRÃO */
+/* ======================================================
+   BOTÃO PADRÃO
+====================================================== */
 
 .btn{
 
@@ -138,7 +155,6 @@ nav a.active{
     transition:.3s;
 
     display:inline-block;
-
 }
 
 .btn:hover{
@@ -146,10 +162,11 @@ nav a.active{
     transform:translateY(-3px);
 
     background:#ffbf00;
-
 }
 
-/* BOTÃO TRANSPARENTE */
+/* ======================================================
+   BOTÃO TRANSPARENTE
+====================================================== */
 
 .btn-outline{
 
@@ -164,7 +181,6 @@ nav a.active{
     transition:.3s;
 
     display:inline-block;
-
 }
 
 .btn-outline:hover{
@@ -172,10 +188,11 @@ nav a.active{
     background:#FFD000;
 
     color:#111;
-
 }
 
-/* MENU MOBILE */
+/* ======================================================
+   MENU MOBILE
+====================================================== */
 
 #menu-mobile{
 
@@ -186,15 +203,10 @@ nav a.active{
     font-size:30px;
 
     cursor:pointer;
-
 }
 
 /* ======================================================
-   HERO
-   ====================================================== */
-
-/* ======================================================
-   HERO - BANNER PRINCIPAL
+   HERO / BANNER PRINCIPAL
 ====================================================== */
 
 .hero{
@@ -212,7 +224,6 @@ nav a.active{
     align-items:center;
 
     overflow:hidden;
-
 }
 
 /* ======================================================
@@ -231,6 +242,7 @@ nav a.active{
 
     z-index:1;
 
+    overflow:hidden;
 }
 
 .hero-image img{
@@ -245,10 +257,11 @@ nav a.active{
     object-position:center;
 
     display:block;
-
 }
 
-/* ESCURECE A IMAGEM PARA O TEXTO FICAR LEGÍVEL */
+/* ======================================================
+   CAMADA ESCURA SOBRE A IMAGEM
+====================================================== */
 
 .hero-image::after{
 
@@ -263,11 +276,10 @@ nav a.active{
     height:100%;
 
     background:rgba(0,0,0,.48);
-
 }
 
 /* ======================================================
-   CONTEÚDO SOBRE A IMAGEM
+   CONTEÚDO DO HERO
 ====================================================== */
 
 .hero-content{
@@ -287,11 +299,10 @@ nav a.active{
     display:flex;
 
     align-items:center;
-
 }
 
 /* ======================================================
-   TEXTO
+   TEXTO DO HERO
 ====================================================== */
 
 .hero-text{
@@ -299,7 +310,6 @@ nav a.active{
     width:70%;
 
     padding-top:20px;
-
 }
 
 .hero-text h2{
@@ -313,7 +323,6 @@ nav a.active{
     color:#fff;
 
     max-width:800px;
-
 }
 
 .hero-text p{
@@ -327,11 +336,10 @@ nav a.active{
     line-height:1.8;
 
     max-width:750px;
-
 }
 
 /* ======================================================
-   BOTÕES
+   BOTÕES DO HERO
 ====================================================== */
 
 .hero-buttons{
@@ -339,42 +347,11 @@ nav a.active{
     display:flex;
 
     gap:20px;
-
 }
-/* IMAGEM */
-
-.hero-image{
-
-    flex:0 0 55%;
-
-    height:550px;
-
-    overflow:hidden;
-
-    border-radius:20px;
-
-}
-
-.hero-image img{
-
-    width:100%;
-
-    height:100%;
-
-    max-width:none;
-
-    object-fit:cover;
-
-    object-position:center;
-
-    display:block;
-
-}
-
 
 /* ======================================================
    TÍTULOS
-   ====================================================== */
+====================================================== */
 
 .section-title{
 
@@ -383,28 +360,25 @@ nav a.active{
     font-size:42px;
 
     margin-bottom:50px;
-
 }
 
 .section-title span{
 
     color:#FFD000;
-
 }
 
 /* ======================================================
    SEÇÕES
-   ====================================================== */
+====================================================== */
 
 section{
 
     padding:90px 0;
-
 }
 
 /* ======================================================
    CARDS
-   ====================================================== */
+====================================================== */
 
 .cards{
 
@@ -413,7 +387,6 @@ section{
     grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 
     gap:30px;
-
 }
 
 .card{
@@ -427,7 +400,6 @@ section{
     border:1px solid #2b2b2b;
 
     transition:.3s;
-
 }
 
 .card:hover{
@@ -435,7 +407,6 @@ section{
     transform:translateY(-8px);
 
     border-color:#FFD000;
-
 }
 
 .card i{
@@ -445,13 +416,11 @@ section{
     color:#FFD000;
 
     margin-bottom:20px;
-
 }
 
 .card h3{
 
     margin-bottom:15px;
-
 }
 
 .card p{
@@ -459,12 +428,11 @@ section{
     color:#bdbdbd;
 
     line-height:1.7;
-
 }
 
 /* ======================================================
    FOOTER
-   ====================================================== */
+====================================================== */
 
 footer{
 
@@ -475,29 +443,25 @@ footer{
     padding:40px 0;
 
     text-align:center;
-
 }
 
 footer p{
 
     color:#999;
-
 }
 
 /* ======================================================
    SCROLLBAR
-   ====================================================== */
+====================================================== */
 
 ::-webkit-scrollbar{
 
     width:10px;
-
 }
 
 ::-webkit-scrollbar-track{
 
     background:#111;
-
 }
 
 ::-webkit-scrollbar-thumb{
@@ -505,18 +469,16 @@ footer p{
     background:#FFD000;
 
     border-radius:20px;
-
 }
 
 ::-webkit-scrollbar-thumb:hover{
 
     background:#ffbf00;
-
 }
 
 /* ======================================================
    HEADER AO ROLAR
-   ====================================================== */
+====================================================== */
 
 .header-scroll{
 
@@ -525,23 +487,20 @@ footer p{
     box-shadow:0 8px 20px rgba(0,0,0,.35);
 
     transition:.3s;
-
 }
 
 /* ======================================================
    SERVIÇOS
-   ====================================================== */
+====================================================== */
 
 .services{
 
     background:#181818;
-
 }
 
 .services .card{
 
     text-align:center;
-
 }
 
 .services .card i{
@@ -551,7 +510,6 @@ footer p{
     margin-bottom:20px;
 
     color:#FFD000;
-
 }
 
 .services .card h3{
@@ -559,7 +517,6 @@ footer p{
     margin-bottom:15px;
 
     font-size:24px;
-
 }
 
 .services .card p{
@@ -567,17 +524,15 @@ footer p{
     color:#c9c9c9;
 
     line-height:1.7;
-
 }
 
 /* ======================================================
    ESTATÍSTICAS
-   ====================================================== */
+====================================================== */
 
 .stats{
 
     background:#111;
-
 }
 
 .stats-grid{
@@ -587,7 +542,6 @@ footer p{
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 
     gap:30px;
-
 }
 
 .stat-card{
@@ -603,7 +557,6 @@ footer p{
     border:1px solid #2d2d2d;
 
     transition:.3s;
-
 }
 
 .stat-card:hover{
@@ -611,7 +564,6 @@ footer p{
     transform:translateY(-8px);
 
     border-color:#FFD000;
-
 }
 
 .stat-card i{
@@ -621,7 +573,6 @@ footer p{
     color:#FFD000;
 
     margin-bottom:20px;
-
 }
 
 .stat-card h2{
@@ -629,7 +580,6 @@ footer p{
     font-size:42px;
 
     margin-bottom:10px;
-
 }
 
 .stat-card p{
@@ -637,12 +587,11 @@ footer p{
     color:#cfcfcf;
 
     font-size:18px;
-
 }
 
 /* ======================================================
    BANNER DAS PÁGINAS
-   ====================================================== */
+====================================================== */
 
 .page-banner{
 
@@ -670,7 +619,6 @@ footer p{
     background-repeat:no-repeat;
 
     border-bottom:1px solid #2b2b2b;
-
 }
 
 .page-banner h1{
@@ -680,7 +628,6 @@ footer p{
     color:#fff;
 
     margin-bottom:10px;
-
 }
 
 .page-banner p{
@@ -688,12 +635,11 @@ footer p{
     color:#bfbfbf;
 
     font-size:18px;
-
 }
 
 /* ======================================================
    FORMULÁRIOS
-   ====================================================== */
+====================================================== */
 
 .form-login,
 .form-cadastro,
@@ -712,7 +658,6 @@ footer p{
     border:1px solid #2d2d2d;
 
     box-shadow:0 10px 30px rgba(0,0,0,.35);
-
 }
 
 .form-group{
@@ -722,7 +667,6 @@ footer p{
     flex-direction:column;
 
     margin-bottom:22px;
-
 }
 
 .form-group label{
@@ -734,7 +678,6 @@ footer p{
     font-weight:600;
 
     color:#fff;
-
 }
 
 .form-group input,
@@ -758,7 +701,6 @@ footer p{
     font-family:Poppins,sans-serif;
 
     transition:.3s;
-
 }
 
 .form-group input:focus,
@@ -770,7 +712,6 @@ footer p{
     border-color:#FFD000;
 
     box-shadow:0 0 15px rgba(255,208,0,.25);
-
 }
 
 .form-group textarea{
@@ -778,21 +719,21 @@ footer p{
     resize:none;
 
     min-height:140px;
-
 }
 
-/* PLACEHOLDER */
+/* ======================================================
+   PLACEHOLDER
+====================================================== */
 
 input::placeholder,
 textarea::placeholder{
 
     color:#8f8f8f;
-
 }
 
 /* ======================================================
    BOTÃO DOS FORMULÁRIOS
-   ====================================================== */
+====================================================== */
 
 .form-login .btn,
 .form-cadastro .btn,
@@ -807,12 +748,11 @@ textarea::placeholder{
     font-size:17px;
 
     margin-top:15px;
-
 }
 
 /* ======================================================
    PESQUISA
-   ====================================================== */
+====================================================== */
 
 .search-box{
 
@@ -831,7 +771,6 @@ textarea::placeholder{
     color:#fff;
 
     font-size:17px;
-
 }
 
 .search-box:focus{
@@ -839,12 +778,11 @@ textarea::placeholder{
     outline:none;
 
     border-color:#FFD000;
-
 }
 
 /* ======================================================
    TABELAS
-   ====================================================== */
+====================================================== */
 
 table{
 
@@ -859,7 +797,6 @@ table{
     border-radius:15px;
 
     overflow:hidden;
-
 }
 
 table th{
@@ -869,7 +806,6 @@ table th{
     color:#111;
 
     padding:18px;
-
 }
 
 table td{
@@ -877,18 +813,16 @@ table td{
     padding:16px;
 
     border-bottom:1px solid #2a2a2a;
-
 }
 
 table tr:hover{
 
     background:#242424;
-
 }
 
 /* ======================================================
    ALERTAS
-   ====================================================== */
+====================================================== */
 
 .success{
 
@@ -897,7 +831,6 @@ table tr:hover{
     padding:18px;
 
     border-radius:12px;
-
 }
 
 .error{
@@ -907,64 +840,60 @@ table tr:hover{
     padding:18px;
 
     border-radius:12px;
-
 }
 
 /* ======================================================
    UTILIDADES
-   ====================================================== */
+====================================================== */
 
 .text-center{
 
     text-align:center;
-
 }
 
 .mt-1{
 
     margin-top:10px;
-
 }
 
 .mt-2{
 
     margin-top:20px;
-
 }
 
 .mt-3{
 
     margin-top:30px;
-
 }
 
 .mt-4{
 
     margin-top:40px;
-
 }
 
 .mb-1{
 
     margin-bottom:10px;
-
 }
 
 .mb-2{
 
     margin-bottom:20px;
-
 }
 
 .mb-3{
 
     margin-bottom:30px;
+}
 
+.mb-4{
+
+    margin-bottom:40px;
 }
 
 /* ======================================================
    FORM CONTAINER
-   ====================================================== */
+====================================================== */
 
 .form-container{
 
@@ -979,7 +908,6 @@ table tr:hover{
     background:#111;
 
     border-radius:15px;
-
 }
 
 .form-container label{
@@ -989,7 +917,6 @@ table tr:hover{
     margin-bottom:6px;
 
     display:block;
-
 }
 
 .form-container input,
@@ -1012,7 +939,6 @@ table tr:hover{
     color:white;
 
     font-size:14px;
-
 }
 
 .form-container button{
@@ -1026,11 +952,4 @@ table tr:hover{
     font-size:15px;
 
     cursor:pointer;
-
-}
-
-.mb-4{
-
-    margin-bottom:40px;
-
 }
