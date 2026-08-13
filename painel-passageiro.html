@@ -2,166 +2,501 @@
 <html lang="pt-BR">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>Menu do Cliente - VaidTáxi</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Fonte Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<title>Painel do Passageiro | VaidTáxi</title>
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="css/style.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
+    <style>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #111111;
+            color: #ffffff;
+            min-height: 100vh;
+        }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+        /* CABEÇALHO */
 
-<link rel="stylesheet" href="css/style.css">
+        .topo-cliente {
+            background: #000000;
+            border-bottom: 1px solid #333;
+            height: 75px;
 
-<link rel="stylesheet" href="css/responsive.css">
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-<link rel="stylesheet" href="css/animations.css">
+            padding: 0 40px;
+        }
+
+        .logo-cliente {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-cliente img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .logo-cliente h1 {
+            font-size: 22px;
+            color: #FFD400;
+            font-weight: 700;
+        }
+
+        .usuario-topo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 14px;
+            color: #dddddd;
+        }
+
+        .usuario-topo span {
+            color: #FFD400;
+            font-weight: 600;
+        }
+
+        /* CONTEÚDO */
+
+        .painel-container {
+            width: 100%;
+            max-width: 1200px;
+
+            margin: 0 auto;
+            padding: 45px 25px;
+        }
+
+        .titulo-painel {
+            margin-bottom: 35px;
+        }
+
+        .titulo-painel h2 {
+            font-size: 30px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .titulo-painel p {
+            color: #aaaaaa;
+            font-size: 15px;
+        }
+
+        /* MENU */
+
+        .menu-cliente {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+        .menu-item {
+            background: #1b1b1b;
+
+            border: 1px solid #303030;
+            border-radius: 12px;
+
+            padding: 28px 22px;
+
+            text-decoration: none;
+            color: white;
+
+            transition: 0.25s;
+
+            min-height: 170px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .menu-item:hover {
+            border-color: #FFD400;
+            transform: translateY(-4px);
+
+            box-shadow: 0 8px 25px rgba(255, 212, 0, 0.10);
+        }
+
+        .icone-menu {
+            font-size: 34px;
+            margin-bottom: 15px;
+        }
+
+        .menu-item h3 {
+            font-size: 18px;
+            margin-bottom: 7px;
+            color: #FFD400;
+        }
+
+        .menu-item p {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #aaaaaa;
+        }
+
+        /* DESTAQUE SOLICITAR CORRIDA */
+
+        .menu-item.destaque {
+            background: #FFD400;
+            border-color: #FFD400;
+            color: #000000;
+        }
+
+        .menu-item.destaque h3 {
+            color: #000000;
+        }
+
+        .menu-item.destaque p {
+            color: #222222;
+        }
+
+        .menu-item.destaque:hover {
+            background: #e6be00;
+            border-color: #e6be00;
+        }
+
+        /* BOTÃO SAIR */
+
+        .sair-area {
+            margin-top: 35px;
+            text-align: center;
+        }
+
+        .btn-sair {
+            background: transparent;
+            border: 1px solid #555555;
+
+            color: #cccccc;
+
+            padding: 11px 28px;
+
+            border-radius: 8px;
+
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .btn-sair:hover {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        /* RODAPÉ */
+
+        .rodape-cliente {
+            text-align: center;
+
+            padding: 25px;
+
+            color: #666666;
+
+            font-size: 12px;
+
+            margin-top: 30px;
+        }
+
+        /* RESPONSIVO */
+
+        @media (max-width: 850px) {
+
+            .menu-cliente {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .topo-cliente {
+                padding: 0 20px;
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .topo-cliente {
+                height: 65px;
+                padding: 0 15px;
+            }
+
+            .logo-cliente h1 {
+                font-size: 18px;
+            }
+
+            .logo-cliente img {
+                width: 38px;
+                height: 38px;
+            }
+
+            .usuario-topo {
+                display: none;
+            }
+
+            .painel-container {
+                padding: 30px 15px;
+            }
+
+            .titulo-painel h2 {
+                font-size: 24px;
+            }
+
+            .menu-cliente {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-item {
+                min-height: 140px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
 <body>
 
-<header>
+    <!-- CABEÇALHO -->
 
-<div class="container">
+    <header class="topo-cliente">
 
-<a href="index.html" class="logo">
+        <div class="logo-cliente">
 
-<img src="img/logo-vdb.png">
+            <img src="logo-vdb.png" alt="Logo VaidTáxi">
 
-<h1>Vaid<span>Táxi</span></h1>
+            <h1>VaidTáxi</h1>
 
-</a>
+        </div>
 
-<nav>
+        <div class="usuario-topo">
 
-<a href="painel-passageiro.html" class="active">Painel</a>
+            Cliente:
+            <span id="nomeUsuario">Usuário</span>
 
-<a href="corrida.html">Solicitar Corrida</a>
+        </div>
 
-<a href="historico.html">Histórico</a>
+    </header>
 
-<a href="pagamentos.html">Pagamentos</a>
 
-<a href="perfil.html">Perfil</a>
+    <!-- PAINEL -->
 
-</nav>
+    <main class="painel-container">
 
-</div>
+        <div class="titulo-painel">
 
-</header>
+            <h2>Menu do Cliente</h2>
 
-<main>
+            <p>
+                O que você deseja fazer?
+            </p>
 
-<section class="page-banner">
+        </div>
 
-<div class="container">
 
-<h1>Bem-vindo!</h1>
+        <!-- OPÇÕES DO CLIENTE -->
 
-<p>O que deseja fazer hoje?</p>
+        <section class="menu-cliente">
 
-</div>
 
-</section>
+            <!-- MEU CADASTRO -->
 
-<section class="container">
+            <a href="cadastro.html" class="menu-item">
 
-<div class="cards">
+                <div class="icone-menu">
+                    👤
+                </div>
 
-<div class="card">
+                <h3>Meu Cadastro</h3>
 
-<i class="fa-solid fa-taxi"></i>
+                <p>
+                    Consulte e altere seus dados pessoais.
+                </p>
 
-<h3>Solicitar Corrida</h3>
+            </a>
 
-<p>Peça um motorista rapidamente.</p>
 
-<a href="corrida.html" class="btn">
+            <!-- SOLICITAR CORRIDA -->
 
-Abrir
+            <a href="corrida.html" class="menu-item destaque">
 
-</a>
+                <div class="icone-menu">
+                    🚕
+                </div>
 
-</div>
+                <h3>Solicitar Corrida</h3>
 
-<div class="card">
+                <p>
+                    Informe seu destino e solicite uma corrida.
+                </p>
 
-<i class="fa-solid fa-clock-rotate-left"></i>
+            </a>
 
-<h3>Histórico</h3>
 
-<p>Veja todas as corridas realizadas.</p>
+            <!-- MINHA CORRIDA -->
 
-<a href="historico.html" class="btn">
+            <a href="corrida.html" class="menu-item">
 
-Abrir
+                <div class="icone-menu">
+                    📋
+                </div>
 
-</a>
+                <h3>Minha Corrida</h3>
 
-</div>
+                <p>
+                    Consulte o status da sua corrida atual.
+                </p>
 
-<div class="card">
+            </a>
 
-<i class="fa-solid fa-credit-card"></i>
 
-<h3>Pagamentos</h3>
+            <!-- SUPORTE -->
 
-<p>Gerencie seus pagamentos.</p>
+            <a href="contato.html" class="menu-item">
 
-<a href="pagamentos.html" class="btn">
+                <div class="icone-menu">
+                    🆘
+                </div>
 
-Abrir
+                <h3>Suporte</h3>
 
-</a>
+                <p>
+                    Entre em contato com o suporte do VaidTáxi.
+                </p>
 
-</div>
+            </a>
 
-<div class="card">
 
-<i class="fa-solid fa-user"></i>
+            <!-- CANCELAR CORRIDA -->
 
-<h3>Meu Perfil</h3>
+            <a href="#" class="menu-item" onclick="cancelarCorrida(event)">
 
-<p>Atualize seus dados pessoais.</p>
+                <div class="icone-menu">
+                    ❌
+                </div>
 
-<a href="perfil.html" class="btn">
+                <h3>Cancelar Corrida</h3>
 
-Abrir
+                <p>
+                    Cancele sua corrida quando permitido.
+                </p>
 
-</a>
+            </a>
 
-</div>
 
-</div>
+            <!-- MOTORISTAS -->
 
-</section>
+            <a href="motoristas.html" class="menu-item">
 
-</main>
+                <div class="icone-menu">
+                    🚗
+                </div>
 
-<footer>
+                <h3>Motoristas</h3>
 
-<div class="container">
+                <p>
+                    Consulte os motoristas disponíveis.
+                </p>
 
-<p>
+            </a>
 
-© <span id="ano"></span> VaidTáxi
+        </section>
 
-</p>
 
-</div>
+        <!-- SAIR -->
 
-</footer>
+        <div class="sair-area">
 
-<script src="js/menu.js"></script>
+            <button class="btn-sair" onclick="sair()">
+                Sair da conta
+            </button>
 
-<script src="js/app.js"></script>
+        </div>
+
+    </main>
+
+
+    <!-- RODAPÉ -->
+
+    <footer class="rodape-cliente">
+
+        VaidTáxi © 2026 — Seu transporte, do seu jeito.
+
+    </footer>
+
+
+    <script>
+
+        /* MOSTRAR USUÁRIO */
+
+        const usuario = localStorage.getItem("usuarioLogado");
+
+        if (usuario) {
+
+            document.getElementById("nomeUsuario").textContent = usuario;
+
+        }
+
+
+        /* CANCELAR CORRIDA */
+
+        function cancelarCorrida(event) {
+
+            event.preventDefault();
+
+            const confirmar = confirm(
+                "Você deseja cancelar sua corrida?"
+            );
+
+            if (confirmar) {
+
+                alert("A corrida foi cancelada.");
+
+            }
+
+        }
+
+
+        /* SAIR */
+
+        function sair() {
+
+            const confirmar = confirm(
+                "Deseja realmente sair da sua conta?"
+            );
+
+            if (!confirmar) {
+                return;
+            }
+
+            localStorage.removeItem("usuarioLogado");
+
+            window.location.href = "index.html";
+
+        }
+
+    </script>
 
 </body>
 
