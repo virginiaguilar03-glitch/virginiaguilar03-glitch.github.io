@@ -989,3 +989,32 @@ table tr:hover{
 
     cursor:pointer;
 }
+
+/* ======================================================
+   NOVO BANNER PRINCIPAL - VAIDTÁXI
+   ====================================================== */
+
+.hero{
+    width:100%;
+    height:calc(100vh - 85px);
+    min-height:0;
+
+    margin-top:85px;
+
+    background-image:url("../img/banner.jpg");
+    background-size:cover;
+    background-position:center center;
+    background-repeat:no-repeat;
+
+    overflow:hidden;
+}
+
+/* Esconde o conteúdo antigo do banner */
+.hero-content{
+    display:none;
+}
+
+/* Remove qualquer imagem antiga do hero */
+.hero-image{
+    display:none;
+}
