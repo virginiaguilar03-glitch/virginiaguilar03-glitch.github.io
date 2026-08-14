@@ -192,27 +192,21 @@ nav a.active{
 /* ======================================================
    HERO
    ====================================================== */
-
 .hero{
+    width:100%;
+    height:calc(100vh - 80px);
+    min-height:600px;
 
-    padding-top:120px;
-
-    min-height:100vh;
+    background-image:url("../img/banner.jpg");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
 
     display:flex;
     align-items:center;
 
-    background:linear-gradient(
-        rgba(0,0,0,.80),
-        rgba(0,0,0,.80)
-    ),
-    url("../img/banner.jpg");
-
-    background-size:cover;
-    background-position:center;
-
+    overflow:hidden;
 }
-
 .hero-content{
 
     display:flex;
