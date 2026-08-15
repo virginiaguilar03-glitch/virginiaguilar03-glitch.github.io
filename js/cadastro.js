@@ -18,7 +18,7 @@ if (elementoAno) {
 
 
 // ============================================================
-// MENSAGEM
+// MOSTRAR MENSAGEM
 // ============================================================
 
 function mostrarMensagem(texto, tipo) {
@@ -49,17 +49,27 @@ if (formCadastro) {
         // PEGAR DADOS
         // ====================================================
 
-        const nome = document.getElementById("nome").value.trim();
-        const cpf = document.getElementById("cpf").value.trim();
-        const telefone = document.getElementById("telefone").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const senha = document.getElementById("senha").value;
+        const nome =
+            document.getElementById("nome").value.trim();
+
+        const cpf =
+            document.getElementById("cpf").value.trim();
+
+        const telefone =
+            document.getElementById("telefone").value.trim();
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const senha =
+            document.getElementById("senha").value;
+
         const confirmarSenha =
             document.getElementById("confirmarSenha").value;
 
 
         // ====================================================
-        // VALIDAR
+        // VALIDAR CAMPOS
         // ====================================================
 
         if (
@@ -80,6 +90,10 @@ if (formCadastro) {
         }
 
 
+        // ====================================================
+        // VALIDAR SENHAS
+        // ====================================================
+
         if (senha !== confirmarSenha) {
 
             mostrarMensagem(
@@ -90,6 +104,10 @@ if (formCadastro) {
             return;
         }
 
+
+        // ====================================================
+        // VALIDAR SENHA
+        // ====================================================
 
         if (senha.length < 6) {
 
@@ -113,34 +131,37 @@ if (formCadastro) {
         try {
 
             // =================================================
-            // VERIFICAR SUPABASE
+            // VERIFICAR CONEXÃO
             // =================================================
 
             if (typeof supabaseClient === "undefined") {
 
                 throw new Error(
-                    "supabaseClient não foi encontrado."
+                    "A conexão com o Supabase não foi encontrada."
                 );
 
             }
 
 
             // =================================================
-            // 1. CRIAR USUÁRIO NO AUTH
+            // CRIAR USUÁRIO NO SUPABASE AUTH
             // =================================================
 
             const { data, error } =
                 await supabaseClient.auth.signUp({
 
                     email: email,
+
                     password: senha,
 
                     options: {
 
                         data: {
+
                             nome: nome,
                             cpf: cpf,
                             telefone: telefone
+
                         }
 
                     }
@@ -149,22 +170,24 @@ if (formCadastro) {
 
 
             // =================================================
-            // ERRO NO AUTH
+            // VERIFICAR ERRO
             // =================================================
 
             if (error) {
 
                 console.error(
-                    "Erro no Supabase Auth:",
+                    "Erro retornado pelo Supabase:",
                     error
                 );
 
-                const erro = error.message.toLowerCase();
+
+                const mensagemErro =
+                    error.message.toLowerCase();
 
 
                 if (
-                    erro.includes("already registered") ||
-                    erro.includes("already exists")
+                    mensagemErro.includes("already registered") ||
+                    mensagemErro.includes("already exists")
                 ) {
 
                     mostrarMensagem(
@@ -174,7 +197,9 @@ if (formCadastro) {
 
                 }
 
-                else if (erro.includes("password")) {
+                else if (
+                    mensagemErro.includes("password")
+                ) {
 
                     mostrarMensagem(
                         "A senha não atende aos requisitos.",
@@ -183,7 +208,9 @@ if (formCadastro) {
 
                 }
 
-                else if (erro.includes("email")) {
+                else if (
+                    mensagemErro.includes("email")
+                ) {
 
                     mostrarMensagem(
                         "Verifique o e-mail informado.",
@@ -223,68 +250,18 @@ if (formCadastro) {
             }
 
 
-            const usuario = data.user;
-
-
-            console.log(
-                "Usuário criado no Auth:",
-                usuario
-            );
-
-
-            // =================================================
-            // 2. INSERIR NA TABELA CLIENTES
-            // =================================================
-
-            const { error: erroCliente } =
-                await supabaseClient
-                    .from("clientes")
-                    .insert({
-
-                        id: usuario.id,
-
-                        nome: nome,
-
-                        cpf: cpf,
-
-                        telefone: telefone,
-
-                        email: email
-
-                    });
-
-
-            // =================================================
-            // ERRO AO INSERIR CLIENTE
-            // =================================================
-
-            if (erroCliente) {
-
-                console.error(
-                    "Erro ao inserir cliente:",
-                    erroCliente
-                );
-
-
-                mostrarMensagem(
-                    "A conta foi criada, mas não foi possível salvar os dados do cliente.",
-                    "erro"
-                );
-
-
-                botaoCadastrar.disabled = false;
-                botaoCadastrar.textContent = "Criar Conta";
-
-                return;
-            }
-
-
             // =================================================
             // SUCESSO
             // =================================================
 
             console.log(
-                "Cliente salvo com sucesso na tabela clientes."
+                "Usuário criado com sucesso:",
+                data.user
+            );
+
+
+            console.log(
+                "O trigger do banco deve criar o cliente automaticamente."
             );
 
 
@@ -312,7 +289,7 @@ if (formCadastro) {
 
 
         // ====================================================
-        // ERRO GERAL
+        // ERRO INESPERADO
         // ====================================================
 
         catch (erro) {
@@ -344,7 +321,8 @@ if (formCadastro) {
 // MÁSCARA CPF
 // ============================================================
 
-const campoCPF = document.getElementById("cpf");
+const campoCPF =
+    document.getElementById("cpf");
 
 if (campoCPF) {
 
