@@ -3,26 +3,51 @@
 // ============================================================
 
 
-// ANO DO RODAPÉ
+// ============================================================
+// ELEMENTOS
+// ============================================================
+
+const formCadastro = document.getElementById("formCadastro");
+const mensagemCadastro = document.getElementById("mensagemCadastro");
+const botaoCadastrar = document.getElementById("btnCadastrar");
 
 const elementoAno = document.getElementById("ano");
 
+
+// ============================================================
+// ANO DO RODAPÉ
+// ============================================================
+
 if (elementoAno) {
+
     elementoAno.textContent = new Date().getFullYear();
+
 }
 
 
-// FORMULÁRIO
+// ============================================================
+// FUNÇÃO PARA MOSTRAR MENSAGEM
+// ============================================================
 
-const formCadastro = document.getElementById("formCadastro");
+function mostrarMensagem(texto, tipo) {
 
-const mensagemCadastro = document.getElementById("mensagemCadastro");
+    mensagemCadastro.textContent = texto;
 
-const botaoCadastrar = document.getElementById("btnCadastrar");
+    if (tipo === "sucesso") {
+
+        mensagemCadastro.style.color = "#00cc66";
+
+    } else {
+
+        mensagemCadastro.style.color = "#ff4444";
+
+    }
+
+}
 
 
 // ============================================================
-// CADASTRAR CLIENTE
+// CADASTRO
 // ============================================================
 
 formCadastro.addEventListener("submit", async function(event) {
@@ -30,7 +55,9 @@ formCadastro.addEventListener("submit", async function(event) {
     event.preventDefault();
 
 
-    // PEGAR VALORES
+    // ========================================================
+    // PEGAR DADOS
+    // ========================================================
 
     const nome =
         document.getElementById("nome").value.trim();
@@ -51,15 +78,15 @@ formCadastro.addEventListener("submit", async function(event) {
         document.getElementById("confirmarSenha").value;
 
 
+    // ========================================================
     // LIMPAR MENSAGEM
+    // ========================================================
 
-    mensagemCadastro.textContent = "";
-
-    mensagemCadastro.style.color = "";
+    mostrarMensagem("", "sucesso");
 
 
     // ========================================================
-    // VALIDAÇÃO
+    // VALIDAR CAMPOS
     // ========================================================
 
     if (
@@ -81,7 +108,7 @@ formCadastro.addEventListener("submit", async function(event) {
 
 
     // ========================================================
-    // CONFIRMAR SENHA
+    // VALIDAR SENHAS
     // ========================================================
 
     if (senha !== confirmarSenha) {
@@ -96,7 +123,7 @@ formCadastro.addEventListener("submit", async function(event) {
 
 
     // ========================================================
-    // TAMANHO DA SENHA
+    // VALIDAR TAMANHO DA SENHA
     // ========================================================
 
     if (senha.length < 6) {
@@ -121,8 +148,22 @@ formCadastro.addEventListener("submit", async function(event) {
 
     try {
 
+
         // ====================================================
-        // CRIAR USUÁRIO NO SUPABASE AUTH
+        // VERIFICAR CONEXÃO COM SUPABASE
+        // ====================================================
+
+        if (typeof supabaseClient === "undefined") {
+
+            throw new Error(
+                "A conexão com o Supabase não foi encontrada."
+            );
+
+        }
+
+
+        // ====================================================
+        // CRIAR CONTA NO SUPABASE AUTH
         // ====================================================
 
         const { data, error } =
@@ -150,25 +191,80 @@ formCadastro.addEventListener("submit", async function(event) {
 
 
         // ====================================================
-        // TRATAR ERRO
+        // VERIFICAR ERRO
         // ====================================================
 
         if (error) {
 
             console.error(
-                "Erro Supabase:",
+                "Erro retornado pelo Supabase:",
                 error
             );
 
-            mostrarMensagem(
-                traduzirErro(error),
-                "erro"
-            );
+
+            // E-mail já cadastrado
+
+            if (
+                error.message
+                    .toLowerCase()
+                    .includes("already registered")
+            ) {
+
+                mostrarMensagem(
+                    "Este e-mail já possui uma conta.",
+                    "erro"
+                );
+
+            }
+
+
+            // Senha inválida
+
+            else if (
+                error.message
+                    .toLowerCase()
+                    .includes("password")
+            ) {
+
+                mostrarMensagem(
+                    "A senha não atende aos requisitos.",
+                    "erro"
+                );
+
+            }
+
+
+            // E-mail inválido
+
+            else if (
+                error.message
+                    .toLowerCase()
+                    .includes("email")
+            ) {
+
+                mostrarMensagem(
+                    "Verifique o e-mail informado.",
+                    "erro"
+                );
+
+            }
+
+
+            // Outros erros
+
+            else {
+
+                mostrarMensagem(
+                    "Não foi possível criar a conta. Tente novamente.",
+                    "erro"
+                );
+
+            }
+
 
             botaoCadastrar.disabled = false;
 
-            botaoCadastrar.textContent =
-                "Criar Conta";
+            botaoCadastrar.textContent = "Criar Conta";
 
             return;
         }
@@ -183,6 +279,10 @@ formCadastro.addEventListener("submit", async function(event) {
             data.user
         );
 
+
+        // ====================================================
+        // MENSAGEM DE SUCESSO
+        // ====================================================
 
         mostrarMensagem(
             "Conta criada com sucesso!",
@@ -200,22 +300,26 @@ formCadastro.addEventListener("submit", async function(event) {
 
         setTimeout(function() {
 
-            window.location.href =
-                "login.html";
+            window.location.href = "login.html";
 
         }, 2000);
 
 
     } catch (erro) {
 
+
+        // ====================================================
+        // ERRO INESPERADO
+        // ====================================================
+
         console.error(
-            "Erro inesperado:",
+            "Erro no cadastro:",
             erro
         );
 
 
         mostrarMensagem(
-            "Ocorreu um erro inesperado. Tente novamente.",
+            "Erro ao conectar com o sistema. Verifique sua conexão.",
             "erro"
         );
 
@@ -231,83 +335,17 @@ formCadastro.addEventListener("submit", async function(event) {
 
 
 // ============================================================
-// MOSTRAR MENSAGEM
-// ============================================================
-
-function mostrarMensagem(texto, tipo) {
-
-    mensagemCadastro.textContent = texto;
-
-
-    if (tipo === "sucesso") {
-
-        mensagemCadastro.style.color =
-            "#00cc66";
-
-    } else {
-
-        mensagemCadastro.style.color =
-            "#ff4444";
-
-    }
-
-}
-
-
-// ============================================================
-// TRADUZIR ERROS DO SUPABASE
-// ============================================================
-
-function traduzirErro(error) {
-
-    const mensagem =
-        error.message.toLowerCase();
-
-
-    if (
-        mensagem.includes("user already registered") ||
-        mensagem.includes("already registered")
-    ) {
-
-        return "Este e-mail já possui uma conta.";
-
-    }
-
-
-    if (
-        mensagem.includes("password")
-    ) {
-
-        return "A senha informada não atende aos requisitos.";
-
-    }
-
-
-    if (
-        mensagem.includes("email")
-    ) {
-
-        return "Verifique o e-mail informado.";
-
-    }
-
-
-    return "Não foi possível criar a conta. Tente novamente.";
-
-}
-
-
-// ============================================================
 // MÁSCARA CPF
 // ============================================================
 
-document
-    .getElementById("cpf")
-    .addEventListener("input", function() {
+const campoCPF = document.getElementById("cpf");
+
+if (campoCPF) {
+
+    campoCPF.addEventListener("input", function() {
 
         let valor =
             this.value.replace(/\D/g, "");
-
 
         valor =
             valor.substring(0, 11);
@@ -341,18 +379,22 @@ document
 
     });
 
+}
+
 
 // ============================================================
 // MÁSCARA TELEFONE
 // ============================================================
 
-document
-    .getElementById("telefone")
-    .addEventListener("input", function() {
+const campoTelefone =
+    document.getElementById("telefone");
+
+if (campoTelefone) {
+
+    campoTelefone.addEventListener("input", function() {
 
         let valor =
             this.value.replace(/\D/g, "");
-
 
         valor =
             valor.substring(0, 11);
@@ -385,3 +427,5 @@ document
         this.value = valor;
 
     });
+
+}
