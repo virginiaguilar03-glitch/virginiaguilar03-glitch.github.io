@@ -1060,3 +1060,258 @@ table tr:hover{
     }
 
 }
+
+/* ======================================================
+   PÁGINA DE CONTATO
+   ====================================================== */
+
+.pagina-contato{
+    min-height:100vh;
+    padding-top:120px;
+    background:#111111;
+}
+
+.contato-hero{
+    padding:50px 0 80px;
+}
+
+
+/* GRID */
+
+.contato-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:35px;
+    max-width:1050px;
+    margin:0 auto;
+}
+
+
+/* ================= INFORMAÇÕES ================= */
+
+.contato-informacoes{
+    background:#191919;
+    border:1px solid #292929;
+    border-radius:16px;
+    padding:35px;
+}
+
+.contato-informacoes h2{
+    color:#ffffff;
+    font-size:26px;
+    margin-bottom:15px;
+}
+
+.contato-descricao{
+    color:#aaaaaa;
+    font-size:14px;
+    line-height:1.7;
+    margin-bottom:30px;
+}
+
+
+/* ITENS DE CONTATO */
+
+.contato-item{
+    display:flex;
+    align-items:center;
+    gap:18px;
+
+    padding:18px 0;
+
+    border-bottom:1px solid #292929;
+}
+
+.contato-item:last-child{
+    border-bottom:none;
+}
+
+.contato-icone{
+    width:48px;
+    height:48px;
+
+    flex-shrink:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#FFD400;
+    color:#111111;
+
+    font-size:18px;
+    font-weight:700;
+}
+
+.contato-item h3{
+    color:#ffffff;
+    font-size:16px;
+    margin-bottom:3px;
+}
+
+.contato-item p{
+    color:#999999;
+    font-size:13px;
+}
+
+
+/* ================= FORMULÁRIO ================= */
+
+.contato-formulario{
+    background:#191919;
+    border:1px solid #292929;
+    border-radius:16px;
+
+    padding:35px;
+}
+
+.contato-formulario h2{
+    color:#ffffff;
+    font-size:26px;
+    margin-bottom:25px;
+}
+
+
+/* CAMPOS */
+
+.campo{
+    margin-bottom:18px;
+}
+
+.campo label{
+    display:block;
+
+    color:#ffffff;
+
+    font-size:14px;
+    font-weight:500;
+
+    margin-bottom:7px;
+}
+
+.campo input,
+.campo textarea{
+    width:100%;
+
+    background:#111111;
+
+    border:1px solid #303030;
+
+    border-radius:8px;
+
+    padding:13px 14px;
+
+    color:#ffffff;
+
+    font-family:'Poppins',sans-serif;
+    font-size:14px;
+
+    outline:none;
+
+    transition:0.3s ease;
+}
+
+.campo input{
+    height:46px;
+}
+
+.campo textarea{
+    resize:vertical;
+    min-height:120px;
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder{
+    color:#666666;
+}
+
+.campo input:focus,
+.campo textarea:focus{
+    border-color:#FFD400;
+}
+
+
+/* BOTÃO */
+
+.btn-enviar{
+    width:100%;
+
+    height:48px;
+
+    border:none;
+    border-radius:8px;
+
+    background:#FFD400;
+    color:#111111;
+
+    font-family:'Poppins',sans-serif;
+
+    font-size:15px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.btn-enviar:hover{
+    background:#e6bf00;
+    transform:translateY(-2px);
+}
+
+
+/* LINK ATIVO */
+
+.menu a.ativo{
+    color:#FFD400;
+}
+
+
+/* ================= RESPONSIVIDADE ================= */
+
+@media(max-width:850px){
+
+    .contato-grid{
+        grid-template-columns:1fr;
+        max-width:600px;
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    .pagina-contato{
+        padding-top:100px;
+    }
+
+    .contato-hero{
+        padding:35px 0 60px;
+    }
+
+    .titulo-pagina{
+        padding:0 20px;
+    }
+
+    .titulo-pagina h1{
+        font-size:29px;
+    }
+
+    .titulo-pagina p{
+        font-size:14px;
+    }
+
+    .contato-informacoes,
+    .contato-formulario{
+        margin:0 20px;
+        padding:25px 20px;
+    }
+
+    .contato-formulario h2,
+    .contato-informacoes h2{
+        font-size:22px;
+    }
+
+}
