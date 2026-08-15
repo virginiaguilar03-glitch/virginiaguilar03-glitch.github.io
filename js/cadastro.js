@@ -2,15 +2,9 @@
 // CADASTRO DO CLIENTE - VAIDTÁXI
 // ============================================================
 
-
-// ============================================================
-// ELEMENTOS
-// ============================================================
-
 const formCadastro = document.getElementById("formCadastro");
 const mensagemCadastro = document.getElementById("mensagemCadastro");
 const botaoCadastrar = document.getElementById("btnCadastrar");
-
 const elementoAno = document.getElementById("ano");
 
 
@@ -24,7 +18,7 @@ if (elementoAno) {
 
 
 // ============================================================
-// FUNÇÃO PARA MOSTRAR MENSAGEM
+// MENSAGEM
 // ============================================================
 
 function mostrarMensagem(texto, tipo) {
@@ -33,16 +27,15 @@ function mostrarMensagem(texto, tipo) {
 
     mensagemCadastro.textContent = texto;
 
-    if (tipo === "sucesso") {
-        mensagemCadastro.style.color = "#00cc66";
-    } else {
-        mensagemCadastro.style.color = "#ff4444";
-    }
+    mensagemCadastro.style.color =
+        tipo === "sucesso"
+            ? "#00cc66"
+            : "#ff4444";
 }
 
 
 // ============================================================
-// VERIFICAR SE O FORMULÁRIO EXISTE
+// CADASTRO
 // ============================================================
 
 if (formCadastro) {
@@ -53,37 +46,20 @@ if (formCadastro) {
 
 
         // ====================================================
-        // PEGAR DADOS DO FORMULÁRIO
+        // PEGAR DADOS
         // ====================================================
 
-        const nome =
-            document.getElementById("nome").value.trim();
-
-        const cpf =
-            document.getElementById("cpf").value.trim();
-
-        const telefone =
-            document.getElementById("telefone").value.trim();
-
-        const email =
-            document.getElementById("email").value.trim();
-
-        const senha =
-            document.getElementById("senha").value;
-
+        const nome = document.getElementById("nome").value.trim();
+        const cpf = document.getElementById("cpf").value.trim();
+        const telefone = document.getElementById("telefone").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const senha = document.getElementById("senha").value;
         const confirmarSenha =
             document.getElementById("confirmarSenha").value;
 
 
         // ====================================================
-        // LIMPAR MENSAGEM
-        // ====================================================
-
-        mostrarMensagem("", "sucesso");
-
-
-        // ====================================================
-        // VALIDAR CAMPOS
+        // VALIDAR
         // ====================================================
 
         if (
@@ -104,10 +80,6 @@ if (formCadastro) {
         }
 
 
-        // ====================================================
-        // VALIDAR SENHAS
-        // ====================================================
-
         if (senha !== confirmarSenha) {
 
             mostrarMensagem(
@@ -118,10 +90,6 @@ if (formCadastro) {
             return;
         }
 
-
-        // ====================================================
-        // VALIDAR TAMANHO DA SENHA
-        // ====================================================
 
         if (senha.length < 6) {
 
@@ -145,37 +113,34 @@ if (formCadastro) {
         try {
 
             // =================================================
-            // VERIFICAR CONEXÃO COM SUPABASE
+            // VERIFICAR SUPABASE
             // =================================================
 
             if (typeof supabaseClient === "undefined") {
 
                 throw new Error(
-                    "A conexão com o Supabase não foi encontrada."
+                    "supabaseClient não foi encontrado."
                 );
 
             }
 
 
             // =================================================
-            // CRIAR CONTA NO SUPABASE AUTH
+            // 1. CRIAR USUÁRIO NO AUTH
             // =================================================
 
             const { data, error } =
                 await supabaseClient.auth.signUp({
 
                     email: email,
-
                     password: senha,
 
                     options: {
 
                         data: {
-
                             nome: nome,
                             cpf: cpf,
                             telefone: telefone
-
                         }
 
                     }
@@ -184,28 +149,22 @@ if (formCadastro) {
 
 
             // =================================================
-            // VERIFICAR ERRO
+            // ERRO NO AUTH
             // =================================================
 
             if (error) {
 
                 console.error(
-                    "Erro retornado pelo Supabase:",
+                    "Erro no Supabase Auth:",
                     error
                 );
 
+                const erro = error.message.toLowerCase();
 
-                const mensagemErro =
-                    error.message.toLowerCase();
-
-
-                // ---------------------------------------------
-                // E-MAIL JÁ CADASTRADO
-                // ---------------------------------------------
 
                 if (
-                    mensagemErro.includes("already registered") ||
-                    mensagemErro.includes("already exists")
+                    erro.includes("already registered") ||
+                    erro.includes("already exists")
                 ) {
 
                     mostrarMensagem(
@@ -215,14 +174,7 @@ if (formCadastro) {
 
                 }
 
-
-                // ---------------------------------------------
-                // SENHA INVÁLIDA
-                // ---------------------------------------------
-
-                else if (
-                    mensagemErro.includes("password")
-                ) {
+                else if (erro.includes("password")) {
 
                     mostrarMensagem(
                         "A senha não atende aos requisitos.",
@@ -231,14 +183,7 @@ if (formCadastro) {
 
                 }
 
-
-                // ---------------------------------------------
-                // E-MAIL INVÁLIDO
-                // ---------------------------------------------
-
-                else if (
-                    mensagemErro.includes("email")
-                ) {
+                else if (erro.includes("email")) {
 
                     mostrarMensagem(
                         "Verifique o e-mail informado.",
@@ -247,25 +192,17 @@ if (formCadastro) {
 
                 }
 
-
-                // ---------------------------------------------
-                // OUTROS ERROS
-                // ---------------------------------------------
-
                 else {
 
                     mostrarMensagem(
-                        "Não foi possível criar a conta. Tente novamente.",
+                        "Não foi possível criar a conta: " +
+                        error.message,
                         "erro"
                     );
 
                 }
 
 
-                // ---------------------------------------------
-                // REATIVAR BOTÃO
-                // ---------------------------------------------
-
                 botaoCadastrar.disabled = false;
                 botaoCadastrar.textContent = "Criar Conta";
 
@@ -274,20 +211,66 @@ if (formCadastro) {
 
 
             // =================================================
-            // VERIFICAR SE O USUÁRIO FOI CRIADO
+            // VERIFICAR USUÁRIO
             // =================================================
 
             if (!data || !data.user) {
 
-                console.error(
-                    "O Supabase não retornou um usuário:",
-                    data
+                throw new Error(
+                    "O Supabase não retornou o usuário criado."
                 );
 
+            }
+
+
+            const usuario = data.user;
+
+
+            console.log(
+                "Usuário criado no Auth:",
+                usuario
+            );
+
+
+            // =================================================
+            // 2. INSERIR NA TABELA CLIENTES
+            // =================================================
+
+            const { error: erroCliente } =
+                await supabaseClient
+                    .from("clientes")
+                    .insert({
+
+                        id: usuario.id,
+
+                        nome: nome,
+
+                        cpf: cpf,
+
+                        telefone: telefone,
+
+                        email: email
+
+                    });
+
+
+            // =================================================
+            // ERRO AO INSERIR CLIENTE
+            // =================================================
+
+            if (erroCliente) {
+
+                console.error(
+                    "Erro ao inserir cliente:",
+                    erroCliente
+                );
+
+
                 mostrarMensagem(
-                    "A conta não foi criada. Verifique as configurações do Supabase.",
+                    "A conta foi criada, mas não foi possível salvar os dados do cliente.",
                     "erro"
                 );
+
 
                 botaoCadastrar.disabled = false;
                 botaoCadastrar.textContent = "Criar Conta";
@@ -297,18 +280,13 @@ if (formCadastro) {
 
 
             // =================================================
-            // CADASTRO REALIZADO
+            // SUCESSO
             // =================================================
 
             console.log(
-                "Usuário criado com sucesso:",
-                data.user
+                "Cliente salvo com sucesso na tabela clientes."
             );
 
-
-            // =================================================
-            // MENSAGEM DE SUCESSO
-            // =================================================
 
             mostrarMensagem(
                 "Conta criada com sucesso!",
@@ -334,7 +312,7 @@ if (formCadastro) {
 
 
         // ====================================================
-        // ERRO INESPERADO
+        // ERRO GERAL
         // ====================================================
 
         catch (erro) {
@@ -346,15 +324,14 @@ if (formCadastro) {
 
 
             mostrarMensagem(
-                "Erro ao conectar com o sistema. Verifique sua conexão.",
+                erro.message ||
+                "Erro ao conectar com o sistema.",
                 "erro"
             );
 
 
             botaoCadastrar.disabled = false;
-
-            botaoCadastrar.textContent =
-                "Criar Conta";
+            botaoCadastrar.textContent = "Criar Conta";
 
         }
 
@@ -367,8 +344,7 @@ if (formCadastro) {
 // MÁSCARA CPF
 // ============================================================
 
-const campoCPF =
-    document.getElementById("cpf");
+const campoCPF = document.getElementById("cpf");
 
 if (campoCPF) {
 
