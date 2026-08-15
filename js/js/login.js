@@ -1,44 +1,155 @@
-async function login(){
+// ============================================================
+// LOGIN - VAIDTÁXI
+// ============================================================
 
-    let email = document.getElementById("email").value;
-    let senha = document.getElementById("senha").value;
+async function login() {
+
+    const campoEmail = document.getElementById("email");
+    const campoSenha = document.getElementById("senha");
+
+    if (!campoEmail || !campoSenha) {
+
+        console.error("Campos de login não encontrados.");
+        alert("Erro: campos de login não encontrados.");
+
+        return;
+    }
 
 
-    if(email === "" || senha === ""){
+    const email = campoEmail.value.trim();
+    const senha = campoSenha.value;
+
+
+    // ========================================================
+    // VALIDAR CAMPOS
+    // ========================================================
+
+    if (!email || !senha) {
 
         alert("Preencha todos os campos.");
 
         return;
-
     }
 
 
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
+    // ========================================================
+    // VERIFICAR SUPABASE
+    // ========================================================
 
-        email: email,
+    if (typeof supabaseClient === "undefined") {
 
-        password: senha
+        console.error(
+            "supabaseClient não foi encontrado."
+        );
 
-    });
-
-
-
-    if(error){
-
-        alert("E-mail ou senha incorretos.");
-
-        console.log(error);
+        alert(
+            "Erro de conexão com o sistema."
+        );
 
         return;
+    }
+
+
+    // ========================================================
+    // DESABILITAR BOTÃO
+    // ========================================================
+
+    const botao =
+        document.querySelector(".form-login .btn");
+
+    if (botao) {
+
+        botao.disabled = true;
+        botao.textContent = "Entrando...";
 
     }
 
 
+    try {
 
-    alert("Login realizado com sucesso!");
+        // ====================================================
+        // LOGIN NO SUPABASE
+        // ====================================================
+
+        const { data, error } =
+            await supabaseClient.auth.signInWithPassword({
+
+                email: email,
+
+                password: senha
+
+            });
 
 
-    window.location.href = "index.html";
+        // ====================================================
+        // ERRO
+        // ====================================================
 
+        if (error) {
+
+            console.error(
+                "Erro no login:",
+                error
+            );
+
+            alert(
+                "E-mail ou senha incorretos."
+            );
+
+            if (botao) {
+
+                botao.disabled = false;
+                botao.textContent = "Entrar";
+
+            }
+
+            return;
+        }
+
+
+        // ====================================================
+        // LOGIN REALIZADO
+        // ====================================================
+
+        console.log(
+            "Login realizado:",
+            data.user
+        );
+
+
+        alert(
+            "Login realizado com sucesso!"
+        );
+
+
+        // ====================================================
+        // REDIRECIONAR
+        // ====================================================
+
+        window.location.href =
+            "index.html";
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro inesperado no login:",
+            erro
+        );
+
+        alert(
+            "Erro ao conectar com o sistema."
+        );
+
+
+        if (botao) {
+
+            botao.disabled = false;
+            botao.textContent = "Entrar";
+
+        }
+
+    }
 
 }
