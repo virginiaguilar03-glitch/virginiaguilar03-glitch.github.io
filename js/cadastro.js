@@ -252,12 +252,14 @@ formCadastro.addEventListener("submit", async function(event) {
 
             // Outros erros
 
-            else {
+           else {
 
-                mostrarMensagem(
-                    "Não foi possível criar a conta. Tente novamente.",
-                    "erro"
-                );
+    mostrarMensagem(
+        "Erro do Supabase: " + error.message,
+        "erro"
+    );
+
+}
 
             }
 
