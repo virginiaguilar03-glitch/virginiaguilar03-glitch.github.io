@@ -851,3 +851,212 @@ table tr:hover{
 
     cursor:pointer;
 }
+
+/* ======================================================
+   PÁGINA DE PAGAMENTOS
+   ====================================================== */
+
+.pagina-pagamentos{
+    min-height:100vh;
+    padding-top:120px;
+    background:#111111;
+}
+
+
+/* TÍTULO */
+
+.pagamentos-hero{
+    padding:50px 0 80px;
+}
+
+.titulo-pagina{
+    text-align:center;
+    max-width:750px;
+    margin:0 auto 60px;
+}
+
+.subtitulo{
+    display:inline-block;
+    color:#FFD400;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:2px;
+    margin-bottom:12px;
+}
+
+.titulo-pagina h1{
+    font-size:42px;
+    font-weight:700;
+    margin-bottom:18px;
+    color:#ffffff;
+}
+
+.titulo-pagina h1 span{
+    color:#FFD400;
+}
+
+.titulo-pagina p{
+    color:#bbbbbb;
+    font-size:16px;
+    line-height:1.7;
+}
+
+
+/* CARDS */
+
+.pagamentos-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:25px;
+    max-width:1050px;
+    margin:0 auto;
+}
+
+.pagamento-card{
+    background:#191919;
+    border:1px solid #292929;
+    border-radius:16px;
+    padding:35px 25px;
+    text-align:center;
+    transition:0.3s ease;
+}
+
+.pagamento-card:hover{
+    transform:translateY(-7px);
+    border-color:#FFD400;
+    box-shadow:0 10px 30px rgba(0,0,0,0.35);
+}
+
+
+/* ÍCONE */
+
+.pagamento-icone{
+    width:70px;
+    height:70px;
+    margin:0 auto 22px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#FFD400;
+    color:#111111;
+
+    font-size:20px;
+    font-weight:700;
+}
+
+.pagamento-card h2{
+    color:#ffffff;
+    font-size:22px;
+    margin-bottom:12px;
+}
+
+.pagamento-card p{
+    color:#aaaaaa;
+    font-size:14px;
+    line-height:1.7;
+}
+
+
+/* INFORMAÇÃO */
+
+.pagamento-info{
+    max-width:1050px;
+    margin:50px auto 0;
+
+    background:#191919;
+
+    border-left:4px solid #FFD400;
+
+    border-radius:12px;
+
+    padding:35px 40px;
+}
+
+.info-conteudo h2{
+    color:#ffffff;
+    font-size:24px;
+    margin-bottom:15px;
+}
+
+.info-conteudo p{
+    color:#aaaaaa;
+    font-size:15px;
+    line-height:1.7;
+    margin-bottom:8px;
+}
+
+
+/* LINK ATIVO DO MENU */
+
+.menu a.ativo{
+    color:#FFD400;
+}
+
+
+/* FOOTER */
+
+.footer{
+    background:#0c0c0c;
+    border-top:1px solid #222222;
+    padding:25px 0;
+    text-align:center;
+}
+
+.footer p{
+    color:#777777;
+    font-size:13px;
+}
+
+
+/* ======================================================
+   RESPONSIVIDADE
+   ====================================================== */
+
+@media(max-width:800px){
+
+    .pagamentos-grid{
+        grid-template-columns:1fr;
+        max-width:500px;
+    }
+
+    .titulo-pagina h1{
+        font-size:34px;
+    }
+
+    .pagamento-info{
+        margin-left:20px;
+        margin-right:20px;
+        padding:30px 25px;
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    .pagina-pagamentos{
+        padding-top:100px;
+    }
+
+    .pagamentos-hero{
+        padding:35px 0 60px;
+    }
+
+    .titulo-pagina{
+        padding:0 20px;
+        margin-bottom:40px;
+    }
+
+    .titulo-pagina h1{
+        font-size:29px;
+    }
+
+    .titulo-pagina p{
+        font-size:14px;
+    }
+
+}
