@@ -11,275 +11,481 @@
 
     <title>VaidTáxi | Área do Cliente</title>
 
-    <!-- Fonte -->
+    <!-- Fonte padrão do VaidTáxi -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- CSS da Área do Cliente -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- CSS padrão do VaidTáxi -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Responsividade padrão -->
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- Animações padrão -->
+    <link rel="stylesheet" href="css/animations.css">
+
+    <!-- CSS específico da Área do Cliente -->
     <link rel="stylesheet" href="css/cliente.css">
 
 </head>
 
 <body>
 
-    <!-- MENU LATERAL -->
+    <!-- ==================================================
+         ÁREA DO CLIENTE
+    ================================================== -->
 
-    <aside class="sidebar">
-
-        <div class="logo-area">
-            <div class="logo-circulo">V</div>
-            <h2>Vaid<span>Táxi</span></h2>
-        </div>
-
-        <nav class="menu">
-
-            <a href="#" class="menu-item ativo">
-                <span>🏠</span>
-                <strong>Início</strong>
-            </a>
-
-            <a href="#" class="menu-item">
-                <span>👤</span>
-                <strong>Meu Perfil</strong>
-            </a>
-
-            <a href="#" class="menu-item">
-                <span>🚕</span>
-                <strong>Solicitar Corrida</strong>
-            </a>
-
-            <a href="#" class="menu-item">
-                <span>📋</span>
-                <strong>Minhas Corridas</strong>
-            </a>
-
-            <a href="#" class="menu-item">
-                <span>💳</span>
-                <strong>Pagamentos</strong>
-            </a>
-
-            <a href="#" class="menu-item">
-                <span>⭐</span>
-                <strong>Avaliações</strong>
-            </a>
-
-            <a href="#" class="menu-item">
-                <span>💬</span>
-                <strong>Suporte</strong>
-            </a>
-
-        </nav>
-
-        <div class="menu-final">
-
-            <a href="#" class="menu-item">
-                <span>⚙️</span>
-                <strong>Configurações</strong>
-            </a>
-
-            <a href="index.html" class="menu-item sair">
-                <span>🚪</span>
-                <strong>Sair</strong>
-            </a>
-
-        </div>
-
-    </aside>
+    <div class="cliente-layout">
 
 
-    <!-- CONTEÚDO PRINCIPAL -->
+        <!-- ==================================================
+             MENU LATERAL
+        ================================================== -->
 
-    <main class="conteudo">
+        <aside class="cliente-sidebar">
 
-        <!-- TOPO -->
+            <!-- LOGO -->
 
-        <header class="topo">
+            <div class="cliente-logo">
 
-            <div>
-                <p class="pequeno">Área do Cliente</p>
-                <h1>Olá, <span>Virgínia!</span> 👋</h1>
-                <p class="subtitulo">
-                    O que você precisa hoje?
-                </p>
+                <a href="index.html">
+
+                    <img src="logo-vdb.png" alt="VaidTáxi">
+
+                    <h2>
+                        Vaid<span>Táxi</span>
+                    </h2>
+
+                </a>
+
             </div>
 
-            <div class="perfil-topo">
 
-                <div class="avatar">
-                    V
-                </div>
+            <!-- MENU -->
+
+            <nav class="cliente-menu">
+
+                <a href="#" class="cliente-menu-item ativo">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    <span>Início</span>
+
+                </a>
+
+
+                <a href="#" class="cliente-menu-item">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    <span>Meu Perfil</span>
+
+                </a>
+
+
+                <a href="#" class="cliente-menu-item">
+
+                    <i class="fa-solid fa-taxi"></i>
+
+                    <span>Solicitar Corrida</span>
+
+                </a>
+
+
+                <a href="#" class="cliente-menu-item">
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    <span>Minhas Corridas</span>
+
+                </a>
+
+
+                <a href="#" class="cliente-menu-item">
+
+                    <i class="fa-solid fa-credit-card"></i>
+
+                    <span>Pagamentos</span>
+
+                </a>
+
+
+                <a href="#" class="cliente-menu-item">
+
+                    <i class="fa-solid fa-star"></i>
+
+                    <span>Avaliações</span>
+
+                </a>
+
+
+                <a href="#" class="cliente-menu-item">
+
+                    <i class="fa-solid fa-headset"></i>
+
+                    <span>Suporte</span>
+
+                </a>
+
+            </nav>
+
+
+            <!-- MENU INFERIOR -->
+
+            <div class="cliente-menu-bottom">
+
+                <a href="#" class="cliente-menu-item">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    <span>Configurações</span>
+
+                </a>
+
+
+                <a href="index.html" class="cliente-menu-item sair">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    <span>Sair</span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- ==================================================
+             CONTEÚDO PRINCIPAL
+        ================================================== -->
+
+        <main class="cliente-conteudo">
+
+
+            <!-- ==================================================
+                 TOPO
+            ================================================== -->
+
+            <header class="cliente-topo">
 
                 <div>
-                    <strong>Virgínia Aguilar</strong>
-                    <small>Passageira</small>
-                </div>
 
-            </div>
+                    <span class="cliente-label">
+                        Área do Cliente
+                    </span>
 
-        </header>
-
-
-        <!-- BOTÃO PRINCIPAL -->
-
-        <section class="solicitar-area">
-
-            <div class="solicitar-texto">
-
-                <p>Precisa chegar a algum lugar?</p>
-
-                <h2>
-                    Solicite sua corrida
-                </h2>
-
-                <span>
-                    Encontre um motorista de forma rápida e segura.
-                </span>
-
-            </div>
-
-            <button class="btn-solicitar">
-                🚕 Solicitar Corrida
-            </button>
-
-        </section>
-
-
-        <!-- CARDS -->
-
-        <section class="cards">
-
-            <div class="card">
-
-                <div class="icone">
-                    🚕
-                </div>
-
-                <div>
-                    <span>Corrida atual</span>
-                    <h3>Nenhuma corrida</h3>
-                    <p>Você não possui uma corrida em andamento.</p>
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="icone">
-                    📋
-                </div>
-
-                <div>
-                    <span>Corridas realizadas</span>
-                    <h3>0</h3>
-                    <p>Confira seu histórico de corridas.</p>
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="icone">
-                    ⭐
-                </div>
-
-                <div>
-                    <span>Avaliação</span>
-                    <h3>—</h3>
-                    <p>Suas avaliações aparecerão aqui.</p>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- PARTE INFERIOR -->
-
-        <section class="area-inferior">
-
-
-            <!-- HISTÓRICO -->
-
-            <div class="painel">
-
-                <div class="painel-topo">
-
-                    <div>
-                        <span>Histórico</span>
-                        <h2>Últimas corridas</h2>
-                    </div>
-
-                    <button class="btn-link">
-                        Ver tudo
-                    </button>
-
-                </div>
-
-
-                <div class="sem-corridas">
-
-                    <div class="icone-grande">
-                        🚕
-                    </div>
-
-                    <h3>Nenhuma corrida realizada</h3>
+                    <h1>
+                        Olá, <span>Virgínia!</span>
+                    </h1>
 
                     <p>
-                        Quando você realizar uma corrida,
-                        ela aparecerá aqui.
+                        O que você precisa hoje?
                     </p>
 
                 </div>
 
-            </div>
 
+                <!-- PERFIL -->
 
-            <!-- ATALHOS -->
+                <div class="cliente-perfil-topo">
 
-            <div class="painel">
-
-                <div class="painel-topo">
+                    <div class="cliente-avatar">
+                        V
+                    </div>
 
                     <div>
-                        <span>Acesso rápido</span>
-                        <h2>O que você precisa?</h2>
+
+                        <strong>
+                            Virgínia Aguilar
+                        </strong>
+
+                        <small>
+                            Passageira
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+
+            <!-- ==================================================
+                 SOLICITAR CORRIDA
+            ================================================== -->
+
+            <section class="cliente-solicitar">
+
+                <div>
+
+                    <span>
+                        Precisa chegar a algum lugar?
+                    </span>
+
+                    <h2>
+                        Solicite sua corrida
+                    </h2>
+
+                    <p>
+                        Encontre um motorista de forma rápida e segura.
+                    </p>
+
+                </div>
+
+
+                <button class="cliente-btn-solicitar">
+
+                    <i class="fa-solid fa-taxi"></i>
+
+                    Solicitar Corrida
+
+                </button>
+
+            </section>
+
+
+
+            <!-- ==================================================
+                 CARDS
+            ================================================== -->
+
+            <section class="cliente-cards">
+
+
+                <!-- CORRIDA ATUAL -->
+
+                <div class="cliente-card">
+
+                    <div class="cliente-card-icone">
+
+                        <i class="fa-solid fa-taxi"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Corrida atual
+                        </span>
+
+                        <h3>
+                            Nenhuma corrida
+                        </h3>
+
+                        <p>
+                            Você não possui uma corrida em andamento.
+                        </p>
+
                     </div>
 
                 </div>
 
 
-                <div class="atalhos">
+                <!-- HISTÓRICO -->
 
-                    <button>
-                        <span>👤</span>
-                        Meu Perfil
-                    </button>
+                <div class="cliente-card">
 
-                    <button>
-                        <span>💳</span>
-                        Pagamentos
-                    </button>
+                    <div class="cliente-card-icone">
 
-                    <button>
-                        <span>⭐</span>
-                        Avaliações
-                    </button>
+                        <i class="fa-solid fa-clock-rotate-left"></i>
 
-                    <button>
-                        <span>💬</span>
-                        Suporte
-                    </button>
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Corridas realizadas
+                        </span>
+
+                        <h3>
+                            0
+                        </h3>
+
+                        <p>
+                            Confira seu histórico de corridas.
+                        </p>
+
+                    </div>
 
                 </div>
 
-            </div>
 
-        </section>
+                <!-- AVALIAÇÃO -->
 
-    </main>
+                <div class="cliente-card">
+
+                    <div class="cliente-card-icone">
+
+                        <i class="fa-solid fa-star"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Avaliação
+                        </span>
+
+                        <h3>
+                            —
+                        </h3>
+
+                        <p>
+                            Suas avaliações aparecerão aqui.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==================================================
+                 PARTE INFERIOR
+            ================================================== -->
+
+            <section class="cliente-area-inferior">
+
+
+                <!-- ==================================================
+                     ÚLTIMAS CORRIDAS
+                ================================================== -->
+
+                <div class="cliente-painel">
+
+                    <div class="cliente-painel-topo">
+
+                        <div>
+
+                            <span>
+                                Histórico
+                            </span>
+
+                            <h2>
+                                Últimas corridas
+                            </h2>
+
+                        </div>
+
+                        <button class="cliente-btn-link">
+                            Ver tudo
+                        </button>
+
+                    </div>
+
+
+                    <div class="cliente-sem-corridas">
+
+                        <i class="fa-solid fa-taxi"></i>
+
+                        <h3>
+                            Nenhuma corrida realizada
+                        </h3>
+
+                        <p>
+                            Quando você realizar uma corrida,
+                            ela aparecerá aqui.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     ACESSO RÁPIDO
+                ================================================== -->
+
+                <div class="cliente-painel">
+
+                    <div class="cliente-painel-topo">
+
+                        <div>
+
+                            <span>
+                                Acesso rápido
+                            </span>
+
+                            <h2>
+                                O que você precisa?
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="cliente-atalhos">
+
+                        <button>
+
+                            <i class="fa-solid fa-user"></i>
+
+                            <span>
+                                Meu Perfil
+                            </span>
+
+                        </button>
+
+
+                        <button>
+
+                            <i class="fa-solid fa-credit-card"></i>
+
+                            <span>
+                                Pagamentos
+                            </span>
+
+                        </button>
+
+
+                        <button>
+
+                            <i class="fa-solid fa-star"></i>
+
+                            <span>
+                                Avaliações
+                            </span>
+
+                        </button>
+
+
+                        <button>
+
+                            <i class="fa-solid fa-headset"></i>
+
+                            <span>
+                                Suporte
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- JavaScript -->
+
+    <script src="js/cliente.js"></script>
 
 </body>
 
