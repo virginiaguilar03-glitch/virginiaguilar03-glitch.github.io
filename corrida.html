@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -8,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>VaidTáxi | Solicitar Corrida</title>
-
 
     <!-- ==================================================
          FONTE
@@ -48,45 +48,33 @@
 
         <div class="container">
 
+          <a href="index.html" class="logo">
 
-            <!-- ==================================================
-                 LOGO
-            ================================================== -->
+    <img
+        src="logo-vdb.png"
+        alt="Logo VaidTáxi"
+    >
 
-            <a href="index.html" class="logo">
+    <h1>
+        Vaid<span>Táxi</span>
+    </h1>
 
-                <img
-                    src="logo-vdb.png"
-                    alt="Logo VaidTáxi"
-                >
-
-                <h1>
-                    Vaid<span>Táxi</span>
-                </h1>
-
-            </a>
+</a>
 
 
-
-            <!-- ==================================================
-                 BOTÃO MENU MOBILE
-            ================================================== -->
+            <!-- BOTÃO MENU MOBILE -->
 
             <button
                 class="menu-toggle"
                 id="menuToggle"
                 type="button"
                 aria-label="Abrir menu"
-                aria-expanded="false"
             >
                 ☰
             </button>
 
 
-
-            <!-- ==================================================
-                 MENU
-            ================================================== -->
+            <!-- MENU -->
 
             <nav class="menu" id="menu">
 
@@ -130,9 +118,7 @@
             <section class="corrida-container">
 
 
-                <!-- ==================================================
-                     TÍTULO
-                ================================================== -->
+                <!-- TÍTULO -->
 
                 <div class="corrida-header">
 
@@ -149,7 +135,7 @@
 
 
                 <!-- ==================================================
-                     USUÁRIO
+                     CLIENTE / VISITANTE
                 ================================================== -->
 
                 <div class="usuario-logado">
@@ -175,9 +161,7 @@
                 <form id="formCorrida">
 
 
-                    <!-- ==================================================
-                         ORIGEM
-                    ================================================== -->
+                    <!-- ORIGEM -->
 
                     <div class="form-group">
 
@@ -198,9 +182,7 @@
 
 
 
-                    <!-- ==================================================
-                         DESTINO
-                    ================================================== -->
+                    <!-- DESTINO -->
 
                     <div class="form-group">
 
@@ -221,9 +203,7 @@
 
 
 
-                    <!-- ==================================================
-                         OBSERVAÇÃO
-                    ================================================== -->
+                    <!-- OBSERVAÇÃO -->
 
                     <div class="form-group">
 
@@ -242,9 +222,7 @@
 
 
 
-                    <!-- ==================================================
-                         BOTÃO SOLICITAR
-                    ================================================== -->
+                    <!-- BOTÃO -->
 
                     <button
                         type="submit"
@@ -266,7 +244,7 @@
                 <div
                     id="mensagemCorrida"
                     class="mensagem"
-                    style="display: none;"
+                    style="display:none;"
                 ></div>
 
 
@@ -287,9 +265,7 @@
     <script src="js/menu.js"></script>
 
 
-    <!-- ==================================================
-         SUPABASE
-    ================================================== -->
+    <!-- SUPABASE -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -317,24 +293,28 @@
                         "formCorrida"
                     );
 
-                const btnSolicitar =
-                    document.getElementById(
-                        "btnSolicitar"
-                    );
 
                 const btnSair =
                     document.getElementById(
                         "btnSair"
                     );
 
+
                 const nomeCliente =
                     document.getElementById(
                         "nomeCliente"
                     );
 
+
                 const mensagem =
                     document.getElementById(
                         "mensagemCorrida"
+                    );
+
+
+                const btnSolicitar =
+                    document.getElementById(
+                        "btnSolicitar"
                     );
 
 
@@ -358,12 +338,14 @@
 
 
                 /* ==================================================
-                   VERIFICAR SE EXISTE USUÁRIO LOGADO
+                   VERIFICAR SE EXISTE SESSÃO
                    
                    IMPORTANTE:
-                   NÃO REDIRECIONAR.
                    
-                   A página continua aberta para visitantes.
+                   NÃO manda o visitante para o login.
+                   
+                   Ele pode acessar e preencher a página
+                   normalmente.
                 ================================================== */
 
                 try {
@@ -395,7 +377,7 @@
 
 
                         console.log(
-                            "Cliente logado:",
+                            "Cliente autenticado:",
                             usuario.email
                         );
 
@@ -410,11 +392,6 @@
                     }
                     else {
 
-                        console.log(
-                            "Nenhum usuário logado."
-                        );
-
-
                         if (nomeCliente) {
 
                             nomeCliente.textContent =
@@ -428,7 +405,7 @@
                 catch (erro) {
 
                     console.error(
-                        "Erro ao verificar sessão:",
+                        "Erro inesperado:",
                         erro
                     );
 
@@ -495,6 +472,7 @@
                                 window.location.href =
                                     "login.html";
 
+
                             }
                             catch (erro) {
 
@@ -516,7 +494,7 @@
 
 
                 /* ==================================================
-                   FORMULÁRIO
+                   FORMULÁRIO DE CORRIDA
                 ================================================== */
 
                 if (form) {
@@ -530,7 +508,7 @@
 
 
                             /* ==================================================
-                               CAPTURAR OS DADOS
+                               PEGAR OS DADOS
                             ================================================== */
 
                             const origem =
@@ -565,10 +543,12 @@
                                VALIDAR ORIGEM
                             ================================================== */
 
-                            if (!origem) {
+                            if (
+                                origem === ""
+                            ) {
 
                                 alert(
-                                    "Digite o local de partida."
+                                    "Preencha o local de partida."
                                 );
 
                                 document
@@ -587,10 +567,12 @@
                                VALIDAR DESTINO
                             ================================================== */
 
-                            if (!destino) {
+                            if (
+                                destino === ""
+                            ) {
 
                                 alert(
-                                    "Digite o destino."
+                                    "Preencha o destino."
                                 );
 
                                 document
@@ -606,9 +588,10 @@
 
 
                             /* ==================================================
-                               VERIFICAR LOGIN
+                               AGORA VERIFICAMOS O LOGIN
                                
-                               SOMENTE AGORA O LOGIN É EXIGIDO.
+                               ESTE É O PONTO EM QUE O LOGIN
+                               SE TORNA OBRIGATÓRIO.
                             ================================================== */
 
                             let sessao;
@@ -630,21 +613,29 @@
                                         error
                                     );
 
+                                    alert(
+                                        "Não foi possível verificar sua sessão."
+                                    );
+
+                                    return;
+
                                 }
 
 
-                                sessao = data;
+                                sessao =
+                                    data.session;
+
 
                             }
                             catch (erro) {
 
                                 console.error(
-                                    "Erro ao consultar sessão:",
+                                    "Erro ao verificar sessão:",
                                     erro
                                 );
 
                                 alert(
-                                    "Não foi possível verificar sua sessão. Tente novamente."
+                                    "Não foi possível verificar sua sessão."
                                 );
 
                                 return;
@@ -654,18 +645,15 @@
 
 
                             /* ==================================================
-                               VISITANTE NÃO LOGADO
+                               USUÁRIO NÃO ESTÁ LOGADO
                             ================================================== */
 
-                            if (
-                                !sessao ||
-                                !sessao.session
-                            ) {
+                            if (!sessao) {
 
 
                                 /*
-                                 * Salvar temporariamente
-                                 * os dados preenchidos.
+                                 * Guardamos os dados temporariamente
+                                 * para poder recuperá-los depois do login.
                                  */
 
                                 sessionStorage.setItem(
@@ -702,11 +690,11 @@
 
 
                             /* ==================================================
-                               CLIENTE LOGADO
+                               USUÁRIO ESTÁ LOGADO
                             ================================================== */
 
                             const usuario =
-                                sessao.session.user;
+                                sessao.user;
 
 
                             console.log(
@@ -714,7 +702,7 @@
                             );
 
                             console.log(
-                                "SOLICITAÇÃO DE CORRIDA"
+                                "NOVA SOLICITAÇÃO DE CORRIDA"
                             );
 
                             console.log(
@@ -779,11 +767,16 @@
                             }
 
 
+
                             /*
-                             * O INSERT no Supabase será feito
-                             * depois que confirmarmos as colunas
-                             * da tabela de corridas.
+                             * IMPORTANTE:
+                             *
+                             * Ainda não fazemos INSERT na tabela
+                             * "corridas" porque precisamos usar
+                             * exatamente os nomes das colunas
+                             * existentes no seu Supabase.
                              */
+
 
                             if (btnSolicitar) {
 
@@ -797,7 +790,8 @@
 
                 }
 
-            });
+            }
+        );
 
     </script>
 
@@ -805,3 +799,4 @@
 </body>
 
 </html>
+```
