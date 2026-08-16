@@ -9,6 +9,7 @@
 
     <title>VaidTáxi | Solicitar Corrida</title>
 
+
     <!-- ==================================================
          FONTE
     ================================================== -->
@@ -47,19 +48,17 @@
 
         <div class="container">
 
+
+            <!-- ==================================================
+                 LOGO
+            ================================================== -->
+
             <a href="index.html" class="logo">
 
-                <!--
-                    Primeiro tenta encontrar a logo dentro
-                    da pasta img.
-
-                    Se não encontrar, tenta na raiz do site.
-                -->
-
                 <img
-                    src="img/logo-vdb.png"
+                    src="logo-vdb.png"
                     alt="Logo VaidTáxi"
-                    onerror="this.onerror=null; this.src='logo-vdb.png';"
+                    onerror="this.onerror=null; this.src='img/logo-vdb.png';"
                 >
 
                 <h1>
@@ -67,6 +66,7 @@
                 </h1>
 
             </a>
+
 
 
             <!-- ==================================================
@@ -82,6 +82,7 @@
             >
                 ☰
             </button>
+
 
 
             <!-- ==================================================
@@ -122,6 +123,7 @@
 
         <div class="container">
 
+
             <!-- ==================================================
                  ÁREA DA CORRIDA
             ================================================== -->
@@ -151,14 +153,17 @@
                      CLIENTE LOGADO
                 ================================================== -->
 
-                <div class="usuario-logado">
+                <div
+                    class="usuario-logado"
+                    id="usuarioLogado"
+                >
 
                     <p>
 
                         Olá,
 
                         <strong id="nomeCliente">
-                            Cliente
+                            visitante
                         </strong>
 
                     </p>
@@ -242,7 +247,7 @@
 
 
                     <!-- ==================================================
-                         BOTÃO
+                         BOTÃO SOLICITAR
                     ================================================== -->
 
                     <button
@@ -252,6 +257,7 @@
                     >
                         Solicitar Corrida
                     </button>
+
 
                 </form>
 
@@ -285,7 +291,9 @@
     <script src="js/menu.js"></script>
 
 
-    <!-- SUPABASE -->
+    <!-- ==================================================
+         SUPABASE
+    ================================================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -299,409 +307,555 @@
 
     <script>
 
-        document.addEventListener("DOMContentLoaded", async function () {
-
-            /*
-             * ==================================================
-             * ELEMENTOS
-             * ==================================================
-             */
-
-            const form = document.getElementById("formCorrida");
-
-            const btnSair = document.getElementById("btnSair");
-
-            const nomeCliente =
-                document.getElementById("nomeCliente");
-
-            const mensagem =
-                document.getElementById("mensagemCorrida");
-
-            const btnSolicitar =
-                document.getElementById("btnSolicitar");
+        document.addEventListener(
+            "DOMContentLoaded",
+            async function () {
 
 
-            /*
-             * ==================================================
-             * VERIFICAÇÃO DO SUPABASE
-             * ==================================================
-             */
+                /* ==================================================
+                   ELEMENTOS
+                ================================================== */
 
-            if (typeof supabase === "undefined") {
-
-                console.error(
-                    "Supabase não foi carregado."
-                );
-
-                alert(
-                    "Erro ao conectar ao sistema. Recarregue a página."
-                );
-
-                return;
-            }
+                const form =
+                    document.getElementById(
+                        "formCorrida"
+                    );
 
 
-            /*
-             * ==================================================
-             * VERIFICAR LOGIN
-             * ==================================================
-             */
-
-            try {
-
-                const {
-                    data,
-                    error
-                } = await supabase.auth.getSession();
+                const btnSolicitar =
+                    document.getElementById(
+                        "btnSolicitar"
+                    );
 
 
-                if (error) {
+                const btnSair =
+                    document.getElementById(
+                        "btnSair"
+                    );
+
+
+                const nomeCliente =
+                    document.getElementById(
+                        "nomeCliente"
+                    );
+
+
+                const mensagem =
+                    document.getElementById(
+                        "mensagemCorrida"
+                    );
+
+
+                const usuarioLogado =
+                    document.getElementById(
+                        "usuarioLogado"
+                    );
+
+
+
+                /* ==================================================
+                   VERIFICAR SE O SUPABASE FOI CARREGADO
+                ================================================== */
+
+                if (
+                    typeof supabase === "undefined"
+                ) {
 
                     console.error(
-                        "Erro ao verificar sessão:",
+                        "Supabase não foi carregado."
+                    );
+
+                    return;
+
+                }
+
+
+
+                /* ==================================================
+                   VERIFICAR SESSÃO APENAS PARA ATUALIZAR A INTERFACE
+                   
+                   IMPORTANTE:
+                   NÃO REDIRECIONA O VISITANTE PARA O LOGIN.
+                   
+                   A página continua acessível normalmente.
+                ================================================== */
+
+                try {
+
+                    const {
+                        data,
                         error
-                    );
-
-                    window.location.href = "login.html";
-
-                    return;
-                }
+                    } =
+                        await supabase.auth.getSession();
 
 
-                /*
-                 * Usuário não está logado.
-                 */
+                    if (error) {
 
-                if (!data.session) {
+                        console.error(
+                            "Erro ao verificar sessão:",
+                            error
+                        );
 
-                    alert(
-                        "Você precisa estar logado como cliente para solicitar uma corrida."
-                    );
-
-                    window.location.href = "login.html";
-
-                    return;
-                }
+                    }
 
 
-                /*
-                 * Usuário autenticado.
-                 */
+                    /* ==================================================
+                       USUÁRIO ESTÁ LOGADO
+                    ================================================== */
 
-                const usuario = data.session.user;
+                    if (
+                        data &&
+                        data.session
+                    ) {
 
-
-                console.log(
-                    "Cliente autenticado:",
-                    usuario.email
-                );
-
-
-                /*
-                 * Mostra o e-mail enquanto
-                 * não buscamos o nome da tabela clientes.
-                 */
-
-                if (nomeCliente) {
-
-                    nomeCliente.textContent =
-                        usuario.email;
-
-                }
+                        const usuario =
+                            data.session.user;
 
 
-            } catch (erro) {
-
-                console.error(
-                    "Erro inesperado ao verificar login:",
-                    erro
-                );
-
-                window.location.href = "login.html";
-
-                return;
-            }
+                        console.log(
+                            "Cliente autenticado:",
+                            usuario.email
+                        );
 
 
+                        if (nomeCliente) {
 
-            /*
-             * ==================================================
-             * BOTÃO SAIR
-             * ==================================================
-             */
+                            nomeCliente.textContent =
+                                usuario.email;
 
-            if (btnSair) {
-
-                btnSair.addEventListener(
-                    "click",
-                    async function (event) {
-
-                        event.preventDefault();
+                        }
 
 
-                        try {
+                        /*
+                         * Mostra o botão Sair.
+                         */
 
-                            const {
-                                error
-                            } = await supabase.auth.signOut();
+                        if (btnSair) {
 
-
-                            if (error) {
-
-                                console.error(
-                                    "Erro ao sair:",
-                                    error
-                                );
-
-                                alert(
-                                    "Não foi possível sair da conta."
-                                );
-
-                                return;
-                            }
-
-
-                            window.location.href =
-                                "login.html";
-
-
-                        } catch (erro) {
-
-                            console.error(
-                                "Erro ao sair:",
-                                erro
-                            );
-
-                            window.location.href =
-                                "login.html";
+                            btnSair.style.display =
+                                "";
 
                         }
 
                     }
-                );
-
-            }
 
 
+                    /* ==================================================
+                       VISITANTE NÃO LOGADO
+                    ================================================== */
 
-            /*
-             * ==================================================
-             * FORMULÁRIO DE CORRIDA
-             * ==================================================
-             */
+                    else {
 
-            if (form) {
+                        console.log(
+                            "Visitante não autenticado."
+                        );
 
-                form.addEventListener(
-                    "submit",
-                    async function (event) {
 
-                        event.preventDefault();
+                        if (nomeCliente) {
+
+                            nomeCliente.textContent =
+                                "visitante";
+
+                        }
 
 
                         /*
-                         * Verifica novamente a sessão.
+                         * O visitante continua podendo
+                         * preencher o formulário.
                          */
 
-                        let sessaoAtual;
+                    }
 
 
-                        try {
+                } catch (erro) {
 
-                            const {
-                                data,
-                                error
-                            } = await supabase.auth.getSession();
+                    console.error(
+                        "Erro ao verificar sessão:",
+                        erro
+                    );
+
+                }
 
 
-                            if (
-                                error ||
-                                !data.session
-                            ) {
 
-                                alert(
-                                    "Sua sessão expirou. Faça login novamente."
+                /* ==================================================
+                   BOTÃO SAIR
+                   
+                   Só funciona se houver usuário logado.
+                ================================================== */
+
+                if (btnSair) {
+
+                    btnSair.addEventListener(
+                        "click",
+                        async function (event) {
+
+                            event.preventDefault();
+
+
+                            try {
+
+                                const {
+                                    data
+                                } =
+                                    await supabase.auth.getSession();
+
+
+                                /*
+                                 * Se não houver sessão,
+                                 * simplesmente vai para o login.
+                                 */
+
+                                if (
+                                    !data ||
+                                    !data.session
+                                ) {
+
+                                    window.location.href =
+                                        "login.html";
+
+                                    return;
+
+                                }
+
+
+                                /*
+                                 * Faz logout.
+                                 */
+
+                                const {
+                                    error
+                                } =
+                                    await supabase.auth.signOut();
+
+
+                                if (error) {
+
+                                    console.error(
+                                        "Erro ao sair:",
+                                        error
+                                    );
+
+                                    alert(
+                                        "Não foi possível sair da conta."
+                                    );
+
+                                    return;
+
+                                }
+
+
+                                window.location.href =
+                                    "login.html";
+
+
+                            } catch (erro) {
+
+                                console.error(
+                                    "Erro ao sair:",
+                                    erro
                                 );
 
                                 window.location.href =
                                     "login.html";
 
+                            }
+
+                        }
+                    );
+
+                }
+
+
+
+                /* ==================================================
+                   ENVIO DO FORMULÁRIO
+                ================================================== */
+
+                if (form) {
+
+                    form.addEventListener(
+                        "submit",
+                        async function (event) {
+
+                            event.preventDefault();
+
+
+
+                            /* ==================================================
+                               PEGAR OS DADOS PRIMEIRO
+                               
+                               O visitante pode preencher tudo normalmente.
+                            ================================================== */
+
+                            const origem =
+                                document
+                                    .getElementById(
+                                        "origem"
+                                    )
+                                    .value
+                                    .trim();
+
+
+                            const destino =
+                                document
+                                    .getElementById(
+                                        "destino"
+                                    )
+                                    .value
+                                    .trim();
+
+
+                            const observacao =
+                                document
+                                    .getElementById(
+                                        "observacao"
+                                    )
+                                    .value
+                                    .trim();
+
+
+
+                            /* ==================================================
+                               VALIDAR CAMPOS
+                            ================================================== */
+
+                            if (!origem) {
+
+                                alert(
+                                    "Digite o local de partida."
+                                );
+
+                                document
+                                    .getElementById(
+                                        "origem"
+                                    )
+                                    .focus();
+
                                 return;
+
                             }
 
 
-                            sessaoAtual =
-                                data.session;
+                            if (!destino) {
+
+                                alert(
+                                    "Digite o destino."
+                                );
+
+                                document
+                                    .getElementById(
+                                        "destino"
+                                    )
+                                    .focus();
+
+                                return;
+
+                            }
 
 
-                        } catch (erro) {
 
-                            console.error(
-                                "Erro ao verificar sessão:",
-                                erro
+                            /* ==================================================
+                               AGORA SIM VERIFICAR LOGIN
+                               
+                               ESTE É O PONTO IMPORTANTE.
+                               
+                               O visitante só será impedido aqui,
+                               quando tentar solicitar a corrida.
+                            ================================================== */
+
+                            let dataSessao;
+
+
+                            try {
+
+                                const resultado =
+                                    await supabase.auth.getSession();
+
+
+                                dataSessao =
+                                    resultado.data;
+
+
+                                if (
+                                    resultado.error
+                                ) {
+
+                                    console.error(
+                                        "Erro ao verificar sessão:",
+                                        resultado.error
+                                    );
+
+                                }
+
+                            } catch (erro) {
+
+                                console.error(
+                                    "Erro ao verificar sessão:",
+                                    erro
+                                );
+
+
+                                alert(
+                                    "Não foi possível verificar sua sessão. Tente novamente."
+                                );
+
+                                return;
+
+                            }
+
+
+
+                            /* ==================================================
+                               NÃO ESTÁ LOGADO
+                            ================================================== */
+
+                            if (
+                                !dataSessao ||
+                                !dataSessao.session
+                            ) {
+
+                                /*
+                                 * Guarda temporariamente os dados
+                                 * para podermos recuperar depois
+                                 * do login.
+                                 */
+
+                                sessionStorage.setItem(
+                                    "corridaOrigem",
+                                    origem
+                                );
+
+
+                                sessionStorage.setItem(
+                                    "corridaDestino",
+                                    destino
+                                );
+
+
+                                sessionStorage.setItem(
+                                    "corridaObservacao",
+                                    observacao
+                                );
+
+
+                                alert(
+                                    "Para solicitar uma corrida, você precisa estar logado como cliente."
+                                );
+
+
+                                window.location.href =
+                                    "login.html";
+
+
+                                return;
+
+                            }
+
+
+
+                            /* ==================================================
+                               USUÁRIO ESTÁ LOGADO
+                            ================================================== */
+
+                            const usuario =
+                                dataSessao.session.user;
+
+
+                            console.log(
+                                "================================"
                             );
 
-                            alert(
-                                "Não foi possível verificar sua sessão."
+                            console.log(
+                                "SOLICITAÇÃO DE CORRIDA"
                             );
 
-                            return;
-                        }
-
-
-
-                        /*
-                         * ==================================================
-                         * PEGAR DADOS
-                         * ==================================================
-                         */
-
-                        const origem =
-                            document
-                                .getElementById("origem")
-                                .value
-                                .trim();
-
-
-                        const destino =
-                            document
-                                .getElementById("destino")
-                                .value
-                                .trim();
-
-
-                        const observacao =
-                            document
-                                .getElementById("observacao")
-                                .value
-                                .trim();
-
-
-
-                        /*
-                         * ==================================================
-                         * VALIDAÇÃO
-                         * ==================================================
-                         */
-
-                        if (!origem) {
-
-                            alert(
-                                "Digite o local de partida."
+                            console.log(
+                                "Cliente:",
+                                usuario.id
                             );
 
-                            document
-                                .getElementById("origem")
-                                .focus();
-
-                            return;
-                        }
-
-
-                        if (!destino) {
-
-                            alert(
-                                "Digite o destino."
+                            console.log(
+                                "E-mail:",
+                                usuario.email
                             );
 
-                            document
-                                .getElementById("destino")
-                                .focus();
+                            console.log(
+                                "Origem:",
+                                origem
+                            );
 
-                            return;
-                        }
+                            console.log(
+                                "Destino:",
+                                destino
+                            );
 
+                            console.log(
+                                "Observação:",
+                                observacao
+                            );
 
-
-                        /*
-                         * ==================================================
-                         * DADOS DA CORRIDA
-                         * ==================================================
-                         *
-                         * Por enquanto não fazemos INSERT no Supabase
-                         * porque ainda precisamos confirmar exatamente
-                         * os nomes das colunas da tabela "corridas".
-                         */
-
-                        console.log(
-                            "================================"
-                        );
-
-                        console.log(
-                            "NOVA SOLICITAÇÃO DE CORRIDA"
-                        );
-
-                        console.log(
-                            "Cliente:",
-                            sessaoAtual.user.id
-                        );
-
-                        console.log(
-                            "E-mail:",
-                            sessaoAtual.user.email
-                        );
-
-                        console.log(
-                            "Origem:",
-                            origem
-                        );
-
-                        console.log(
-                            "Destino:",
-                            destino
-                        );
-
-                        console.log(
-                            "Observação:",
-                            observacao
-                        );
-
-                        console.log(
-                            "================================"
-                        );
+                            console.log(
+                                "================================"
+                            );
 
 
 
-                        /*
-                         * ==================================================
-                         * MENSAGEM
-                         * ==================================================
-                         */
+                            /* ==================================================
+                               DESABILITAR BOTÃO
+                            ================================================== */
 
-                        if (mensagem) {
+                            if (btnSolicitar) {
 
-                            mensagem.style.display =
-                                "block";
+                                btnSolicitar.disabled =
+                                    true;
 
-                            mensagem.textContent =
-                                "Solicitação preparada com sucesso.";
+                                btnSolicitar.textContent =
+                                    "Processando...";
+
+                            }
+
+
+
+                            /* ==================================================
+                               MENSAGEM TEMPORÁRIA
+                               
+                               O INSERT NO SUPABASE SERÁ COLOCADO
+                               DEPOIS QUE CONFIRMARMOS AS COLUNAS
+                               DA SUA TABELA "corridas".
+                            ================================================== */
+
+                            if (mensagem) {
+
+                                mensagem.style.display =
+                                    "block";
+
+                                mensagem.textContent =
+                                    "Cliente autenticado. Solicitação preparada para envio.";
+
+                            }
+
+
+
+                            /*
+                             * Por enquanto o formulário não faz INSERT
+                             * no banco para não inventarmos nomes de
+                             * colunas que podem não existir.
+                             */
+
+                            if (btnSolicitar) {
+
+                                btnSolicitar.textContent =
+                                    "Solicitação preparada";
+
+                            }
 
                         }
+                    );
 
+                }
 
-
-                        /*
-                         * ==================================================
-                         * BOTÃO
-                         * ==================================================
-                         */
-
-                        if (btnSolicitar) {
-
-                            btnSolicitar.disabled =
-                                true;
-
-                            btnSolicitar.textContent =
-                                "Solicitação preparada";
-
-                        }
-
-                    }
-                );
-
-            }
-
-        });
+            });
 
     </script>
 
