@@ -1,729 +1,472 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
 
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Solicitar Corrida | VaidTáxi</title>
+    <title>VaidTáxi | Solicitar Corrida</title>
 
-
-    <!-- =====================================================
-         FONTE
-    ====================================================== -->
-
+    <!-- FONTE -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet"
     >
 
-
-    <!-- =====================================================
-         FONT AWESOME
-    ====================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    >
-
-
-    <!-- =====================================================
-         CSS PADRÃO DO VAIDTÁXI
-    ====================================================== -->
-
+    <!-- CSS PRINCIPAL -->
     <link rel="stylesheet" href="css/style.css">
 
+    <!-- RESPONSIVIDADE -->
     <link rel="stylesheet" href="css/responsive.css">
 
+    <!-- ANIMAÇÕES -->
     <link rel="stylesheet" href="css/animations.css">
 
 </head>
 
-
 <body>
 
+    <!-- ==================================================
+         MENU
+    ================================================== -->
 
-<!-- =========================================================
-     CABEÇALHO
-========================================================== -->
-
-<header>
-
-    <div class="container">
-
-
-        <!-- LOGO -->
-
-        <a href="index.html" class="logo">
-
-            <img
-                src="img/logo-vdb.png"
-                alt="Logo VaidTáxi"
-            >
-
-            <h1>
-                Vaid<span>Táxi</span>
-            </h1>
-
-        </a>
-
-
-        <!-- MENU -->
-
-        <nav>
-
-            <a href="index.html">
-                Início
-            </a>
-
-            <a href="motoristas.html">
-                Motoristas
-            </a>
-
-            <a
-                href="corrida.html"
-                class="active"
-            >
-                Corridas
-            </a>
-
-            <a href="pagamentos.html">
-                Pagamentos
-            </a>
-
-            <a href="contato.html">
-                Contato
-            </a>
-
-        </nav>
-
-
-        <!-- BOTÕES -->
-
-        <div class="header-buttons">
-
-            <a
-                href="cliente.html"
-                class="btn-outline"
-            >
-                Minha Conta
-            </a>
-
-        </div>
-
-
-        <!-- MENU MOBILE -->
-
-        <div id="menu-mobile">
-
-            <i class="fa-solid fa-bars"></i>
-
-        </div>
-
-    </div>
-
-</header>
-
-
-
-<!-- =========================================================
-     CONTEÚDO PRINCIPAL
-========================================================== -->
-
-<main>
-
-
-    <!-- =====================================================
-         BANNER
-    ====================================================== -->
-
-    <section class="page-banner">
+    <header class="header">
 
         <div class="container">
 
-            <h1>
-                Solicitar <span>Corrida</span>
-            </h1>
-
-            <p>
-                Informe sua origem e destino para solicitar
-                uma corrida pelo VaidTáxi.
-            </p>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         SOLICITAÇÃO DE CORRIDA
-    ====================================================== -->
-
-    <section class="container">
-
-        <div class="section-title">
-
-            <h2>
-                Onde você <span>está?</span>
-            </h2>
-
-            <p>
-                Informe os locais da sua viagem.
-            </p>
-
-        </div>
-
-
-        <form
-            class="form-corrida"
-            id="formCorrida"
-        >
-
-
-            <!-- =================================================
-                 ORIGEM
-            ================================================== -->
-
-            <div class="form-group">
-
-                <label for="origem">
-
-                    <i class="fa-solid fa-location-dot"></i>
-
-                    Local de origem
-
-                </label>
-
-
-                <input
-                    type="text"
-                    id="origem"
-                    name="origem"
-                    placeholder="Digite onde você está"
-                    autocomplete="street-address"
-                    required
-                >
-
-            </div>
-
-
-
-            <!-- =================================================
-                 DESTINO
-            ================================================== -->
-
-            <div class="form-group">
-
-                <label for="destino">
-
-                    <i class="fa-solid fa-flag-checkered"></i>
-
-                    Destino
-
-                </label>
-
-
-                <input
-                    type="text"
-                    id="destino"
-                    name="destino"
-                    placeholder="Digite para onde deseja ir"
-                    autocomplete="street-address"
-                    required
-                >
-
-            </div>
-
-
-
-            <!-- =================================================
-                 OBSERVAÇÃO
-            ================================================== -->
-
-            <div class="form-group">
-
-                <label for="observacao">
-
-                    <i class="fa-solid fa-comment"></i>
-
-                    Observação
-
-                </label>
-
-
-                <textarea
-                    id="observacao"
-                    name="observacao"
-                    rows="4"
-                    placeholder="Alguma informação importante para o motorista?"
-                ></textarea>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 TIPO DE SERVIÇO
-            ================================================== -->
-
-            <div class="form-group">
-
-                <label for="tipoServico">
-
-                    <i class="fa-solid fa-taxi"></i>
-
-                    Tipo de serviço
-
-                </label>
-
-
-                <select
-                    id="tipoServico"
-                    name="tipoServico"
-                    required
-                >
-
-                    <option
-                        value=""
-                        selected
-                        disabled
-                    >
-                        Selecione o serviço
-                    </option>
-
-                    <option value="taxi">
-
-                        Táxi Urbano
-
-                    </option>
-
-                    <option value="intermunicipal">
-
-                        Viagem Intermunicipal
-
-                    </option>
-
-                    <option value="frete">
-
-                        Frete
-
-                    </option>
-
-                    <option value="hospitalar">
-
-                        Transporte Hospitalar
-
-                    </option>
-
-                </select>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 PAGAMENTO
-            ================================================== -->
-
-            <div class="form-group">
-
-                <label for="formaPagamento">
-
-                    <i class="fa-solid fa-wallet"></i>
-
-                    Forma de pagamento
-
-                </label>
-
-
-                <select
-                    id="formaPagamento"
-                    name="formaPagamento"
-                    required
-                >
-
-                    <option
-                        value=""
-                        selected
-                        disabled
-                    >
-                        Selecione a forma de pagamento
-                    </option>
-
-                    <option value="pix">
-
-                        Pix
-
-                    </option>
-
-                    <option value="dinheiro">
-
-                        Dinheiro
-
-                    </option>
-
-                    <option value="cartao">
-
-                        Cartão
-
-                    </option>
-
-                </select>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 BOTÃO
-            ================================================== -->
-
-            <button
-                type="submit"
-                class="btn"
-                id="btnSolicitarCorrida"
-            >
-
-                <i class="fa-solid fa-taxi"></i>
-
-                Solicitar Corrida
-
+            <a href="index.html" class="logo">
+                Vaid<span>Táxi</span>
+            </a>
+
+            <button class="menu-toggle" id="menuToggle">
+                ☰
             </button>
 
+            <nav class="menu" id="menu">
 
-            <!-- =================================================
-                 MENSAGEM
-            ================================================== -->
+                <a href="index.html">Início</a>
 
-            <p
-                id="mensagemCorrida"
-                style="
-                    margin-top: 15px;
-                    text-align: center;
-                    font-size: 14px;
-                "
-            ></p>
+                <a href="motoristas.html">Motoristas</a>
 
+                <a href="corrida.html" class="active">
+                    Solicitar Corrida
+                </a>
 
-        </form>
+                <a href="#" id="btnSair">
+                    Sair
+                </a>
 
-    </section>
-
-
-
-    <!-- =====================================================
-         MAPA
-    ====================================================== -->
-
-    <section class="container">
-
-        <div class="section-title">
-
-            <h2>
-                Localização <span>da Corrida</span>
-            </h2>
-
-            <p>
-                Em breve você poderá acompanhar sua localização
-                e a rota da corrida pelo mapa.
-            </p>
+            </nav>
 
         </div>
 
+    </header>
 
-        <div
-            class="card"
-            id="mapaCorrida"
-        >
 
-            <i class="fa-solid fa-map-location-dot"></i>
+    <!-- ==================================================
+         CONTEÚDO
+    ================================================== -->
 
-            <h3>
-                Mapa da Corrida
-            </h3>
+    <main class="corrida-page">
 
-            <p>
-                O mapa será carregado aqui quando a integração
-                de localização estiver ativa.
-            </p>
+        <div class="container">
+
+            <section class="corrida-container">
+
+                <div class="corrida-header">
+
+                    <h1>
+                        Solicitar <span>Corrida</span>
+                    </h1>
+
+                    <p>
+                        Informe os dados da sua corrida para encontrar um motorista.
+                    </p>
+
+                </div>
+
+
+                <!-- USUÁRIO LOGADO -->
+
+                <div class="usuario-logado">
+
+                    <p>
+                        Olá,
+                        <strong id="nomeCliente">
+                            Cliente
+                        </strong>
+                    </p>
+
+                </div>
+
+
+                <!-- FORMULÁRIO -->
+
+                <form id="formCorrida">
+
+                    <!-- ORIGEM -->
+
+                    <div class="form-group">
+
+                        <label for="origem">
+                            Local de partida
+                        </label>
+
+                        <input
+                            type="text"
+                            id="origem"
+                            name="origem"
+                            placeholder="Digite o local de partida"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DESTINO -->
+
+                    <div class="form-group">
+
+                        <label for="destino">
+                            Destino
+                        </label>
+
+                        <input
+                            type="text"
+                            id="destino"
+                            name="destino"
+                            placeholder="Digite o destino"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- OBSERVAÇÃO -->
+
+                    <div class="form-group">
+
+                        <label for="observacao">
+                            Observação
+                        </label>
+
+                        <textarea
+                            id="observacao"
+                            name="observacao"
+                            placeholder="Alguma informação para o motorista? (opcional)"
+                            rows="4"
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- BOTÃO -->
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        id="btnSolicitar"
+                    >
+                        Solicitar Corrida
+                    </button>
+
+                </form>
+
+
+                <!-- MENSAGEM -->
+
+                <div
+                    id="mensagemCorrida"
+                    class="mensagem"
+                    style="display:none;"
+                ></div>
+
+            </section>
 
         </div>
 
-    </section>
+    </main>
 
 
+    <!-- ==================================================
+         SCRIPTS
+    ================================================== -->
 
-    <!-- =====================================================
-         MOTORISTAS DISPONÍVEIS
-    ====================================================== -->
+    <script src="js/menu.js"></script>
 
-    <section class="container">
+    <!-- SUPABASE -->
 
-        <div class="section-title">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-            <h2>
-                Motoristas <span>Disponíveis</span>
-            </h2>
+    <script src="js/supabase.js"></script>
 
-            <p>
-                Depois de informar origem e destino,
-                os motoristas disponíveis aparecerão aqui.
-            </p>
 
-        </div>
+    <!-- ==================================================
+         PROTEÇÃO DA PÁGINA
+    ================================================== -->
 
+    <script>
 
-        <div
-            class="cards"
-            id="listaMotoristas"
-        >
+        document.addEventListener("DOMContentLoaded", async function () {
 
+            try {
 
-            <!-- MOTORISTA 1 -->
+                /*
+                 * Verifica se existe uma sessão ativa
+                 * no Supabase.
+                 */
 
-            <div class="card">
+                const {
+                    data: { session },
+                    error
+                } = await supabase.auth.getSession();
 
-                <i class="fa-solid fa-user-taxi"></i>
 
-                <h3>
-                    Aguardando motoristas
-                </h3>
+                if (error) {
 
-                <p>
-                    Os motoristas disponíveis serão exibidos
-                    nesta área.
-                </p>
+                    console.error(
+                        "Erro ao verificar sessão:",
+                        error
+                    );
 
-            </div>
+                    window.location.href = "login.html";
 
+                    return;
 
-        </div>
+                }
 
-    </section>
 
+                /*
+                 * Se não existir sessão,
+                 * o usuário não está logado.
+                 */
 
+                if (!session) {
 
-    <!-- =====================================================
-         RESUMO DA CORRIDA
-    ====================================================== -->
+                    alert(
+                        "Você precisa estar logado como cliente para solicitar uma corrida."
+                    );
 
-    <section class="container">
+                    window.location.href = "login.html";
 
-        <div class="section-title">
+                    return;
 
-            <h2>
-                Resumo da <span>Corrida</span>
-            </h2>
+                }
 
-        </div>
 
+                /*
+                 * Usuário autenticado.
+                 * Podemos liberar a página.
+                 */
 
-        <div
-            class="card"
-            id="resumoCorrida"
-        >
+                console.log(
+                    "Cliente autenticado:",
+                    session.user.email
+                );
 
 
-            <p>
+                /*
+                 * Mostra o e-mail do usuário
+                 * enquanto ainda não buscamos
+                 * o nome na tabela de clientes.
+                 */
 
-                <strong>
-                    Origem:
-                </strong>
+                const nomeCliente =
+                    document.getElementById("nomeCliente");
 
-                <span id="resumoOrigem">
-                    Não informada
-                </span>
 
-            </p>
+                if (nomeCliente) {
 
+                    nomeCliente.textContent =
+                        session.user.email;
 
-            <p>
+                }
 
-                <strong>
-                    Destino:
-                </strong>
 
-                <span id="resumoDestino">
-                    Não informado
-                </span>
+            } catch (erro) {
 
-            </p>
+                console.error(
+                    "Erro inesperado:",
+                    erro
+                );
 
+                window.location.href = "login.html";
 
-            <p>
+            }
 
-                <strong>
-                    Serviço:
-                </strong>
+        });
 
-                <span id="resumoServico">
-                    Não selecionado
-                </span>
 
-            </p>
+        /*
+         * BOTÃO SAIR
+         */
 
+        document.addEventListener("DOMContentLoaded", function () {
 
-            <p>
+            const btnSair =
+                document.getElementById("btnSair");
 
-                <strong>
-                    Pagamento:
-                </strong>
 
-                <span id="resumoPagamento">
-                    Não selecionado
-                </span>
+            if (!btnSair) {
+                return;
+            }
 
-            </p>
 
+            btnSair.addEventListener(
+                "click",
+                async function (event) {
 
-            <p>
+                    event.preventDefault();
 
-                <strong>
-                    Motorista:
-                </strong>
 
-                <span id="resumoMotorista">
-                    Aguardando seleção
-                </span>
+                    try {
 
-            </p>
+                        const {
+                            error
+                        } = await supabase.auth.signOut();
 
 
-            <button
-                type="button"
-                class="btn"
-                id="btnConfirmarCorrida"
-            >
+                        if (error) {
 
-                <i class="fa-solid fa-check"></i>
+                            console.error(
+                                "Erro ao sair:",
+                                error
+                            );
 
-                Confirmar Corrida
+                            alert(
+                                "Não foi possível sair."
+                            );
 
-            </button>
+                            return;
 
+                        }
 
-        </div>
 
-    </section>
+                        window.location.href =
+                            "login.html";
 
 
+                    } catch (erro) {
 
-    <!-- =====================================================
-         STATUS DA CORRIDA
-    ====================================================== -->
+                        console.error(erro);
 
-    <section class="container">
+                        window.location.href =
+                            "login.html";
 
-        <div class="section-title">
+                    }
 
-            <h2>
-                Status da <span>Corrida</span>
-            </h2>
+                }
+            );
 
-        </div>
+        });
 
 
-        <div class="card">
+        /*
+         * FORMULÁRIO
+         *
+         * Por enquanto apenas impede o envio.
+         * Depois vamos ligar esta parte à tabela
+         * de corridas do Supabase.
+         */
 
-            <i class="fa-solid fa-circle-info"></i>
+        document.addEventListener("DOMContentLoaded", function () {
 
-            <h3 id="statusCorrida">
+            const form =
+                document.getElementById("formCorrida");
 
-                Nenhuma corrida solicitada
 
-            </h3>
+            if (!form) {
+                return;
+            }
 
 
-            <p id="descricaoStatus">
+            form.addEventListener(
+                "submit",
+                async function (event) {
 
-                Quando uma corrida for solicitada,
-                o status aparecerá nesta área.
+                    event.preventDefault();
 
-            </p>
 
-        </div>
+                    const {
+                        data: { session }
+                    } = await supabase.auth.getSession();
 
-    </section>
 
+                    /*
+                     * Segurança extra:
+                     * mesmo que alguém tente enviar
+                     * o formulário sem sessão.
+                     */
 
-</main>
+                    if (!session) {
 
+                        alert(
+                            "Sua sessão expirou. Faça login novamente."
+                        );
 
+                        window.location.href =
+                            "login.html";
 
-<!-- =========================================================
-     RODAPÉ
-========================================================== -->
+                        return;
 
-<footer>
+                    }
 
-    <div class="container">
 
-        <p>
+                    const origem =
+                        document.getElementById("origem").value.trim();
 
-            ©
 
-            <span id="ano"></span>
+                    const destino =
+                        document.getElementById("destino").value.trim();
 
-            VaidTáxi - Todos os direitos reservados.
 
-        </p>
+                    const observacao =
+                        document.getElementById("observacao").value.trim();
 
-    </div>
 
-</footer>
+                    if (!origem || !destino) {
 
+                        alert(
+                            "Preencha o local de partida e o destino."
+                        );
 
+                        return;
 
-<!-- =========================================================
-     JAVASCRIPT
-========================================================== -->
+                    }
 
-<script src="js/menu.js"></script>
 
+                    /*
+                     * Ainda não envia para o banco.
+                     *
+                     * Primeiro vamos confirmar que a
+                     * proteção e o login estão funcionando.
+                     */
 
-<!-- =====================================================
-     SUPABASE
-====================================================== -->
+                    console.log({
+                        cliente_id: session.user.id,
+                        origem: origem,
+                        destino: destino,
+                        observacao: observacao
+                    });
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="js/supabase.js"></script>
+                    alert(
+                        "Cliente autenticado! A próxima etapa será registrar esta corrida no Supabase."
+                    );
 
+                }
+            );
 
-<!-- =====================================================
-     CORRIDAS
-====================================================== -->
+        });
 
-<script src="js/corrida.js"></script>
-
-
-
-<!-- =========================================================
-     ANO
-========================================================== -->
-
-<script>
-
-    const elementoAno =
-        document.getElementById("ano");
-
-
-    if (elementoAno) {
-
-        elementoAno.textContent =
-            new Date().getFullYear();
-
-    }
-
-</script>
-
+    </script>
 
 </body>
 
 </html>
+```
