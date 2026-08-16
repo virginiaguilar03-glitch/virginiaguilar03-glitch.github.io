@@ -4,36 +4,794 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>VaidTáxi | Área do Parceiro</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <!-- FONTE -->
+    <title>Painel do Parceiro | VaidTáxi</title>
+
+
+    <!-- =====================================================
+         FONTE
+    ====================================================== -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet"
     >
 
-    <!-- FONT AWESOME -->
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
 
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
-    <!-- CSS PADRÃO DO VAIDTÁXI -->
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/animations.css">
+    <!-- =====================================================
+         CSS PADRÃO VAIDTÁXI
+    ====================================================== -->
 
-    <!-- CSS ESPECÍFICO DO PARCEIRO -->
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
-    <link rel="stylesheet" href="css/parceiro.css">
+    <link
+        rel="stylesheet"
+        href="css/responsive.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/animations.css"
+    >
+
+
+    <!-- =====================================================
+         SUPABASE
+    ====================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/supabase.js"></script>
+
+
+    <!-- =====================================================
+         ESTILO ESPECÍFICO DO PAINEL
+    ====================================================== -->
+
+    <style>
+
+        /* ==================================================
+           PAINEL
+        ================================================== */
+
+        .painel-parceiro {
+
+            padding: 50px 0 80px;
+
+        }
+
+
+        /* ==================================================
+           CABEÇALHO DO PAINEL
+        ================================================== */
+
+        .painel-topo {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 35px;
+
+        }
+
+
+        .painel-boas-vindas h2 {
+
+            font-size: 28px;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .painel-boas-vindas h2 span {
+
+            color: #FFD400;
+
+        }
+
+
+        .painel-boas-vindas p {
+
+            color: #999;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ==================================================
+           STATUS
+        ================================================== */
+
+        .status-motorista {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            background: #1a1a1a;
+
+            border: 1px solid #292929;
+
+            border-radius: 10px;
+
+            padding: 12px 18px;
+
+        }
+
+
+        .status-indicador {
+
+            width: 11px;
+
+            height: 11px;
+
+            border-radius: 50%;
+
+            background: #777;
+
+        }
+
+
+        .status-indicador.online {
+
+            background: #00cc66;
+
+        }
+
+
+        .status-texto {
+
+            font-size: 14px;
+
+            color: #ddd;
+
+        }
+
+
+        .btn-status {
+
+            border: none;
+
+            background: #FFD400;
+
+            color: #111;
+
+            padding: 8px 14px;
+
+            border-radius: 7px;
+
+            font-family: 'Poppins', sans-serif;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+
+        /* ==================================================
+           CARDS DE RESUMO
+        ================================================== */
+
+        .resumo-parceiro {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 20px;
+
+            margin-bottom: 35px;
+
+        }
+
+
+        .resumo-card {
+
+            background: #1a1a1a;
+
+            border: 1px solid #292929;
+
+            border-radius: 14px;
+
+            padding: 22px;
+
+        }
+
+
+        .resumo-card i {
+
+            color: #FFD400;
+
+            font-size: 22px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .resumo-card h3 {
+
+            font-size: 25px;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .resumo-card p {
+
+            color: #888;
+
+            font-size: 13px;
+
+        }
+
+
+        /* ==================================================
+           GRID PRINCIPAL
+        ================================================== */
+
+        .painel-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                2fr 1fr;
+
+            gap: 25px;
+
+        }
+
+
+        /* ==================================================
+           BLOCOS
+        ================================================== */
+
+        .painel-bloco {
+
+            background: #1a1a1a;
+
+            border: 1px solid #292929;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .painel-bloco:last-child {
+
+            margin-bottom: 0;
+
+        }
+
+
+        .painel-bloco-titulo {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .painel-bloco-titulo h3 {
+
+            font-size: 19px;
+
+        }
+
+
+        .painel-bloco-titulo i {
+
+            color: #FFD400;
+
+            margin-right: 7px;
+
+        }
+
+
+        /* ==================================================
+           PERFIL
+        ================================================== */
+
+        .perfil-parceiro {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+        }
+
+
+        .foto-parceiro {
+
+            width: 75px;
+
+            height: 75px;
+
+            border-radius: 50%;
+
+            background: #FFD400;
+
+            color: #111;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 30px;
+
+        }
+
+
+        .dados-parceiro h4 {
+
+            font-size: 18px;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .dados-parceiro p {
+
+            color: #888;
+
+            font-size: 13px;
+
+            margin: 3px 0;
+
+        }
+
+
+        /* ==================================================
+           VEÍCULO
+        ================================================== */
+
+        .veiculo-info {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 15px;
+
+        }
+
+
+        .veiculo-item {
+
+            background: #111;
+
+            border-radius: 9px;
+
+            padding: 14px;
+
+        }
+
+
+        .veiculo-item small {
+
+            display: block;
+
+            color: #777;
+
+            font-size: 11px;
+
+            margin-bottom: 4px;
+
+        }
+
+
+        .veiculo-item strong {
+
+            font-size: 14px;
+
+        }
+
+
+        /* ==================================================
+           CORRIDAS
+        ================================================== */
+
+        .corrida-item {
+
+            border: 1px solid #292929;
+
+            border-radius: 10px;
+
+            padding: 17px;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .corrida-item:last-child {
+
+            margin-bottom: 0;
+
+        }
+
+
+        .corrida-cabecalho {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 10px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .corrida-cabecalho strong {
+
+            font-size: 14px;
+
+        }
+
+
+        .corrida-status {
+
+            color: #FFD400;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        .corrida-local {
+
+            color: #aaa;
+
+            font-size: 13px;
+
+            line-height: 1.7;
+
+        }
+
+
+        .corrida-local i {
+
+            color: #FFD400;
+
+            width: 18px;
+
+        }
+
+
+        .btn-corrida {
+
+            margin-top: 12px;
+
+            width: 100%;
+
+            border: none;
+
+            background: #FFD400;
+
+            color: #111;
+
+            padding: 10px;
+
+            border-radius: 7px;
+
+            font-family: 'Poppins', sans-serif;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+
+        /* ==================================================
+           GANHOS
+        ================================================== */
+
+        .ganho-principal {
+
+            text-align: center;
+
+            padding: 15px 0 25px;
+
+        }
+
+
+        .ganho-principal span {
+
+            display: block;
+
+            color: #888;
+
+            font-size: 13px;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .ganho-principal strong {
+
+            font-size: 32px;
+
+            color: #FFD400;
+
+        }
+
+
+        .ganhos-lista {
+
+            border-top: 1px solid #292929;
+
+            padding-top: 15px;
+
+        }
+
+
+        .ganho-linha {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 8px 0;
+
+            font-size: 13px;
+
+        }
+
+
+        .ganho-linha span {
+
+            color: #888;
+
+        }
+
+
+        /* ==================================================
+           AVALIAÇÃO
+        ================================================== */
+
+        .avaliacao {
+
+            text-align: center;
+
+        }
+
+
+        .nota {
+
+            font-size: 42px;
+
+            font-weight: 700;
+
+            color: #FFD400;
+
+        }
+
+
+        .estrelas {
+
+            color: #FFD400;
+
+            font-size: 20px;
+
+            margin: 5px 0;
+
+        }
+
+
+        .avaliacao p {
+
+            color: #888;
+
+            font-size: 13px;
+
+        }
+
+
+        /* ==================================================
+           MENU DE AÇÕES
+        ================================================== */
+
+        .acoes-parceiro {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 12px;
+
+        }
+
+
+        .acao {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 14px;
+
+            border: 1px solid #292929;
+
+            border-radius: 9px;
+
+            text-decoration: none;
+
+            color: #ddd;
+
+            transition: 0.2s;
+
+        }
+
+
+        .acao:hover {
+
+            border-color: #FFD400;
+
+            color: #FFD400;
+
+        }
+
+
+        .acao i {
+
+            color: #FFD400;
+
+        }
+
+
+        /* ==================================================
+           SAIR
+        ================================================== */
+
+        .btn-sair {
+
+            border: none;
+
+            background: transparent;
+
+            color: #999;
+
+            font-family: 'Poppins', sans-serif;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+        }
+
+
+        .btn-sair:hover {
+
+            color: #FFD400;
+
+        }
+
+
+        /* ==================================================
+           RESPONSIVIDADE
+        ================================================== */
+
+        @media (max-width: 1000px) {
+
+            .resumo-parceiro {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+
+            .painel-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .painel-topo {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+            }
+
+
+            .resumo-parceiro {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .veiculo-info {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .acoes-parceiro {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -41,303 +799,133 @@
 <body>
 
 
-<div class="parceiro-layout">
+<!-- =========================================================
+     CABEÇALHO
+========================================================== -->
+
+<header>
+
+    <div class="container">
+
+        <a href="index.html" class="logo">
+
+            <img
+                src="logo-vdb.png"
+                alt="Logo VaidTáxi"
+            >
+
+            <h1>
+                Vaid<span>Táxi</span>
+            </h1>
+
+        </a>
 
 
-    <!-- =====================================================
-         MENU LATERAL
-    ====================================================== -->
-
-    <aside class="parceiro-sidebar">
-
-
-        <!-- LOGO -->
-
-        <div class="parceiro-logo">
+        <nav>
 
             <a href="index.html">
-
-                <img
-                    src="logo-vdb.png"
-                    alt="VaidTáxi"
-                >
-
-                <h2>
-                    Vaid<span>Táxi</span>
-                </h2>
-
+                Início
             </a>
 
-        </div>
-
-
-        <!-- MENU -->
-
-        <nav class="parceiro-menu">
-
-
-            <a
-                href="#"
-                class="parceiro-menu-item ativo"
-            >
-
-                <i class="fa-solid fa-house"></i>
-
-                <span>
-                    Início
-                </span>
-
+            <a href="motoristas.html">
+                Motoristas
             </a>
 
-
-            <a
-                href="#"
-                class="parceiro-menu-item"
-            >
-
-                <i class="fa-solid fa-user"></i>
-
-                <span>
-                    Meu Perfil
-                </span>
-
+            <a href="corrida.html">
+                Corridas
             </a>
 
-
-            <a
-                href="#"
-                class="parceiro-menu-item"
-            >
-
-                <i class="fa-solid fa-car"></i>
-
-                <span>
-                    Meu Veículo
-                </span>
-
+            <a href="pagamentos.html">
+                Pagamentos
             </a>
 
-
-            <a
-                href="#"
-                class="parceiro-menu-item"
-            >
-
-                <i class="fa-solid fa-file-lines"></i>
-
-                <span>
-                    Documentos
-                </span>
-
+            <a href="contato.html">
+                Contato
             </a>
-
-
-            <a
-                href="#"
-                class="parceiro-menu-item"
-            >
-
-                <i class="fa-solid fa-taxi"></i>
-
-                <span>
-                    Minhas Corridas
-                </span>
-
-            </a>
-
-
-            <a
-                href="#"
-                class="parceiro-menu-item"
-            >
-
-                <i class="fa-solid fa-wallet"></i>
-
-                <span>
-                    Meus Ganhos
-                </span>
-
-            </a>
-
-
-            <a
-                href="#"
-                class="parceiro-menu-item"
-            >
-
-                <i class="fa-solid fa-star"></i>
-
-                <span>
-                    Avaliações
-                </span>
-
-            </a>
-
-
-            <a
-                href="#"
-                class="parceiro-menu-item"
-            >
-
-                <i class="fa-solid fa-headset"></i>
-
-                <span>
-                    Suporte
-                </span>
-
-            </a>
-
 
         </nav>
 
 
-        <!-- MENU INFERIOR -->
+        <div class="header-buttons">
 
-        <div class="parceiro-menu-bottom">
-
-
-            <a
-                href="#"
-                class="parceiro-menu-item"
-            >
-
-                <i class="fa-solid fa-gear"></i>
-
-                <span>
-                    Configurações
-                </span>
-
-            </a>
-
-
-            <a
-                href="index.html"
-                class="parceiro-menu-item sair"
+            <button
+                class="btn-sair"
+                type="button"
+                onclick="sairParceiro()"
             >
 
                 <i class="fa-solid fa-right-from-bracket"></i>
 
-                <span>
-                    Sair
-                </span>
+                Sair
 
-            </a>
-
+            </button>
 
         </div>
 
+    </div>
 
-    </aside>
+</header>
 
 
 
-    <!-- =====================================================
-         CONTEÚDO PRINCIPAL
-    ====================================================== -->
+<!-- =========================================================
+     CONTEÚDO
+========================================================== -->
 
-    <main class="parceiro-conteudo">
+<main>
+
+<section class="painel-parceiro">
+
+    <div class="container">
 
 
         <!-- =================================================
              TOPO
         ================================================== -->
 
-        <header class="parceiro-topo">
+        <div class="painel-topo">
 
+            <div class="painel-boas-vindas">
 
-            <div>
-
-                <span class="parceiro-label">
-                    Área do Parceiro
-                </span>
-
-                <h1>
-
-                    Olá,
-                    <span>Motorista!</span>
-
-                </h1>
-
-                <p>
-                    Gerencie suas corridas e sua atividade.
-                </p>
-
-            </div>
-
-
-            <!-- PERFIL -->
-
-            <div class="parceiro-perfil-topo">
-
-
-                <div class="parceiro-avatar">
-
-                    <i class="fa-solid fa-user"></i>
-
-                </div>
-
-
-                <div>
-
-                    <strong>
-                        Parceiro VaidTáxi
-                    </strong>
-
-                    <small>
-                        Taxista
-                    </small>
-
-                </div>
-
-
-            </div>
-
-
-        </header>
-
-
-
-        <!-- =================================================
-             STATUS DO MOTORISTA
-        ================================================== -->
-
-        <section class="parceiro-status">
-
-
-            <div>
-
-                <span>
-                    Status do motorista
-                </span>
-
-                <h2 id="textoStatus">
-                    Você está offline
+                <h2>
+                    Olá, <span id="nomeParceiro">Parceiro</span>!
                 </h2>
 
-                <p id="descricaoStatus">
-                    Fique online para receber novas solicitações.
+                <p>
+                    Bem-vindo ao seu painel da VaidTáxi.
                 </p>
 
             </div>
 
 
-            <button
-                type="button"
-                id="btnStatus"
-                class="parceiro-btn-status"
-                onclick="alternarStatus()"
-            >
+            <div class="status-motorista">
 
-                <i class="fa-solid fa-power-off"></i>
+                <span
+                    class="status-indicador"
+                    id="statusIndicador"
+                ></span>
 
-                <span id="textoBotaoStatus">
-                    Ficar Online
+
+                <span
+                    class="status-texto"
+                    id="statusTexto"
+                >
+                    Offline
                 </span>
 
-            </button>
 
+                <button
+                    type="button"
+                    class="btn-status"
+                    id="btnStatus"
+                    onclick="alternarStatus()"
+                >
+                    Ficar Online
+                </button>
 
-        </section>
+            </div>
+
+        </div>
 
 
 
@@ -345,376 +933,553 @@
              RESUMO
         ================================================== -->
 
-        <section class="parceiro-cards">
+        <div class="resumo-parceiro">
 
 
-            <!-- CORRIDAS -->
+            <div class="resumo-card">
 
-            <div class="parceiro-card">
+                <i class="fa-solid fa-route"></i>
 
-                <div class="parceiro-card-icone">
+                <h3 id="corridasHoje">
+                    0
+                </h3>
 
-                    <i class="fa-solid fa-taxi"></i>
-
-                </div>
-
-                <div>
-
-                    <span>
-                        Corridas hoje
-                    </span>
-
-                    <h3>
-                        0
-                    </h3>
-
-                    <p>
-                        Corridas realizadas hoje.
-                    </p>
-
-                </div>
+                <p>
+                    Corridas hoje
+                </p>
 
             </div>
 
 
-            <!-- GANHOS -->
+            <div class="resumo-card">
 
-            <div class="parceiro-card">
+                <i class="fa-solid fa-wallet"></i>
 
-                <div class="parceiro-card-icone">
+                <h3 id="ganhosHoje">
+                    R$ 0,00
+                </h3>
 
-                    <i class="fa-solid fa-wallet"></i>
-
-                </div>
-
-                <div>
-
-                    <span>
-                        Ganhos hoje
-                    </span>
-
-                    <h3>
-                        R$ 0,00
-                    </h3>
-
-                    <p>
-                        Total recebido hoje.
-                    </p>
-
-                </div>
+                <p>
+                    Ganhos hoje
+                </p>
 
             </div>
 
 
-            <!-- AVALIAÇÃO -->
+            <div class="resumo-card">
 
-            <div class="parceiro-card">
+                <i class="fa-solid fa-star"></i>
 
-                <div class="parceiro-card-icone">
+                <h3 id="notaMotorista">
+                    0.0
+                </h3>
 
-                    <i class="fa-solid fa-star"></i>
-
-                </div>
-
-                <div>
-
-                    <span>
-                        Avaliação
-                    </span>
-
-                    <h3>
-                        —
-                    </h3>
-
-                    <p>
-                        Sua avaliação média.
-                    </p>
-
-                </div>
+                <p>
+                    Avaliação média
+                </p>
 
             </div>
 
 
-        </section>
+            <div class="resumo-card">
+
+                <i class="fa-solid fa-calendar-check"></i>
+
+                <h3 id="corridasMes">
+                    0
+                </h3>
+
+                <p>
+                    Corridas no mês
+                </p>
+
+            </div>
+
+
+        </div>
 
 
 
         <!-- =================================================
-             ÁREA INFERIOR
+             GRID
         ================================================== -->
 
-        <section class="parceiro-area-inferior">
+        <div class="painel-grid">
 
 
             <!-- =================================================
-                 NOVAS SOLICITAÇÕES
+                 COLUNA PRINCIPAL
             ================================================== -->
 
-            <div class="parceiro-painel">
+            <div>
 
 
-                <div class="parceiro-painel-topo">
+                <!-- =============================================
+                     CORRIDAS
+                ============================================== -->
 
-                    <div>
+                <div class="painel-bloco">
 
-                        <span>
-                            Corridas
-                        </span>
+                    <div class="painel-bloco-titulo">
 
-                        <h2>
-                            Novas solicitações
-                        </h2>
+                        <h3>
+
+                            <i class="fa-solid fa-car-side"></i>
+
+                            Corridas disponíveis
+
+                        </h3>
 
                     </div>
 
 
-                    <span class="parceiro-status-indicador">
+                    <div id="listaCorridas">
 
-                        <i class="fa-solid fa-circle"></i>
 
-                        Aguardando
+                        <!-- CORRIDA EXEMPLO -->
 
-                    </span>
+                        <div class="corrida-item">
+
+                            <div class="corrida-cabecalho">
+
+                                <strong>
+                                    Nenhuma corrida disponível
+                                </strong>
+
+                                <span class="corrida-status">
+                                    Aguardando
+                                </span>
+
+                            </div>
+
+
+                            <div class="corrida-local">
+
+                                <div>
+
+                                    <i class="fa-solid fa-location-dot"></i>
+
+                                    Aguardando novas solicitações
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
 
                 </div>
 
 
-                <div
-                    class="parceiro-sem-solicitacoes"
-                    id="semSolicitacoes"
-                >
 
-                    <i class="fa-solid fa-taxi"></i>
+                <!-- =============================================
+                     PERFIL
+                ============================================== -->
 
-                    <h3>
-                        Nenhuma solicitação no momento
-                    </h3>
+                <div class="painel-bloco">
 
-                    <p>
-                        Quando houver uma nova corrida,
-                        ela aparecerá aqui.
-                    </p>
+                    <div class="painel-bloco-titulo">
+
+                        <h3>
+
+                            <i class="fa-solid fa-user"></i>
+
+                            Meu perfil
+
+                        </h3>
+
+                    </div>
+
+
+                    <div class="perfil-parceiro">
+
+                        <div class="foto-parceiro">
+
+                            <i class="fa-solid fa-user"></i>
+
+                        </div>
+
+
+                        <div class="dados-parceiro">
+
+                            <h4 id="perfilNome">
+                                Parceiro VaidTáxi
+                            </h4>
+
+                            <p id="perfilEmail">
+                                E-mail não informado
+                            </p>
+
+                            <p id="perfilTelefone">
+                                Telefone não informado
+                            </p>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
+
+
+                <!-- =============================================
+                     VEÍCULO
+                ============================================== -->
+
+                <div class="painel-bloco">
+
+                    <div class="painel-bloco-titulo">
+
+                        <h3>
+
+                            <i class="fa-solid fa-taxi"></i>
+
+                            Meu veículo
+
+                        </h3>
+
+                    </div>
+
+
+                    <div class="veiculo-info">
+
+
+                        <div class="veiculo-item">
+
+                            <small>
+                                Marca
+                            </small>
+
+                            <strong id="veiculoMarca">
+                                Não informado
+                            </strong>
+
+                        </div>
+
+
+                        <div class="veiculo-item">
+
+                            <small>
+                                Modelo
+                            </small>
+
+                            <strong id="veiculoModelo">
+                                Não informado
+                            </strong>
+
+                        </div>
+
+
+                        <div class="veiculo-item">
+
+                            <small>
+                                Cor
+                            </small>
+
+                            <strong id="veiculoCor">
+                                Não informado
+                            </strong>
+
+                        </div>
+
+
+                        <div class="veiculo-item">
+
+                            <small>
+                                Ano
+                            </small>
+
+                            <strong id="veiculoAno">
+                                Não informado
+                            </strong>
+
+                        </div>
+
+
+                        <div class="veiculo-item">
+
+                            <small>
+                                Placa
+                            </small>
+
+                            <strong id="veiculoPlaca">
+                                Não informado
+                            </strong>
+
+                        </div>
+
+
+                        <div class="veiculo-item">
+
+                            <small>
+                                Passageiros
+                            </small>
+
+                            <strong id="veiculoAssentos">
+                                Não informado
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
 
             </div>
 
 
 
             <!-- =================================================
-                 ACESSO RÁPIDO
+                 COLUNA LATERAL
             ================================================== -->
 
-            <div class="parceiro-painel">
+            <div>
 
 
-                <div class="parceiro-painel-topo">
+                <!-- =============================================
+                     GANHOS
+                ============================================== -->
 
-                    <div>
+                <div class="painel-bloco">
+
+                    <div class="painel-bloco-titulo">
+
+                        <h3>
+
+                            <i class="fa-solid fa-wallet"></i>
+
+                            Meus ganhos
+
+                        </h3>
+
+                    </div>
+
+
+                    <div class="ganho-principal">
 
                         <span>
-                            Acesso rápido
+                            Ganhos deste mês
                         </span>
 
-                        <h2>
-                            Gerenciar
-                        </h2>
+                        <strong id="ganhosMes">
+                            R$ 0,00
+                        </strong>
+
+                    </div>
+
+
+                    <div class="ganhos-lista">
+
+                        <div class="ganho-linha">
+
+                            <span>
+                                Hoje
+                            </span>
+
+                            <strong id="ganhoHoje">
+                                R$ 0,00
+                            </strong>
+
+                        </div>
+
+
+                        <div class="ganho-linha">
+
+                            <span>
+                                Esta semana
+                            </span>
+
+                            <strong id="ganhoSemana">
+                                R$ 0,00
+                            </strong>
+
+                        </div>
+
+
+                        <div class="ganho-linha">
+
+                            <span>
+                                Este mês
+                            </span>
+
+                            <strong id="ganhoMes">
+                                R$ 0,00
+                            </strong>
+
+                        </div>
 
                     </div>
 
                 </div>
 
 
-                <div class="parceiro-atalhos">
 
+                <!-- =============================================
+                     AVALIAÇÕES
+                ============================================== -->
 
-                    <button type="button">
+                <div class="painel-bloco">
 
-                        <i class="fa-solid fa-user"></i>
+                    <div class="painel-bloco-titulo">
 
-                        <span>
-                            Meu Perfil
-                        </span>
+                        <h3>
 
-                    </button>
+                            <i class="fa-solid fa-star"></i>
 
-
-                    <button type="button">
-
-                        <i class="fa-solid fa-car"></i>
-
-                        <span>
-                            Meu Veículo
-                        </span>
-
-                    </button>
-
-
-                    <button type="button">
-
-                        <i class="fa-solid fa-file-lines"></i>
-
-                        <span>
-                            Documentos
-                        </span>
-
-                    </button>
-
-
-                    <button type="button">
-
-                        <i class="fa-solid fa-wallet"></i>
-
-                        <span>
-                            Meus Ganhos
-                        </span>
-
-                    </button>
-
-
-                    <button type="button">
-
-                        <i class="fa-solid fa-star"></i>
-
-                        <span>
                             Avaliações
-                        </span>
 
-                    </button>
+                        </h3>
+
+                    </div>
 
 
-                    <button type="button">
+                    <div class="avaliacao">
 
-                        <i class="fa-solid fa-headset"></i>
+                        <div class="nota">
+                            0.0
+                        </div>
 
-                        <span>
-                            Suporte
-                        </span>
 
-                    </button>
+                        <div class="estrelas">
 
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+
+                        </div>
+
+
+                        <p>
+                            Nenhuma avaliação recebida.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =============================================
+                     AÇÕES
+                ============================================== -->
+
+                <div class="painel-bloco">
+
+                    <div class="painel-bloco-titulo">
+
+                        <h3>
+
+                            <i class="fa-solid fa-grid-2"></i>
+
+                            Acesso rápido
+
+                        </h3>
+
+                    </div>
+
+
+                    <div class="acoes-parceiro">
+
+
+                        <a
+                            href="corrida.html"
+                            class="acao"
+                        >
+
+                            <i class="fa-solid fa-route"></i>
+
+                            <span>
+                                Corridas
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="pagamentos.html"
+                            class="acao"
+                        >
+
+                            <i class="fa-solid fa-money-bill"></i>
+
+                            <span>
+                                Pagamentos
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="contato.html"
+                            class="acao"
+                        >
+
+                            <i class="fa-solid fa-headset"></i>
+
+                            <span>
+                                Suporte
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="motoristas.html"
+                            class="acao"
+                        >
+
+                            <i class="fa-solid fa-users"></i>
+
+                            <span>
+                                Motoristas
+                            </span>
+
+                        </a>
+
+
+                    </div>
 
                 </div>
 
 
             </div>
 
+        </div>
 
-        </section>
+    </div>
 
+</section>
 
-
-        <!-- =================================================
-             INFORMAÇÕES DO VEÍCULO
-        ================================================== -->
-
-        <section class="parceiro-painel parceiro-veiculo">
+</main>
 
 
-            <div class="parceiro-painel-topo">
 
-                <div>
+<!-- =========================================================
+     RODAPÉ
+========================================================== -->
 
-                    <span>
-                        Cadastro
-                    </span>
+<footer>
 
-                    <h2>
-                        Meu veículo
-                    </h2>
+    <div class="container">
 
-                </div>
+        <p>
 
+            ©
 
-                <button
-                    type="button"
-                    class="parceiro-btn-link"
-                >
-                    Alterar cadastro
-                </button>
+            <span id="ano"></span>
 
-            </div>
+            VaidTáxi - Todos os direitos reservados.
 
+        </p>
 
-            <div class="parceiro-veiculo-info">
+    </div>
 
-
-                <div class="parceiro-veiculo-foto">
-
-                    <i class="fa-solid fa-car"></i>
-
-                </div>
-
-
-                <div class="parceiro-veiculo-dados">
-
-
-                    <div>
-
-                        <span>
-                            Modelo
-                        </span>
-
-                        <strong>
-                            Não informado
-                        </strong>
-
-                    </div>
-
-
-                    <div>
-
-                        <span>
-                            Placa
-                        </span>
-
-                        <strong>
-                            Não informada
-                        </strong>
-
-                    </div>
-
-
-                    <div>
-
-                        <span>
-                            Cor
-                        </span>
-
-                        <strong>
-                            Não informada
-                        </strong>
-
-                    </div>
-
-
-                    <div>
-
-                        <span>
-                            Tipo
-                        </span>
-
-                        <strong>
-                            Não informado
-                        </strong>
-
-                    </div>
-
-
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-    </main>
-
-
-</div>
+</footer>
 
 
 
@@ -722,7 +1487,133 @@
      JAVASCRIPT
 ========================================================== -->
 
-<script src="js/parceiro.js"></script>
+<script src="js/menu.js"></script>
+
+
+<script>
+
+    /* =====================================================
+       ANO
+    ====================================================== */
+
+    const elementoAno =
+        document.getElementById("ano");
+
+
+    if (elementoAno) {
+
+        elementoAno.textContent =
+            new Date().getFullYear();
+
+    }
+
+
+
+    /* =====================================================
+       STATUS ONLINE / OFFLINE
+    ====================================================== */
+
+    let motoristaOnline = false;
+
+
+    function alternarStatus() {
+
+        motoristaOnline =
+            !motoristaOnline;
+
+
+        const indicador =
+            document.getElementById(
+                "statusIndicador"
+            );
+
+
+        const texto =
+            document.getElementById(
+                "statusTexto"
+            );
+
+
+        const botao =
+            document.getElementById(
+                "btnStatus"
+            );
+
+
+        if (motoristaOnline) {
+
+            indicador.classList.add(
+                "online"
+            );
+
+
+            texto.textContent =
+                "Online";
+
+
+            botao.textContent =
+                "Ficar Offline";
+
+        } else {
+
+            indicador.classList.remove(
+                "online"
+            );
+
+
+            texto.textContent =
+                "Offline";
+
+
+            botao.textContent =
+                "Ficar Online";
+
+        }
+
+    }
+
+
+
+    /* =====================================================
+       SAIR
+    ====================================================== */
+
+    function sairParceiro() {
+
+        if (
+            typeof supabaseClient !==
+            "undefined"
+        ) {
+
+            supabaseClient.auth.signOut()
+                .then(function () {
+
+                    window.location.href =
+                        "login.html";
+
+                })
+                .catch(function (erro) {
+
+                    console.error(
+                        "Erro ao sair:",
+                        erro
+                    );
+
+                    window.location.href =
+                        "login.html";
+
+                });
+
+        } else {
+
+            window.location.href =
+                "login.html";
+
+        }
+
+    }
+
+</script>
 
 
 </body>
