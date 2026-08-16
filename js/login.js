@@ -2,6 +2,11 @@
 // LOGIN - VAIDTÁXI
 // ============================================================
 
+
+// ============================================================
+// ELEMENTOS
+// ============================================================
+
 const formLogin = document.getElementById("formLogin");
 const mensagemLogin = document.getElementById("mensagemLogin");
 const btnLogin = document.getElementById("btnLogin");
@@ -10,11 +15,17 @@ const btnLogin = document.getElementById("btnLogin");
 // ============================================================
 // TIPO DE ACESSO
 // ============================================================
+//
+// O login.html deve definir:
+//
+// window.tipoSelecionado = "cliente"
+// window.tipoSelecionado = "parceiro"
+// window.tipoSelecionado = "admin"
+//
+// ============================================================
 
-// O login.html deve definir esta variável quando o usuário
-// escolher Cliente, Parceiro ou Administrador.
-
-let tipoSelecionado = window.tipoSelecionado || "";
+let tipoSelecionado =
+    window.tipoSelecionado || "";
 
 
 // ============================================================
@@ -23,229 +34,371 @@ let tipoSelecionado = window.tipoSelecionado || "";
 
 if (formLogin) {
 
-    formLogin.addEventListener("submit", async function(event) {
+    formLogin.addEventListener(
+        "submit",
+        async function (event) {
 
-        // Impede a página de recarregar
-        event.preventDefault();
-
-
-        // ====================================================
-        // PEGAR DADOS
-        // ====================================================
-
-        const email =
-            document.getElementById("email").value.trim();
-
-        const senha =
-            document.getElementById("senha").value;
-
-
-        // ====================================================
-        // VALIDAR
-        // ====================================================
-
-        if (!email || !senha) {
-
-            mostrarMensagem(
-                "Preencha todos os campos.",
-                "erro"
-            );
-
-            return;
-        }
-
-
-        // ====================================================
-        // VERIFICAR TIPO DE ACESSO
-        // ====================================================
-
-        if (!tipoSelecionado) {
-
-            mostrarMensagem(
-                "Selecione como deseja entrar.",
-                "erro"
-            );
-
-            return;
-        }
-
-
-        // ====================================================
-        // VERIFICAR SUPABASE
-        // ====================================================
-
-        if (typeof supabaseClient === "undefined") {
-
-            console.error(
-                "supabaseClient não encontrado."
-            );
-
-            mostrarMensagem(
-                "Erro de conexão com o sistema.",
-                "erro"
-            );
-
-            return;
-        }
-
-
-        // ====================================================
-        // DESABILITAR BOTÃO
-        // ====================================================
-
-        btnLogin.disabled = true;
-        btnLogin.textContent = "Entrando...";
-
-
-        try {
-
-            // =================================================
-            // LOGIN NO SUPABASE
-            // =================================================
-
-            const { data, error } =
-                await supabaseClient.auth.signInWithPassword({
-
-                    email: email,
-
-                    password: senha
-
-                });
+            // Impede o recarregamento da página
+            event.preventDefault();
 
 
             // =================================================
-            // VERIFICAR ERRO
+            // PEGAR DADOS
             // =================================================
 
-            if (error) {
+            const campoEmail =
+                document.getElementById("email");
 
-                console.error(
-                    "Erro no login:",
-                    error
-                );
+            const campoSenha =
+                document.getElementById("senha");
+
+
+            const email =
+                campoEmail ?
+                campoEmail.value.trim() :
+                "";
+
+
+            const senha =
+                campoSenha ?
+                campoSenha.value :
+                "";
+
+
+            // =================================================
+            // ATUALIZAR TIPO SELECIONADO
+            // =================================================
+
+            tipoSelecionado =
+                window.tipoSelecionado || "";
+
+
+            // =================================================
+            // VALIDAR CAMPOS
+            // =================================================
+
+            if (!email || !senha) {
 
                 mostrarMensagem(
-                    "E-mail ou senha incorretos.",
+                    "Preencha todos os campos.",
                     "erro"
                 );
-
-                btnLogin.disabled = false;
-                btnLogin.textContent = "Entrar";
 
                 return;
             }
 
 
             // =================================================
-            // LOGIN REALIZADO
+            // VALIDAR TIPO DE ACESSO
             // =================================================
 
-            console.log(
-                "Usuário conectado:",
-                data.user
-            );
+            if (!tipoSelecionado) {
 
+                mostrarMensagem(
+                    "Selecione como deseja entrar.",
+                    "erro"
+                );
 
-            mostrarMensagem(
-                "Login realizado com sucesso!",
-                "sucesso"
-            );
-
-
-            btnLogin.textContent = "Entrando...";
+                return;
+            }
 
 
             // =================================================
-            // SALVAR TIPO DE ACESSO
+            // VERIFICAR TIPO VÁLIDO
             // =================================================
 
-            localStorage.setItem(
-                "tipoAcesso",
-                tipoSelecionado
-            );
+            const tiposPermitidos = [
+                "cliente",
+                "parceiro",
+                "admin"
+            ];
+
+
+            if (
+                !tiposPermitidos.includes(
+                    tipoSelecionado
+                )
+            ) {
+
+                mostrarMensagem(
+                    "Tipo de acesso inválido.",
+                    "erro"
+                );
+
+                return;
+            }
 
 
             // =================================================
-            // REDIRECIONAR
+            // VERIFICAR SUPABASE
             // =================================================
 
-            setTimeout(function() {
+            if (
+                typeof supabaseClient ===
+                "undefined"
+            ) {
+
+                console.error(
+                    "supabaseClient não encontrado."
+                );
+
+                mostrarMensagem(
+                    "Erro de conexão com o sistema.",
+                    "erro"
+                );
+
+                return;
+            }
 
 
-                // ---------------------------------------------
-                // CLIENTE
-                // ---------------------------------------------
+            // =================================================
+            // DESABILITAR BOTÃO
+            // =================================================
 
-                if (tipoSelecionado === "cliente") {
+            if (btnLogin) {
 
-                    window.location.href =
-                        "cliente.html";
+                btnLogin.disabled = true;
+
+                btnLogin.textContent =
+                    "Entrando...";
+
+            }
+
+
+            try {
+
+
+                // =================================================
+                // LOGIN NO SUPABASE
+                // =================================================
+
+                const {
+                    data,
+                    error
+                } =
+                    await supabaseClient.auth
+                        .signInWithPassword({
+
+                            email: email,
+
+                            password: senha
+
+                        });
+
+
+                // =================================================
+                // VERIFICAR ERRO
+                // =================================================
+
+                if (error) {
+
+                    console.error(
+                        "Erro no login:",
+                        error
+                    );
+
+                    mostrarMensagem(
+                        "E-mail ou senha incorretos.",
+                        "erro"
+                    );
+
+
+                    if (btnLogin) {
+
+                        btnLogin.disabled =
+                            false;
+
+                        btnLogin.textContent =
+                            "Entrar";
+
+                    }
 
                     return;
                 }
 
 
-                // ---------------------------------------------
-                // PARCEIRO
-                // ---------------------------------------------
+                // =================================================
+                // VERIFICAR USUÁRIO
+                // =================================================
 
-                if (tipoSelecionado === "parceiro") {
+                if (
+                    !data ||
+                    !data.user
+                ) {
 
-                    window.location.href =
-                        "parceiro.html";
+                    mostrarMensagem(
+                        "Não foi possível identificar sua conta.",
+                        "erro"
+                    );
+
+
+                    if (btnLogin) {
+
+                        btnLogin.disabled =
+                            false;
+
+                        btnLogin.textContent =
+                            "Entrar";
+
+                    }
 
                     return;
                 }
 
 
-                // ---------------------------------------------
-                // ADMINISTRADOR
-                // ---------------------------------------------
+                // =================================================
+                // LOGIN REALIZADO
+                // =================================================
 
-                if (tipoSelecionado === "admin") {
+                console.log(
+                    "Usuário conectado:",
+                    data.user
+                );
 
-                    window.location.href =
-                        "admin.html";
 
-                    return;
+                console.log(
+                    "Tipo de acesso:",
+                    tipoSelecionado
+                );
+
+
+                mostrarMensagem(
+                    "Login realizado com sucesso!",
+                    "sucesso"
+                );
+
+
+                if (btnLogin) {
+
+                    btnLogin.textContent =
+                        "Entrando...";
+
                 }
 
 
-                // ---------------------------------------------
-                // CASO NÃO ENCONTRE O TIPO
-                // ---------------------------------------------
+                // =================================================
+                // SALVAR TIPO DE ACESSO
+                // =================================================
 
-                window.location.href =
-                    "index.html";
+                localStorage.setItem(
+                    "tipoAcesso",
+                    tipoSelecionado
+                );
 
 
-            }, 500);
+                // =================================================
+                // SALVAR ID DO USUÁRIO
+                // =================================================
+
+                localStorage.setItem(
+                    "usuarioId",
+                    data.user.id
+                );
+
+
+                // =================================================
+                // REDIRECIONAMENTO
+                // =================================================
+
+                setTimeout(
+                    function () {
+
+
+                        // =========================================
+                        // CLIENTE
+                        // =========================================
+
+                        if (
+                            tipoSelecionado ===
+                            "cliente"
+                        ) {
+
+                            window.location.href =
+                                "cliente.html";
+
+                            return;
+                        }
+
+
+                        // =========================================
+                        // PARCEIRO
+                        // =========================================
+
+                        if (
+                            tipoSelecionado ===
+                            "parceiro"
+                        ) {
+
+                            window.location.href =
+                                "parceiro.html";
+
+                            return;
+                        }
+
+
+                        // =========================================
+                        // ADMINISTRADOR
+                        // =========================================
+
+                        if (
+                            tipoSelecionado ===
+                            "admin"
+                        ) {
+
+                            window.location.href =
+                                "admin.html";
+
+                            return;
+                        }
+
+
+                        // =========================================
+                        // SEGURANÇA
+                        // =========================================
+
+                        window.location.href =
+                            "index.html";
+
+
+                    },
+                    500
+                );
+
+            }
+
+
+            // ====================================================
+            // ERRO INESPERADO
+            // ====================================================
+
+            catch (erro) {
+
+                console.error(
+                    "Erro inesperado no login:",
+                    erro
+                );
+
+
+                mostrarMensagem(
+                    "Erro ao conectar com o sistema.",
+                    "erro"
+                );
+
+
+                if (btnLogin) {
+
+                    btnLogin.disabled =
+                        false;
+
+                    btnLogin.textContent =
+                        "Entrar";
+
+                }
+
+            }
 
         }
-
-
-        // ====================================================
-        // ERRO INESPERADO
-        // ====================================================
-
-        catch (erro) {
-
-            console.error(
-                "Erro inesperado:",
-                erro
-            );
-
-            mostrarMensagem(
-                "Erro ao conectar com o sistema.",
-                "erro"
-            );
-
-            btnLogin.disabled = false;
-            btnLogin.textContent = "Entrar";
-
-        }
-
-    });
+    );
 
 }
 
@@ -254,21 +407,36 @@ if (formLogin) {
 // MOSTRAR MENSAGEM
 // ============================================================
 
-function mostrarMensagem(texto, tipo) {
+function mostrarMensagem(
+    texto,
+    tipo
+) {
 
     if (!mensagemLogin) {
+
         return;
+
     }
 
-    mensagemLogin.textContent = texto;
 
-    if (tipo === "sucesso") {
+    mensagemLogin.textContent =
+        texto;
 
-        mensagemLogin.style.color = "#00cc66";
 
-    } else {
+    if (
+        tipo ===
+        "sucesso"
+    ) {
 
-        mensagemLogin.style.color = "#ff4444";
+        mensagemLogin.style.color =
+            "#00cc66";
+
+    }
+
+    else {
+
+        mensagemLogin.style.color =
+            "#ff4444";
 
     }
 
