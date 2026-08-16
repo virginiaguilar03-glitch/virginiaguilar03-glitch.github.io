@@ -6,13 +6,9 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>VaidTáxi | Solicitar Corrida</title>
-
 
     <!-- ==================================================
          FONTE
@@ -20,11 +16,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -49,7 +41,7 @@
 
 
     <!-- ==================================================
-         CABEÇALHO PADRÃO VAIDTÁXI
+         CABEÇALHO
     ================================================== -->
 
     <header>
@@ -138,9 +130,7 @@
             <section class="corrida-container">
 
 
-                <!-- ==================================================
-                     TÍTULO
-                ================================================== -->
+                <!-- TÍTULO -->
 
                 <div class="corrida-header">
 
@@ -157,7 +147,7 @@
 
 
                 <!-- ==================================================
-                     USUÁRIO
+                     CLIENTE
                 ================================================== -->
 
                 <div class="usuario-logado">
@@ -167,7 +157,7 @@
                         Olá,
 
                         <strong id="nomeCliente">
-                            visitante
+                            Cliente
                         </strong>
 
                     </p>
@@ -183,9 +173,7 @@
                 <form id="formCorrida">
 
 
-                    <!-- ==================================================
-                         ORIGEM
-                    ================================================== -->
+                    <!-- ORIGEM -->
 
                     <div class="form-group">
 
@@ -206,9 +194,7 @@
 
 
 
-                    <!-- ==================================================
-                         DESTINO
-                    ================================================== -->
+                    <!-- DESTINO -->
 
                     <div class="form-group">
 
@@ -229,9 +215,7 @@
 
 
 
-                    <!-- ==================================================
-                         OBSERVAÇÃO
-                    ================================================== -->
+                    <!-- OBSERVAÇÃO -->
 
                     <div class="form-group">
 
@@ -250,9 +234,7 @@
 
 
 
-                    <!-- ==================================================
-                         BOTÃO SOLICITAR
-                    ================================================== -->
+                    <!-- BOTÃO -->
 
                     <button
                         type="submit"
@@ -274,7 +256,7 @@
                 <div
                     id="mensagemCorrida"
                     class="mensagem"
-                    style="display: none;"
+                    style="display:none;"
                 ></div>
 
 
@@ -290,9 +272,7 @@
          JAVASCRIPT
     ================================================== -->
 
-    <!-- ==================================================
-         SUPABASE
-    ================================================== -->
+    <!-- SUPABASE -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -320,22 +300,19 @@
                         "formCorrida"
                     );
 
-
-                const btnSolicitar =
-                    document.getElementById(
-                        "btnSolicitar"
-                    );
-
-
                 const nomeCliente =
                     document.getElementById(
                         "nomeCliente"
                     );
 
-
                 const mensagem =
                     document.getElementById(
                         "mensagemCorrida"
+                    );
+
+                const btnSolicitar =
+                    document.getElementById(
+                        "btnSolicitar"
                     );
 
 
@@ -359,13 +336,11 @@
 
 
                 /* ==================================================
-                   VERIFICAR USUÁRIO LOGADO
+                   VERIFICAR SE EXISTE SESSÃO
                    
-                   IMPORTANTE:
+                   NÃO BLOQUEIA A PÁGINA.
                    
-                   NÃO REDIRECIONAR.
-                   
-                   A página continua acessível para visitantes.
+                   O visitante pode preencher normalmente.
                 ================================================== */
 
                 try {
@@ -410,22 +385,12 @@
                         }
 
                     }
-                    else {
-
-                        if (nomeCliente) {
-
-                            nomeCliente.textContent =
-                                "visitante";
-
-                        }
-
-                    }
 
                 }
                 catch (erro) {
 
                     console.error(
-                        "Erro ao verificar sessão:",
+                        "Erro inesperado:",
                         erro
                     );
 
@@ -530,8 +495,7 @@
                             /* ==================================================
                                VERIFICAR LOGIN
                                
-                               SOMENTE NESTE MOMENTO O LOGIN
-                               É OBRIGATÓRIO.
+                               SOMENTE AQUI O LOGIN É EXIGIDO.
                             ================================================== */
 
                             let sessao = null;
@@ -589,9 +553,9 @@
 
                             if (!sessao) {
 
-
                                 /*
-                                 * Guardar os dados temporariamente.
+                                 * Guarda os dados preenchidos
+                                 * temporariamente.
                                  */
 
                                 sessionStorage.setItem(
@@ -599,12 +563,10 @@
                                     origem
                                 );
 
-
                                 sessionStorage.setItem(
                                     "corridaDestino",
                                     destino
                                 );
-
 
                                 sessionStorage.setItem(
                                     "corridaObservacao",
@@ -636,14 +598,6 @@
 
 
                             console.log(
-                                "================================"
-                            );
-
-                            console.log(
-                                "SOLICITAÇÃO DE CORRIDA"
-                            );
-
-                            console.log(
                                 "Cliente:",
                                 usuario.id
                             );
@@ -668,26 +622,6 @@
                                 observacao
                             );
 
-                            console.log(
-                                "================================"
-                            );
-
-
-
-                            /* ==================================================
-                               BOTÃO
-                            ================================================== */
-
-                            if (btnSolicitar) {
-
-                                btnSolicitar.disabled =
-                                    true;
-
-                                btnSolicitar.textContent =
-                                    "Processando...";
-
-                            }
-
 
 
                             /* ==================================================
@@ -700,19 +634,20 @@
                                     "block";
 
                                 mensagem.textContent =
-                                    "Cliente autenticado. A solicitação está pronta para ser enviada.";
+                                    "Cliente autenticado. A corrida está pronta para ser enviada ao sistema.";
 
                             }
 
 
-                            /*
-                             * O INSERT no Supabase será feito
-                             * na próxima etapa, depois de
-                             * confirmarmos a estrutura da tabela
-                             * "corridas".
-                             */
+
+                            /* ==================================================
+                               BOTÃO
+                            ================================================== */
 
                             if (btnSolicitar) {
+
+                                btnSolicitar.disabled =
+                                    true;
 
                                 btnSolicitar.textContent =
                                     "Solicitação preparada";
