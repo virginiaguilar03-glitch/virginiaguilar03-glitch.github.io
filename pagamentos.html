@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -9,7 +10,10 @@
 
     <title>Pagamentos | VaidTáxi</title>
 
-    <!-- Fonte Poppins -->
+    <!-- ======================================================
+         FONTE
+    ====================================================== -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,8 +23,17 @@
         rel="stylesheet"
     >
 
-    <!-- CSS principal -->
+
+    <!-- ======================================================
+         CSS DO SITE
+    ====================================================== -->
+
     <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <link rel="stylesheet" href="css/animations.css">
+
 
 </head>
 
@@ -28,214 +41,239 @@
 <body>
 
 
-<!-- ======================================================
-     HEADER
-====================================================== -->
+    <!-- ======================================================
+         HEADER
+    ====================================================== -->
 
-<header>
+    <header>
 
-    <div class="container">
+        <div class="container">
 
-        <a href="index.html" class="logo">
+            <!-- LOGO -->
+
+            <a href="index.html" class="logo">
+
+                <h1>
+                    Vaid <span>Táxi</span>
+                </h1>
+
+            </a>
+
+
+            <!-- MENU -->
+
+            <nav>
+
+                <a href="index.html">
+                    Início
+                </a>
+
+                <a href="motoristas.html">
+                    Motoristas
+                </a>
+
+                <a href="pagamentos.html" class="active">
+                    Pagamentos
+                </a>
+
+                <a href="contato.html">
+                    Contato
+                </a>
+
+            </nav>
+
+
+            <!-- BOTÕES DO HEADER -->
+
+            <div class="header-buttons"></div>
+
+
+            <!-- MENU MOBILE -->
+
+            <div id="menu-mobile">
+                ☰
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ======================================================
+         BANNER DA PÁGINA
+    ====================================================== -->
+
+    <section class="page-banner">
+
+        <div class="container">
 
             <h1>
-                Vaid <span>Táxi</span>
+                Formas de <span>Pagamento</span>
             </h1>
 
-        </a>
-
-
-        <nav>
-
-            <a href="index.html">
-                Início
-            </a>
-
-            <a href="motoristas.html">
-                Motoristas
-            </a>
-
-            <a href="pagamentos.html" class="active">
-                Pagamentos
-            </a>
-
-            <a href="contato.html">
-                Contato
-            </a>
-
-        </nav>
-
-
-        <div class="header-buttons">
-
-            <!-- Botões do header, caso existam no seu site -->
-
-        </div>
-
-
-        <div id="menu-mobile">
-            ☰
-        </div>
-
-    </div>
-
-</header>
-
-
-
-<!-- ======================================================
-     BANNER DA PÁGINA
-====================================================== -->
-
-<section class="page-banner">
-
-    <div class="container">
-
-        <h1>
-            Formas de Pagamento
-        </h1>
-
-        <p>
-            Escolha a forma de pagamento mais conveniente para sua corrida.
-        </p>
-
-    </div>
-
-</section>
-
-
-
-<!-- ======================================================
-     PAGAMENTOS
-====================================================== -->
-
-<section>
-
-    <div class="container">
-
-        <h2 class="section-title">
-            Escolha como <span>pagar</span>
-        </h2>
-
-
-        <div class="cards">
-
-
-            <!-- PIX -->
-
-            <div class="card">
-
-                <i>PIX</i>
-
-                <h3>
-                    PIX
-                </h3>
-
-                <p>
-                    Faça o pagamento da sua corrida através do PIX
-                    diretamente ao motorista.
-                </p>
-
-            </div>
-
-
-            <!-- DINHEIRO -->
-
-            <div class="card">
-
-                <i>R$</i>
-
-                <h3>
-                    Dinheiro
-                </h3>
-
-                <p>
-                    Você também pode pagar sua corrida em dinheiro
-                    diretamente ao motorista.
-                </p>
-
-            </div>
-
-
-            <!-- CARTÃO -->
-
-            <div class="card">
-
-                <i>💳</i>
-
-                <h3>
-                    Cartão
-                </h3>
-
-                <p>
-                    Consulte o motorista sobre a disponibilidade
-                    de pagamento com cartão.
-                </p>
-
-            </div>
-
-
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- ======================================================
-     COMO FUNCIONA
-====================================================== -->
-
-<section class="services">
-
-    <div class="container">
-
-        <h2 class="section-title">
-            Como funciona o <span>pagamento?</span>
-        </h2>
-
-
-        <div class="card">
-
             <p>
-                Após escolher seu motorista e realizar sua corrida,
-                o pagamento é feito diretamente ao motorista.
-            </p>
-
-            <br>
-
-            <p>
-                Antes de iniciar a viagem, você poderá verificar
-                as formas de pagamento disponíveis para aquela corrida.
+                Escolha a forma de pagamento mais conveniente
+                para sua corrida.
             </p>
 
         </div>
 
-    </div>
-
-</section>
+    </section>
 
 
 
-<!-- ======================================================
-     FOOTER
-====================================================== -->
+    <!-- ======================================================
+         FORMAS DE PAGAMENTO
+    ====================================================== -->
 
-<footer>
+    <section>
 
-    <div class="container">
+        <div class="container">
 
-        <p>
-            © 2026 VaidTáxi. Todos os direitos reservados.
-        </p>
+            <h2 class="section-title">
+                Escolha como <span>pagar</span>
+            </h2>
 
-    </div>
 
-</footer>
+            <div class="cards">
 
+
+                <!-- ==================================================
+                     PIX
+                ================================================== -->
+
+                <div class="card">
+
+                    <i>PIX</i>
+
+                    <h3>
+                        PIX
+                    </h3>
+
+                    <p>
+                        Faça o pagamento da sua corrida através
+                        do PIX diretamente ao motorista.
+                    </p>
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     DINHEIRO
+                ================================================== -->
+
+                <div class="card">
+
+                    <i>R$</i>
+
+                    <h3>
+                        Dinheiro
+                    </h3>
+
+                    <p>
+                        Você também pode pagar sua corrida em
+                        dinheiro diretamente ao motorista.
+                    </p>
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     CARTÃO
+                ================================================== -->
+
+                <div class="card">
+
+                    <i>CC</i>
+
+                    <h3>
+                        Cartão
+                    </h3>
+
+                    <p>
+                        Consulte o motorista sobre a disponibilidade
+                        de pagamento com cartão.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ======================================================
+         COMO FUNCIONA
+    ====================================================== -->
+
+    <section class="services">
+
+        <div class="container">
+
+            <h2 class="section-title">
+                Como funciona o <span>pagamento?</span>
+            </h2>
+
+
+            <div class="card">
+
+                <p>
+                    Após escolher seu motorista e realizar sua
+                    corrida, o pagamento é feito diretamente
+                    ao motorista.
+                </p>
+
+
+                <br>
+
+
+                <p>
+                    Antes de iniciar a viagem, você poderá verificar
+                    as formas de pagamento disponíveis para aquela
+                    corrida.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ======================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        <div class="container">
+
+            <p>
+                © 2026 VaidTáxi. Todos os direitos reservados.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="js/menu.js"></script>
 
 
 </body>
 
 </html>
+```
