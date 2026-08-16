@@ -8,10 +8,18 @@
 
     <title>Entrar | VaidTáxi</title>
 
-    <!-- FONTE -->
+
+    <!-- =====================================================
+         FONTE
+    ====================================================== -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -19,7 +27,9 @@
     >
 
 
-    <!-- FONT AWESOME -->
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
 
     <link
         rel="stylesheet"
@@ -27,247 +37,15 @@
     >
 
 
-    <!-- CSS PADRÃO -->
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
 
     <link rel="stylesheet" href="css/style.css">
+
     <link rel="stylesheet" href="css/responsive.css">
+
     <link rel="stylesheet" href="css/animations.css">
-
-    <!-- CSS ESPECÍFICO DO LOGIN -->
-
-    <style>
-
-        /* ==========================================
-           ESCOLHA DE ACESSO
-        ========================================== */
-
-        .tipo-acesso {
-            max-width: 1100px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-
-        .tipo-acesso-titulo {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .tipo-acesso-titulo h2 {
-            font-size: 30px;
-            margin-bottom: 8px;
-        }
-
-        .tipo-acesso-titulo h2 span {
-            color: #FFD400;
-        }
-
-        .tipo-acesso-titulo p {
-            color: #999;
-            font-size: 14px;
-        }
-
-
-        /* CARDS */
-
-        .acesso-opcoes {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-
-        .acesso-card {
-            background: #1a1a1a;
-
-            border: 1px solid #292929;
-
-            border-radius: 16px;
-
-            padding: 35px 25px;
-
-            text-align: center;
-
-            cursor: pointer;
-
-            transition: 0.3s;
-        }
-
-
-        .acesso-card:hover {
-            transform: translateY(-5px);
-
-            border-color: #FFD400;
-
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-        }
-
-
-        .acesso-icone {
-            width: 70px;
-            height: 70px;
-
-            margin: 0 auto 20px;
-
-            border-radius: 50%;
-
-            background: #FFD400;
-
-            color: #111;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            font-size: 28px;
-        }
-
-
-        .acesso-card h3 {
-            font-size: 20px;
-
-            margin-bottom: 10px;
-        }
-
-
-        .acesso-card p {
-            color: #888;
-
-            font-size: 13px;
-
-            line-height: 1.6;
-
-            margin-bottom: 20px;
-        }
-
-
-        .acesso-card button {
-            width: 100%;
-
-            border: none;
-
-            background: #FFD400;
-
-            color: #111;
-
-            padding: 12px;
-
-            border-radius: 8px;
-
-            font-family: 'Poppins', sans-serif;
-
-            font-weight: 600;
-
-            cursor: pointer;
-
-            transition: 0.2s;
-        }
-
-
-        .acesso-card button:hover {
-            background: #e6bf00;
-        }
-
-
-        /* ==========================================
-           FORMULÁRIO
-        ========================================== */
-
-        .login-container {
-            display: none;
-
-            max-width: 500px;
-
-            margin: 40px auto 60px;
-
-            padding: 0 20px;
-        }
-
-
-        .login-container.mostrar {
-            display: block;
-        }
-
-
-        .login-tipo {
-            text-align: center;
-
-            margin-bottom: 25px;
-        }
-
-
-        .login-tipo .icone-login {
-            width: 60px;
-            height: 60px;
-
-            margin: 0 auto 12px;
-
-            border-radius: 50%;
-
-            background: #FFD400;
-
-            color: #111;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            font-size: 23px;
-        }
-
-
-        .login-tipo h2 {
-            font-size: 24px;
-        }
-
-
-        .login-tipo h2 span {
-            color: #FFD400;
-        }
-
-
-        .btn-voltar {
-            display: block;
-
-            margin: 0 auto 25px;
-
-            background: transparent;
-
-            border: none;
-
-            color: #999;
-
-            font-family: 'Poppins', sans-serif;
-
-            cursor: pointer;
-        }
-
-
-        .btn-voltar:hover {
-            color: #FFD400;
-        }
-
-
-        /* ==========================================
-           RESPONSIVIDADE
-        ========================================== */
-
-        @media (max-width: 800px) {
-
-            .acesso-opcoes {
-                grid-template-columns: 1fr;
-            }
-
-            .tipo-acesso-titulo h2 {
-                font-size: 25px;
-            }
-
-        }
-
-    </style>
 
 </head>
 
@@ -340,13 +118,15 @@
 
 
 <!-- =========================================================
-     CONTEÚDO
+     CONTEÚDO PRINCIPAL
 ========================================================== -->
 
 <main>
 
 
-    <!-- BANNER -->
+    <!-- =====================================================
+         BANNER DA PÁGINA
+    ====================================================== -->
 
     <section class="page-banner">
 
@@ -357,7 +137,8 @@
             </h1>
 
             <p>
-                Escolha como deseja acessar o VaidTáxi.
+                Acesse sua conta para solicitar corridas
+                e acompanhar seu histórico.
             </p>
 
         </div>
@@ -371,112 +152,88 @@
     ====================================================== -->
 
     <section
-        class="tipo-acesso"
+        class="container"
         id="tipoAcesso"
     >
 
-        <div class="tipo-acesso-titulo">
+        <div class="login-tipo">
 
             <h2>
-                Como deseja <span>entrar?</span>
+                Como deseja entrar?
             </h2>
 
             <p>
-                Selecione o tipo de acesso para continuar.
+                Selecione o tipo de acesso
             </p>
 
-        </div>
+
+            <div class="login-opcoes">
 
 
-        <div class="acesso-opcoes">
+                <!-- CLIENTE -->
 
-
-            <!-- CLIENTE -->
-
-            <div class="acesso-card">
-
-                <div class="acesso-icone">
+                <button
+                    type="button"
+                    class="login-opcao"
+                    onclick="selecionarTipo('cliente')"
+                >
 
                     <i class="fa-solid fa-user"></i>
 
-                </div>
+                    <span>
+                        Cliente
+                    </span>
 
-                <h3>
-                    Cliente
-                </h3>
+                    <small>
+                        Solicitar e acompanhar corridas
+                    </small>
 
-                <p>
-                    Solicite corridas, acompanhe seus motoristas
-                    e consulte seu histórico.
-                </p>
+                </button>
+
+
+                <!-- PARCEIRO -->
 
                 <button
                     type="button"
-                    onclick="selecionarTipo('cliente')"
+                    class="login-opcao"
+                    onclick="selecionarTipo('parceiro')"
                 >
-                    Entrar como Cliente
-                </button>
-
-            </div>
-
-
-            <!-- PARCEIRO -->
-
-            <div class="acesso-card">
-
-                <div class="acesso-icone">
 
                     <i class="fa-solid fa-taxi"></i>
 
-                </div>
+                    <span>
+                        Parceiro / Taxista
+                    </span>
 
-                <h3>
-                    Parceiro / Taxista
-                </h3>
+                    <small>
+                        Gerenciar corridas e ganhos
+                    </small>
 
-                <p>
-                    Gerencie suas corridas, veículo,
-                    ganhos e atendimento aos passageiros.
-                </p>
+                </button>
+
+
+                <!-- ADMINISTRADOR -->
 
                 <button
                     type="button"
-                    onclick="selecionarTipo('parceiro')"
+                    class="login-opcao"
+                    onclick="selecionarTipo('admin')"
                 >
-                    Entrar como Parceiro
-                </button>
-
-            </div>
-
-
-            <!-- ADMIN -->
-
-            <div class="acesso-card">
-
-                <div class="acesso-icone">
 
                     <i class="fa-solid fa-user-shield"></i>
 
-                </div>
+                    <span>
+                        Administrador
+                    </span>
 
-                <h3>
-                    Administrador
-                </h3>
+                    <small>
+                        Gerenciar o sistema
+                    </small>
 
-                <p>
-                    Gerencie clientes, parceiros, corridas
-                    e configurações do sistema.
-                </p>
-
-                <button
-                    type="button"
-                    onclick="selecionarTipo('admin')"
-                >
-                    Entrar como Administrador
                 </button>
 
-            </div>
 
+            </div>
 
         </div>
 
@@ -489,42 +246,40 @@
     ====================================================== -->
 
     <section
-        class="login-container"
+        class="container"
         id="loginContainer"
+        style="display: none;"
     >
-
-        <button
-            type="button"
-            class="btn-voltar"
-            onclick="voltarTipos()"
-        >
-
-            <i class="fa-solid fa-arrow-left"></i>
-
-            Voltar para opções
-
-        </button>
-
-
-        <div class="login-tipo">
-
-            <div class="icone-login">
-
-                <i id="iconeTipo"></i>
-
-            </div>
-
-            <h2 id="tituloTipo">
-                Entrar
-            </h2>
-
-        </div>
-
 
         <form
             class="form-login"
             id="formLogin"
         >
+
+
+            <!-- TIPO DE LOGIN -->
+
+            <div
+                class="login-tipo-selecionado"
+                style="text-align: center; margin-bottom: 25px;"
+            >
+
+                <i
+                    id="iconeTipo"
+                    class="fa-solid fa-user"
+                    style="font-size: 35px;"
+                ></i>
+
+                <h2 id="tituloTipo">
+
+                    Entrar como
+                    <span>
+                        Cliente
+                    </span>
+
+                </h2>
+
+            </div>
 
 
             <!-- E-MAIL -->
@@ -547,6 +302,7 @@
             </div>
 
 
+
             <!-- SENHA -->
 
             <div class="form-group">
@@ -567,6 +323,7 @@
             </div>
 
 
+
             <!-- BOTÃO -->
 
             <button
@@ -576,6 +333,7 @@
             >
                 Entrar
             </button>
+
 
 
             <!-- MENSAGEM -->
@@ -588,6 +346,27 @@
                     font-size: 14px;
                 "
             ></p>
+
+
+
+            <!-- VOLTAR -->
+
+            <p
+                style="
+                    margin-top: 15px;
+                    text-align: center;
+                "
+            >
+
+                <a
+                    href="#"
+                    onclick="voltarTipos(); return false;"
+                >
+                    ← Escolher outro tipo de acesso
+                </a>
+
+            </p>
+
 
 
             <!-- CADASTRO -->
@@ -607,6 +386,7 @@
                 </a>
 
             </p>
+
 
         </form>
 
@@ -628,7 +408,9 @@
         <p>
 
             ©
+
             <span id="ano"></span>
+
             VaidTáxi - Todos os direitos reservados.
 
         </p>
@@ -640,27 +422,24 @@
 
 
 <!-- =========================================================
-     JAVASCRIPT EXISTENTE
+     JAVASCRIPT
 ========================================================== -->
 
 <script src="js/menu.js"></script>
 
 
-<!-- SUPABASE -->
+<!-- =========================================================
+     SUPABASE
+========================================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/supabase.js"></script>
 
 
-<!-- LOGIN EXISTENTE -->
-
-<script src="js/login.js"></script>
-
-
 
 <!-- =========================================================
-     CONTROLE DO TIPO DE ACESSO
+     VARIÁVEL DO TIPO DE ACESSO
 ========================================================== -->
 
 <script>
@@ -668,9 +447,14 @@
     let tipoSelecionado = "";
 
 
+    /* =====================================================
+       ESCOLHER TIPO DE ACESSO
+    ====================================================== */
+
     function selecionarTipo(tipo) {
 
         tipoSelecionado = tipo;
+
 
         const tipoAcesso =
             document.getElementById("tipoAcesso");
@@ -688,10 +472,16 @@
             document.getElementById("linkCadastro");
 
 
+        /* Mostrar formulário */
+
         tipoAcesso.style.display = "none";
 
-        loginContainer.classList.add("mostrar");
+        loginContainer.style.display = "block";
 
+
+        /* =================================================
+           CLIENTE
+        ================================================== */
 
         if (tipo === "cliente") {
 
@@ -707,6 +497,10 @@
         }
 
 
+        /* =================================================
+           PARCEIRO
+        ================================================== */
+
         else if (tipo === "parceiro") {
 
             titulo.innerHTML =
@@ -720,6 +514,10 @@
 
         }
 
+
+        /* =================================================
+           ADMINISTRADOR
+        ================================================== */
 
         else if (tipo === "admin") {
 
@@ -737,6 +535,10 @@
     }
 
 
+    /* =====================================================
+       VOLTAR PARA ESCOLHA
+    ====================================================== */
+
     function voltarTipos() {
 
         const tipoAcesso =
@@ -746,17 +548,25 @@
             document.getElementById("loginContainer");
 
 
-        loginContainer.classList.remove("mostrar");
+        loginContainer.style.display =
+            "none";
 
-        tipoAcesso.style.display = "block";
+        tipoAcesso.style.display =
+            "block";
+
+
+        tipoSelecionado = "";
 
     }
 
 
-    /* ANO */
+    /* =====================================================
+       ANO DO RODAPÉ
+    ====================================================== */
 
     const elementoAno =
         document.getElementById("ano");
+
 
     if (elementoAno) {
 
@@ -766,6 +576,14 @@
     }
 
 </script>
+
+
+
+<!-- =========================================================
+     LOGIN
+========================================================== -->
+
+<script src="js/login.js"></script>
 
 
 </body>
