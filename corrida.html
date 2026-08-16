@@ -58,7 +58,6 @@
                 <img
                     src="logo-vdb.png"
                     alt="Logo VaidTáxi"
-                    onerror="this.onerror=null; this.src='img/logo-vdb.png';"
                 >
 
                 <h1>
@@ -150,13 +149,10 @@
 
 
                 <!-- ==================================================
-                     CLIENTE LOGADO
+                     USUÁRIO
                 ================================================== -->
 
-                <div
-                    class="usuario-logado"
-                    id="usuarioLogado"
-                >
+                <div class="usuario-logado">
 
                     <p>
 
@@ -321,24 +317,20 @@
                         "formCorrida"
                     );
 
-
                 const btnSolicitar =
                     document.getElementById(
                         "btnSolicitar"
                     );
-
 
                 const btnSair =
                     document.getElementById(
                         "btnSair"
                     );
 
-
                 const nomeCliente =
                     document.getElementById(
                         "nomeCliente"
                     );
-
 
                 const mensagem =
                     document.getElementById(
@@ -346,15 +338,9 @@
                     );
 
 
-                const usuarioLogado =
-                    document.getElementById(
-                        "usuarioLogado"
-                    );
-
-
 
                 /* ==================================================
-                   VERIFICAR SE O SUPABASE FOI CARREGADO
+                   VERIFICAR SUPABASE
                 ================================================== */
 
                 if (
@@ -372,12 +358,12 @@
 
 
                 /* ==================================================
-                   VERIFICAR SESSÃO APENAS PARA ATUALIZAR A INTERFACE
+                   VERIFICAR SE EXISTE USUÁRIO LOGADO
                    
                    IMPORTANTE:
-                   NÃO REDIRECIONA O VISITANTE PARA O LOGIN.
+                   NÃO REDIRECIONAR.
                    
-                   A página continua acessível normalmente.
+                   A página continua aberta para visitantes.
                 ================================================== */
 
                 try {
@@ -399,10 +385,6 @@
                     }
 
 
-                    /* ==================================================
-                       USUÁRIO ESTÁ LOGADO
-                    ================================================== */
-
                     if (
                         data &&
                         data.session
@@ -413,7 +395,7 @@
 
 
                         console.log(
-                            "Cliente autenticado:",
+                            "Cliente logado:",
                             usuario.email
                         );
 
@@ -425,29 +407,11 @@
 
                         }
 
-
-                        /*
-                         * Mostra o botão Sair.
-                         */
-
-                        if (btnSair) {
-
-                            btnSair.style.display =
-                                "";
-
-                        }
-
                     }
-
-
-                    /* ==================================================
-                       VISITANTE NÃO LOGADO
-                    ================================================== */
-
                     else {
 
                         console.log(
-                            "Visitante não autenticado."
+                            "Nenhum usuário logado."
                         );
 
 
@@ -458,16 +422,10 @@
 
                         }
 
-
-                        /*
-                         * O visitante continua podendo
-                         * preencher o formulário.
-                         */
-
                     }
 
-
-                } catch (erro) {
+                }
+                catch (erro) {
 
                     console.error(
                         "Erro ao verificar sessão:",
@@ -480,8 +438,6 @@
 
                 /* ==================================================
                    BOTÃO SAIR
-                   
-                   Só funciona se houver usuário logado.
                 ================================================== */
 
                 if (btnSair) {
@@ -501,11 +457,6 @@
                                     await supabase.auth.getSession();
 
 
-                                /*
-                                 * Se não houver sessão,
-                                 * simplesmente vai para o login.
-                                 */
-
                                 if (
                                     !data ||
                                     !data.session
@@ -518,10 +469,6 @@
 
                                 }
 
-
-                                /*
-                                 * Faz logout.
-                                 */
 
                                 const {
                                     error
@@ -548,8 +495,8 @@
                                 window.location.href =
                                     "login.html";
 
-
-                            } catch (erro) {
+                            }
+                            catch (erro) {
 
                                 console.error(
                                     "Erro ao sair:",
@@ -569,7 +516,7 @@
 
 
                 /* ==================================================
-                   ENVIO DO FORMULÁRIO
+                   FORMULÁRIO
                 ================================================== */
 
                 if (form) {
@@ -583,9 +530,7 @@
 
 
                             /* ==================================================
-                               PEGAR OS DADOS PRIMEIRO
-                               
-                               O visitante pode preencher tudo normalmente.
+                               CAPTURAR OS DADOS
                             ================================================== */
 
                             const origem =
@@ -617,7 +562,7 @@
 
 
                             /* ==================================================
-                               VALIDAR CAMPOS
+                               VALIDAR ORIGEM
                             ================================================== */
 
                             if (!origem) {
@@ -636,6 +581,11 @@
 
                             }
 
+
+
+                            /* ==================================================
+                               VALIDAR DESTINO
+                            ================================================== */
 
                             if (!destino) {
 
@@ -656,45 +606,42 @@
 
 
                             /* ==================================================
-                               AGORA SIM VERIFICAR LOGIN
+                               VERIFICAR LOGIN
                                
-                               ESTE É O PONTO IMPORTANTE.
-                               
-                               O visitante só será impedido aqui,
-                               quando tentar solicitar a corrida.
+                               SOMENTE AGORA O LOGIN É EXIGIDO.
                             ================================================== */
 
-                            let dataSessao;
+                            let sessao;
 
 
                             try {
 
-                                const resultado =
+                                const {
+                                    data,
+                                    error
+                                } =
                                     await supabase.auth.getSession();
 
 
-                                dataSessao =
-                                    resultado.data;
-
-
-                                if (
-                                    resultado.error
-                                ) {
+                                if (error) {
 
                                     console.error(
                                         "Erro ao verificar sessão:",
-                                        resultado.error
+                                        error
                                     );
 
                                 }
 
-                            } catch (erro) {
+
+                                sessao = data;
+
+                            }
+                            catch (erro) {
 
                                 console.error(
-                                    "Erro ao verificar sessão:",
+                                    "Erro ao consultar sessão:",
                                     erro
                                 );
-
 
                                 alert(
                                     "Não foi possível verificar sua sessão. Tente novamente."
@@ -707,18 +654,18 @@
 
 
                             /* ==================================================
-                               NÃO ESTÁ LOGADO
+                               VISITANTE NÃO LOGADO
                             ================================================== */
 
                             if (
-                                !dataSessao ||
-                                !dataSessao.session
+                                !sessao ||
+                                !sessao.session
                             ) {
 
+
                                 /*
-                                 * Guarda temporariamente os dados
-                                 * para podermos recuperar depois
-                                 * do login.
+                                 * Salvar temporariamente
+                                 * os dados preenchidos.
                                  */
 
                                 sessionStorage.setItem(
@@ -755,11 +702,11 @@
 
 
                             /* ==================================================
-                               USUÁRIO ESTÁ LOGADO
+                               CLIENTE LOGADO
                             ================================================== */
 
                             const usuario =
-                                dataSessao.session.user;
+                                sessao.session.user;
 
 
                             console.log(
@@ -802,7 +749,7 @@
 
 
                             /* ==================================================
-                               DESABILITAR BOTÃO
+                               BOTÃO
                             ================================================== */
 
                             if (btnSolicitar) {
@@ -818,11 +765,7 @@
 
 
                             /* ==================================================
-                               MENSAGEM TEMPORÁRIA
-                               
-                               O INSERT NO SUPABASE SERÁ COLOCADO
-                               DEPOIS QUE CONFIRMARMOS AS COLUNAS
-                               DA SUA TABELA "corridas".
+                               MENSAGEM
                             ================================================== */
 
                             if (mensagem) {
@@ -831,16 +774,15 @@
                                     "block";
 
                                 mensagem.textContent =
-                                    "Cliente autenticado. Solicitação preparada para envio.";
+                                    "Cliente autenticado. A solicitação está pronta para ser enviada.";
 
                             }
 
 
-
                             /*
-                             * Por enquanto o formulário não faz INSERT
-                             * no banco para não inventarmos nomes de
-                             * colunas que podem não existir.
+                             * O INSERT no Supabase será feito
+                             * depois que confirmarmos as colunas
+                             * da tabela de corridas.
                              */
 
                             if (btnSolicitar) {
