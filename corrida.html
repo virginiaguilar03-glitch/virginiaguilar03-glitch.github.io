@@ -6,9 +6,13 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>VaidTáxi | Solicitar Corrida</title>
+
 
     <!-- ==================================================
          FONTE
@@ -16,7 +20,11 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -41,42 +49,28 @@
 
 
     <!-- ==================================================
-         CABEÇALHO
+         CABEÇALHO PADRÃO VAIDTÁXI
     ================================================== -->
 
-    <header class="header">
+    <header>
 
         <div class="container">
 
-          <a href="index.html" class="logo">
+            <a href="index.html" class="logo">
 
-    <img
-        src="logo-vdb.png"
-        alt="Logo VaidTáxi"
-    >
+                <img
+                    src="logo-vdb.png"
+                    alt="Logo"
+                >
 
-    <h1>
-        Vaid<span>Táxi</span>
-    </h1>
+                <h1>
+                    Vaid<span>Táxi</span>
+                </h1>
 
-</a>
-
-
-            <!-- BOTÃO MENU MOBILE -->
-
-            <button
-                class="menu-toggle"
-                id="menuToggle"
-                type="button"
-                aria-label="Abrir menu"
-            >
-                ☰
-            </button>
+            </a>
 
 
-            <!-- MENU -->
-
-            <nav class="menu" id="menu">
+            <nav>
 
                 <a href="index.html">
                     Início
@@ -86,15 +80,41 @@
                     Motoristas
                 </a>
 
-                <a href="corrida.html" class="active">
-                    Solicitar Corrida
+                <a
+                    href="corrida.html"
+                    class="active"
+                >
+                    Corridas
                 </a>
 
-                <a href="#" id="btnSair">
-                    Sair
+                <a href="pagamentos.html">
+                    Pagamentos
+                </a>
+
+                <a href="contato.html">
+                    Contato
                 </a>
 
             </nav>
+
+
+            <div class="header-buttons">
+
+                <a
+                    href="login.html"
+                    class="btn-outline"
+                >
+                    Entrar
+                </a>
+
+                <a
+                    href="cadastro.html"
+                    class="btn"
+                >
+                    Cadastre-se
+                </a>
+
+            </div>
 
         </div>
 
@@ -118,7 +138,9 @@
             <section class="corrida-container">
 
 
-                <!-- TÍTULO -->
+                <!-- ==================================================
+                     TÍTULO
+                ================================================== -->
 
                 <div class="corrida-header">
 
@@ -135,7 +157,7 @@
 
 
                 <!-- ==================================================
-                     CLIENTE / VISITANTE
+                     USUÁRIO
                 ================================================== -->
 
                 <div class="usuario-logado">
@@ -161,7 +183,9 @@
                 <form id="formCorrida">
 
 
-                    <!-- ORIGEM -->
+                    <!-- ==================================================
+                         ORIGEM
+                    ================================================== -->
 
                     <div class="form-group">
 
@@ -182,7 +206,9 @@
 
 
 
-                    <!-- DESTINO -->
+                    <!-- ==================================================
+                         DESTINO
+                    ================================================== -->
 
                     <div class="form-group">
 
@@ -203,7 +229,9 @@
 
 
 
-                    <!-- OBSERVAÇÃO -->
+                    <!-- ==================================================
+                         OBSERVAÇÃO
+                    ================================================== -->
 
                     <div class="form-group">
 
@@ -222,7 +250,9 @@
 
 
 
-                    <!-- BOTÃO -->
+                    <!-- ==================================================
+                         BOTÃO SOLICITAR
+                    ================================================== -->
 
                     <button
                         type="submit"
@@ -244,7 +274,7 @@
                 <div
                     id="mensagemCorrida"
                     class="mensagem"
-                    style="display:none;"
+                    style="display: none;"
                 ></div>
 
 
@@ -260,12 +290,9 @@
          JAVASCRIPT
     ================================================== -->
 
-    <!-- MENU -->
-
-    <script src="js/menu.js"></script>
-
-
-    <!-- SUPABASE -->
+    <!-- ==================================================
+         SUPABASE
+    ================================================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -274,7 +301,7 @@
 
 
     <!-- ==================================================
-         CONTROLE DA PÁGINA
+         CONTROLE DA CORRIDA
     ================================================== -->
 
     <script>
@@ -294,9 +321,9 @@
                     );
 
 
-                const btnSair =
+                const btnSolicitar =
                     document.getElementById(
-                        "btnSair"
+                        "btnSolicitar"
                     );
 
 
@@ -309,12 +336,6 @@
                 const mensagem =
                     document.getElementById(
                         "mensagemCorrida"
-                    );
-
-
-                const btnSolicitar =
-                    document.getElementById(
-                        "btnSolicitar"
                     );
 
 
@@ -338,14 +359,13 @@
 
 
                 /* ==================================================
-                   VERIFICAR SE EXISTE SESSÃO
+                   VERIFICAR USUÁRIO LOGADO
                    
                    IMPORTANTE:
                    
-                   NÃO manda o visitante para o login.
+                   NÃO REDIRECIONAR.
                    
-                   Ele pode acessar e preencher a página
-                   normalmente.
+                   A página continua acessível para visitantes.
                 ================================================== */
 
                 try {
@@ -405,7 +425,7 @@
                 catch (erro) {
 
                     console.error(
-                        "Erro inesperado:",
+                        "Erro ao verificar sessão:",
                         erro
                     );
 
@@ -414,87 +434,7 @@
 
 
                 /* ==================================================
-                   BOTÃO SAIR
-                ================================================== */
-
-                if (btnSair) {
-
-                    btnSair.addEventListener(
-                        "click",
-                        async function (event) {
-
-                            event.preventDefault();
-
-
-                            try {
-
-                                const {
-                                    data
-                                } =
-                                    await supabase.auth.getSession();
-
-
-                                if (
-                                    !data ||
-                                    !data.session
-                                ) {
-
-                                    window.location.href =
-                                        "login.html";
-
-                                    return;
-
-                                }
-
-
-                                const {
-                                    error
-                                } =
-                                    await supabase.auth.signOut();
-
-
-                                if (error) {
-
-                                    console.error(
-                                        "Erro ao sair:",
-                                        error
-                                    );
-
-                                    alert(
-                                        "Não foi possível sair da conta."
-                                    );
-
-                                    return;
-
-                                }
-
-
-                                window.location.href =
-                                    "login.html";
-
-
-                            }
-                            catch (erro) {
-
-                                console.error(
-                                    "Erro ao sair:",
-                                    erro
-                                );
-
-                                window.location.href =
-                                    "login.html";
-
-                            }
-
-                        }
-                    );
-
-                }
-
-
-
-                /* ==================================================
-                   FORMULÁRIO DE CORRIDA
+                   FORMULÁRIO
                 ================================================== */
 
                 if (form) {
@@ -508,7 +448,7 @@
 
 
                             /* ==================================================
-                               PEGAR OS DADOS
+                               CAPTURAR DADOS
                             ================================================== */
 
                             const origem =
@@ -588,13 +528,13 @@
 
 
                             /* ==================================================
-                               AGORA VERIFICAMOS O LOGIN
+                               VERIFICAR LOGIN
                                
-                               ESTE É O PONTO EM QUE O LOGIN
-                               SE TORNA OBRIGATÓRIO.
+                               SOMENTE NESTE MOMENTO O LOGIN
+                               É OBRIGATÓRIO.
                             ================================================== */
 
-                            let sessao;
+                            let sessao = null;
 
 
                             try {
@@ -625,7 +565,6 @@
                                 sessao =
                                     data.session;
 
-
                             }
                             catch (erro) {
 
@@ -645,15 +584,14 @@
 
 
                             /* ==================================================
-                               USUÁRIO NÃO ESTÁ LOGADO
+                               NÃO ESTÁ LOGADO
                             ================================================== */
 
                             if (!sessao) {
 
 
                                 /*
-                                 * Guardamos os dados temporariamente
-                                 * para poder recuperá-los depois do login.
+                                 * Guardar os dados temporariamente.
                                  */
 
                                 sessionStorage.setItem(
@@ -690,7 +628,7 @@
 
 
                             /* ==================================================
-                               USUÁRIO ESTÁ LOGADO
+                               CLIENTE LOGADO
                             ================================================== */
 
                             const usuario =
@@ -702,7 +640,7 @@
                             );
 
                             console.log(
-                                "NOVA SOLICITAÇÃO DE CORRIDA"
+                                "SOLICITAÇÃO DE CORRIDA"
                             );
 
                             console.log(
@@ -767,16 +705,12 @@
                             }
 
 
-
                             /*
-                             * IMPORTANTE:
-                             *
-                             * Ainda não fazemos INSERT na tabela
-                             * "corridas" porque precisamos usar
-                             * exatamente os nomes das colunas
-                             * existentes no seu Supabase.
+                             * O INSERT no Supabase será feito
+                             * na próxima etapa, depois de
+                             * confirmarmos a estrutura da tabela
+                             * "corridas".
                              */
-
 
                             if (btnSolicitar) {
 
