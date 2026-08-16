@@ -8,6 +8,16 @@ const btnLogin = document.getElementById("btnLogin");
 
 
 // ============================================================
+// TIPO DE ACESSO
+// ============================================================
+
+// O login.html deve definir esta variável quando o usuário
+// escolher Cliente, Parceiro ou Administrador.
+
+let tipoSelecionado = window.tipoSelecionado || "";
+
+
+// ============================================================
 // LOGIN
 // ============================================================
 
@@ -38,6 +48,21 @@ if (formLogin) {
 
             mostrarMensagem(
                 "Preencha todos os campos.",
+                "erro"
+            );
+
+            return;
+        }
+
+
+        // ====================================================
+        // VERIFICAR TIPO DE ACESSO
+        // ====================================================
+
+        if (!tipoSelecionado) {
+
+            mostrarMensagem(
+                "Selecione como deseja entrar.",
                 "erro"
             );
 
@@ -131,12 +156,68 @@ if (formLogin) {
 
 
             // =================================================
+            // SALVAR TIPO DE ACESSO
+            // =================================================
+
+            localStorage.setItem(
+                "tipoAcesso",
+                tipoSelecionado
+            );
+
+
+            // =================================================
             // REDIRECIONAR
             // =================================================
 
             setTimeout(function() {
 
-                window.location.href = "index.html";
+
+                // ---------------------------------------------
+                // CLIENTE
+                // ---------------------------------------------
+
+                if (tipoSelecionado === "cliente") {
+
+                    window.location.href =
+                        "cliente.html";
+
+                    return;
+                }
+
+
+                // ---------------------------------------------
+                // PARCEIRO
+                // ---------------------------------------------
+
+                if (tipoSelecionado === "parceiro") {
+
+                    window.location.href =
+                        "parceiro.html";
+
+                    return;
+                }
+
+
+                // ---------------------------------------------
+                // ADMINISTRADOR
+                // ---------------------------------------------
+
+                if (tipoSelecionado === "admin") {
+
+                    window.location.href =
+                        "admin.html";
+
+                    return;
+                }
+
+
+                // ---------------------------------------------
+                // CASO NÃO ENCONTRE O TIPO
+                // ---------------------------------------------
+
+                window.location.href =
+                    "index.html";
+
 
             }, 500);
 
