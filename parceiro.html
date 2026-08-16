@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VaidTáxi | Área do Parceiro</title>
+
+    <!-- FONTE -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- FONT AWESOME -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <!-- CSS PADRÃO DO VAIDTÁXI -->
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/animations.css">
+
+    <!-- CSS ESPECÍFICO DO PARCEIRO -->
+
+    <link rel="stylesheet" href="css/parceiro.css">
+
+</head>
+
+
+<body>
+
+
+<div class="parceiro-layout">
+
+
+    <!-- =====================================================
+         MENU LATERAL
+    ====================================================== -->
+
+    <aside class="parceiro-sidebar">
+
+
+        <!-- LOGO -->
+
+        <div class="parceiro-logo">
+
+            <a href="index.html">
+
+                <img
+                    src="logo-vdb.png"
+                    alt="VaidTáxi"
+                >
+
+                <h2>
+                    Vaid<span>Táxi</span>
+                </h2>
+
+            </a>
+
+        </div>
+
+
+        <!-- MENU -->
+
+        <nav class="parceiro-menu">
+
+
+            <a
+                href="#"
+                class="parceiro-menu-item ativo"
+            >
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Início
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="parceiro-menu-item"
+            >
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+                    Meu Perfil
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="parceiro-menu-item"
+            >
+
+                <i class="fa-solid fa-car"></i>
+
+                <span>
+                    Meu Veículo
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="parceiro-menu-item"
+            >
+
+                <i class="fa-solid fa-file-lines"></i>
+
+                <span>
+                    Documentos
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="parceiro-menu-item"
+            >
+
+                <i class="fa-solid fa-taxi"></i>
+
+                <span>
+                    Minhas Corridas
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="parceiro-menu-item"
+            >
+
+                <i class="fa-solid fa-wallet"></i>
+
+                <span>
+                    Meus Ganhos
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="parceiro-menu-item"
+            >
+
+                <i class="fa-solid fa-star"></i>
+
+                <span>
+                    Avaliações
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="parceiro-menu-item"
+            >
+
+                <i class="fa-solid fa-headset"></i>
+
+                <span>
+                    Suporte
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+        <!-- MENU INFERIOR -->
+
+        <div class="parceiro-menu-bottom">
+
+
+            <a
+                href="#"
+                class="parceiro-menu-item"
+            >
+
+                <i class="fa-solid fa-gear"></i>
+
+                <span>
+                    Configurações
+                </span>
+
+            </a>
+
+
+            <a
+                href="index.html"
+                class="parceiro-menu-item sair"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Sair
+                </span>
+
+            </a>
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         CONTEÚDO PRINCIPAL
+    ====================================================== -->
+
+    <main class="parceiro-conteudo">
+
+
+        <!-- =================================================
+             TOPO
+        ================================================== -->
+
+        <header class="parceiro-topo">
+
+
+            <div>
+
+                <span class="parceiro-label">
+                    Área do Parceiro
+                </span>
+
+                <h1>
+
+                    Olá,
+                    <span>Motorista!</span>
+
+                </h1>
+
+                <p>
+                    Gerencie suas corridas e sua atividade.
+                </p>
+
+            </div>
+
+
+            <!-- PERFIL -->
+
+            <div class="parceiro-perfil-topo">
+
+
+                <div class="parceiro-avatar">
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        Parceiro VaidTáxi
+                    </strong>
+
+                    <small>
+                        Taxista
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- =================================================
+             STATUS DO MOTORISTA
+        ================================================== -->
+
+        <section class="parceiro-status">
+
+
+            <div>
+
+                <span>
+                    Status do motorista
+                </span>
+
+                <h2 id="textoStatus">
+                    Você está offline
+                </h2>
+
+                <p id="descricaoStatus">
+                    Fique online para receber novas solicitações.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="btnStatus"
+                class="parceiro-btn-status"
+                onclick="alternarStatus()"
+            >
+
+                <i class="fa-solid fa-power-off"></i>
+
+                <span id="textoBotaoStatus">
+                    Ficar Online
+                </span>
+
+            </button>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             RESUMO
+        ================================================== -->
+
+        <section class="parceiro-cards">
+
+
+            <!-- CORRIDAS -->
+
+            <div class="parceiro-card">
+
+                <div class="parceiro-card-icone">
+
+                    <i class="fa-solid fa-taxi"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Corridas hoje
+                    </span>
+
+                    <h3>
+                        0
+                    </h3>
+
+                    <p>
+                        Corridas realizadas hoje.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- GANHOS -->
+
+            <div class="parceiro-card">
+
+                <div class="parceiro-card-icone">
+
+                    <i class="fa-solid fa-wallet"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Ganhos hoje
+                    </span>
+
+                    <h3>
+                        R$ 0,00
+                    </h3>
+
+                    <p>
+                        Total recebido hoje.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- AVALIAÇÃO -->
+
+            <div class="parceiro-card">
+
+                <div class="parceiro-card-icone">
+
+                    <i class="fa-solid fa-star"></i>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Avaliação
+                    </span>
+
+                    <h3>
+                        —
+                    </h3>
+
+                    <p>
+                        Sua avaliação média.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             ÁREA INFERIOR
+        ================================================== -->
+
+        <section class="parceiro-area-inferior">
+
+
+            <!-- =================================================
+                 NOVAS SOLICITAÇÕES
+            ================================================== -->
+
+            <div class="parceiro-painel">
+
+
+                <div class="parceiro-painel-topo">
+
+                    <div>
+
+                        <span>
+                            Corridas
+                        </span>
+
+                        <h2>
+                            Novas solicitações
+                        </h2>
+
+                    </div>
+
+
+                    <span class="parceiro-status-indicador">
+
+                        <i class="fa-solid fa-circle"></i>
+
+                        Aguardando
+
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="parceiro-sem-solicitacoes"
+                    id="semSolicitacoes"
+                >
+
+                    <i class="fa-solid fa-taxi"></i>
+
+                    <h3>
+                        Nenhuma solicitação no momento
+                    </h3>
+
+                    <p>
+                        Quando houver uma nova corrida,
+                        ela aparecerá aqui.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ACESSO RÁPIDO
+            ================================================== -->
+
+            <div class="parceiro-painel">
+
+
+                <div class="parceiro-painel-topo">
+
+                    <div>
+
+                        <span>
+                            Acesso rápido
+                        </span>
+
+                        <h2>
+                            Gerenciar
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="parceiro-atalhos">
+
+
+                    <button type="button">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        <span>
+                            Meu Perfil
+                        </span>
+
+                    </button>
+
+
+                    <button type="button">
+
+                        <i class="fa-solid fa-car"></i>
+
+                        <span>
+                            Meu Veículo
+                        </span>
+
+                    </button>
+
+
+                    <button type="button">
+
+                        <i class="fa-solid fa-file-lines"></i>
+
+                        <span>
+                            Documentos
+                        </span>
+
+                    </button>
+
+
+                    <button type="button">
+
+                        <i class="fa-solid fa-wallet"></i>
+
+                        <span>
+                            Meus Ganhos
+                        </span>
+
+                    </button>
+
+
+                    <button type="button">
+
+                        <i class="fa-solid fa-star"></i>
+
+                        <span>
+                            Avaliações
+                        </span>
+
+                    </button>
+
+
+                    <button type="button">
+
+                        <i class="fa-solid fa-headset"></i>
+
+                        <span>
+                            Suporte
+                        </span>
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             INFORMAÇÕES DO VEÍCULO
+        ================================================== -->
+
+        <section class="parceiro-painel parceiro-veiculo">
+
+
+            <div class="parceiro-painel-topo">
+
+                <div>
+
+                    <span>
+                        Cadastro
+                    </span>
+
+                    <h2>
+                        Meu veículo
+                    </h2>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="parceiro-btn-link"
+                >
+                    Alterar cadastro
+                </button>
+
+            </div>
+
+
+            <div class="parceiro-veiculo-info">
+
+
+                <div class="parceiro-veiculo-foto">
+
+                    <i class="fa-solid fa-car"></i>
+
+                </div>
+
+
+                <div class="parceiro-veiculo-dados">
+
+
+                    <div>
+
+                        <span>
+                            Modelo
+                        </span>
+
+                        <strong>
+                            Não informado
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Placa
+                        </span>
+
+                        <strong>
+                            Não informada
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Cor
+                        </span>
+
+                        <strong>
+                            Não informada
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Tipo
+                        </span>
+
+                        <strong>
+                            Não informado
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================== -->
+
+<script src="js/parceiro.js"></script>
+
+
+</body>
+
+</html>
