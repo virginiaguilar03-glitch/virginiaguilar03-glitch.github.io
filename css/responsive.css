@@ -182,6 +182,7 @@
 
     /* ===============================
        BANNER PRINCIPAL
+       CORREÇÃO DO CORTE
     =============================== */
 
     .hero{
@@ -194,9 +195,15 @@
 
         margin-top:80px !important;
 
-        padding:0 !important;
+        padding-top:56.25% !important;
 
-        aspect-ratio:16 / 9;
+        padding-bottom:0 !important;
+
+        background-size:100% auto !important;
+
+        background-position:top center !important;
+
+        background-repeat:no-repeat !important;
 
     }
 
@@ -280,7 +287,11 @@
 
     .hero{
 
-        aspect-ratio:16 / 9;
+        padding-top:56.25% !important;
+
+        background-size:100% auto !important;
+
+        background-position:top center !important;
 
     }
 
