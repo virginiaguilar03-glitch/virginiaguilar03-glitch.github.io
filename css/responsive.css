@@ -5,7 +5,7 @@
 
 
 /* ===============================
-   Telas até 1024px
+   TELAS ATÉ 1024px
 ================================ */
 
 @media (max-width:1024px){
@@ -26,7 +26,7 @@
 
 
 /* ===============================
-   Tablets
+   TABLETS
 ================================ */
 
 @media (max-width:900px){
@@ -41,7 +41,7 @@
 
 
     /* ===============================
-       HERO / BANNER
+       BANNER PRINCIPAL
     =============================== */
 
     .hero{
@@ -98,9 +98,9 @@
 
 
     /* ===============================
-       HERO ANTIGO
-       Mantido para não quebrar
-       outras páginas/elementos
+       ELEMENTOS ANTIGOS DO HERO
+       Mantidos para não quebrar
+       outras páginas
     =============================== */
 
     .hero-content{
@@ -147,10 +147,14 @@
 
 
 /* ===============================
-   Celulares
+   CELULARES
 ================================ */
 
 @media (max-width:600px){
+
+    /* ===============================
+       CONTAINER
+    =============================== */
 
     .container{
 
@@ -177,25 +181,29 @@
 
 
     /* ===============================
-       HERO / BANNER
+       BANNER PRINCIPAL
     =============================== */
 
     .hero{
 
-        min-height:auto;
+        width:100% !important;
 
-        height:calc(100svh - 80px) !important;
+        height:auto !important;
+
+        min-height:0 !important;
 
         margin-top:80px !important;
 
         padding:0 !important;
 
+        aspect-ratio:16 / 9;
+
     }
 
 
     /* ===============================
-       HERO ANTIGO
-       Mantido para outras páginas
+       ELEMENTOS ANTIGOS DO HERO
+       Mantidos para outras páginas
     =============================== */
 
     .hero-text h2{
@@ -261,10 +269,25 @@
 
 
 /* ===============================
-   Celulares Pequenos
+   CELULARES PEQUENOS
 ================================ */
 
 @media (max-width:400px){
+
+    /* ===============================
+       BANNER
+    =============================== */
+
+    .hero{
+
+        aspect-ratio:16 / 9;
+
+    }
+
+
+    /* ===============================
+       TEXTOS
+    =============================== */
 
     .hero-text h2{
 
@@ -277,6 +300,11 @@
         font-size:15px;
 
     }
+
+
+    /* ===============================
+       MENU
+    =============================== */
 
     nav{
 
