@@ -1,5 +1,6 @@
 // ============================================================
 // LOGIN - VAIDTÁXI
+// Supabase Auth + tabela clientes
 // ============================================================
 
 
@@ -24,8 +25,7 @@ const btnLogin = document.getElementById("btnLogin");
 //
 // ============================================================
 
-let tipoSelecionado =
-    window.tipoSelecionado || "";
+let tipoSelecionado = window.tipoSelecionado || "";
 
 
 // ============================================================
@@ -34,231 +34,347 @@ let tipoSelecionado =
 
 if (formLogin) {
 
-    formLogin.addEventListener(
-        "submit",
-        async function (event) {
+    formLogin.addEventListener("submit", async function (event) {
 
-            // Impede o recarregamento da página
-            event.preventDefault();
+        // Impede o recarregamento da página
+        event.preventDefault();
+
+
+        // =====================================================
+        // PEGAR CAMPOS
+        // =====================================================
+
+        const campoEmail = document.getElementById("email");
+        const campoSenha = document.getElementById("senha");
+
+
+        const email = campoEmail
+            ? campoEmail.value.trim()
+            : "";
+
+
+        const senha = campoSenha
+            ? campoSenha.value
+            : "";
+
+
+        // =====================================================
+        // ATUALIZAR TIPO
+        // =====================================================
+
+        tipoSelecionado = window.tipoSelecionado || "";
+
+
+        // =====================================================
+        // VALIDAR CAMPOS
+        // =====================================================
+
+        if (!email || !senha) {
+
+            mostrarMensagem(
+                "Preencha o e-mail e a senha.",
+                "erro"
+            );
+
+            return;
+        }
+
+
+        // =====================================================
+        // VALIDAR TIPO DE ACESSO
+        // =====================================================
+
+        if (!tipoSelecionado) {
+
+            mostrarMensagem(
+                "Selecione como deseja entrar.",
+                "erro"
+            );
+
+            return;
+        }
+
+
+        // =====================================================
+        // TIPOS PERMITIDOS
+        // =====================================================
+
+        const tiposPermitidos = [
+            "cliente",
+            "parceiro",
+            "admin"
+        ];
+
+
+        if (!tiposPermitidos.includes(tipoSelecionado)) {
+
+            mostrarMensagem(
+                "Tipo de acesso inválido.",
+                "erro"
+            );
+
+            return;
+        }
+
+
+        // =====================================================
+        // VERIFICAR SUPABASE
+        // =====================================================
+
+        if (
+            typeof supabaseClient === "undefined" ||
+            !supabaseClient
+        ) {
+
+            console.error(
+                "supabaseClient não encontrado."
+            );
+
+            mostrarMensagem(
+                "Erro de conexão com o sistema.",
+                "erro"
+            );
+
+            return;
+        }
+
+
+        // =====================================================
+        // DESABILITAR BOTÃO
+        // =====================================================
+
+        if (btnLogin) {
+
+            btnLogin.disabled = true;
+
+            btnLogin.textContent = "Entrando...";
+
+        }
+
+
+        try {
+
+            // =================================================
+            // LOGIN NO SUPABASE AUTH
+            // =================================================
+
+            const {
+                data,
+                error
+            } = await supabaseClient.auth.signInWithPassword({
+
+                email: email,
+
+                password: senha
+
+            });
 
 
             // =================================================
-            // PEGAR DADOS
+            // ERRO NO LOGIN
             // =================================================
 
-            const campoEmail =
-                document.getElementById("email");
-
-            const campoSenha =
-                document.getElementById("senha");
-
-
-            const email =
-                campoEmail ?
-                campoEmail.value.trim() :
-                "";
-
-
-            const senha =
-                campoSenha ?
-                campoSenha.value :
-                "";
-
-
-            // =================================================
-            // ATUALIZAR TIPO SELECIONADO
-            // =================================================
-
-            tipoSelecionado =
-                window.tipoSelecionado || "";
-
-
-            // =================================================
-            // VALIDAR CAMPOS
-            // =================================================
-
-            if (!email || !senha) {
-
-                mostrarMensagem(
-                    "Preencha todos os campos.",
-                    "erro"
-                );
-
-                return;
-            }
-
-
-            // =================================================
-            // VALIDAR TIPO DE ACESSO
-            // =================================================
-
-            if (!tipoSelecionado) {
-
-                mostrarMensagem(
-                    "Selecione como deseja entrar.",
-                    "erro"
-                );
-
-                return;
-            }
-
-
-            // =================================================
-            // VERIFICAR TIPO VÁLIDO
-            // =================================================
-
-            const tiposPermitidos = [
-                "cliente",
-                "parceiro",
-                "admin"
-            ];
-
-
-            if (
-                !tiposPermitidos.includes(
-                    tipoSelecionado
-                )
-            ) {
-
-                mostrarMensagem(
-                    "Tipo de acesso inválido.",
-                    "erro"
-                );
-
-                return;
-            }
-
-
-            // =================================================
-            // VERIFICAR SUPABASE
-            // =================================================
-
-            if (
-                typeof supabaseClient ===
-                "undefined"
-            ) {
+            if (error) {
 
                 console.error(
-                    "supabaseClient não encontrado."
+                    "Erro no login:",
+                    error
                 );
 
+
+                let mensagemErro =
+                    "E-mail ou senha incorretos.";
+
+
+                // E-mail ainda não confirmado
+                if (
+                    error.message &&
+                    error.message.toLowerCase().includes(
+                        "email not confirmed"
+                    )
+                ) {
+
+                    mensagemErro =
+                        "Seu e-mail ainda não foi confirmado.";
+
+                }
+
+
+                // Credenciais inválidas
+                else if (
+                    error.message &&
+                    error.message.toLowerCase().includes(
+                        "invalid login credentials"
+                    )
+                ) {
+
+                    mensagemErro =
+                        "E-mail ou senha incorretos.";
+
+                }
+
+
                 mostrarMensagem(
-                    "Erro de conexão com o sistema.",
+                    mensagemErro,
                     "erro"
                 );
+
+
+                restaurarBotao();
 
                 return;
             }
 
 
             // =================================================
-            // DESABILITAR BOTÃO
+            // VERIFICAR USUÁRIO AUTH
             // =================================================
 
-            if (btnLogin) {
+            if (
+                !data ||
+                !data.user
+            ) {
 
-                btnLogin.disabled = true;
-
-                btnLogin.textContent =
-                    "Entrando...";
-
-            }
-
-
-            try {
-
-
-                // =================================================
-                // LOGIN NO SUPABASE
-                // =================================================
-
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient.auth
-                        .signInWithPassword({
-
-                            email: email,
-
-                            password: senha
-
-                        });
-
-
-                // =================================================
-                // VERIFICAR ERRO
-                // =================================================
-
-                if (error) {
-
-                    console.error(
-                        "Erro no login:",
-                        error
-                    );
-
-                    mostrarMensagem(
-                        "E-mail ou senha incorretos.",
-                        "erro"
-                    );
-
-
-                    if (btnLogin) {
-
-                        btnLogin.disabled =
-                            false;
-
-                        btnLogin.textContent =
-                            "Entrar";
-
-                    }
-
-                    return;
-                }
-
-
-                // =================================================
-                // VERIFICAR USUÁRIO
-                // =================================================
-
-                if (
-                    !data ||
-                    !data.user
-                ) {
-
-                    mostrarMensagem(
-                        "Não foi possível identificar sua conta.",
-                        "erro"
-                    );
-
-
-                    if (btnLogin) {
-
-                        btnLogin.disabled =
-                            false;
-
-                        btnLogin.textContent =
-                            "Entrar";
-
-                    }
-
-                    return;
-                }
-
-
-                // =================================================
-                // LOGIN REALIZADO
-                // =================================================
-
-                console.log(
-                    "Usuário conectado:",
-                    data.user
+                mostrarMensagem(
+                    "Não foi possível identificar sua conta.",
+                    "erro"
                 );
 
 
+                restaurarBotao();
+
+                return;
+            }
+
+
+            // =================================================
+            // DADOS DO USUÁRIO
+            // =================================================
+
+            const usuario = data.user;
+
+            const usuarioId = usuario.id;
+
+
+            console.log(
+                "Usuário autenticado:",
+                usuario
+            );
+
+
+            console.log(
+                "ID do usuário:",
+                usuarioId
+            );
+
+
+            console.log(
+                "Tipo de acesso:",
+                tipoSelecionado
+            );
+
+
+            // =================================================
+            // CLIENTE
+            // =================================================
+            //
+            // O ID da tabela clientes é o mesmo ID do Auth.
+            //
+            // Exemplo:
+            //
+            // Auth:
+            // f288166b-dcb5-4567-aba1-ea73217efcb3
+            //
+            // clientes:
+            // f288166b-dcb5-4567-aba1-ea73217efcb3
+            //
+            // =================================================
+
+            if (tipoSelecionado === "cliente") {
+
                 console.log(
-                    "Tipo de acesso:",
-                    tipoSelecionado
+                    "Verificando cliente na tabela clientes..."
+                );
+
+
+                const {
+                    data: cliente,
+                    error: erroCliente
+                } = await supabaseClient
+                    .from("clientes")
+                    .select("*")
+                    .eq("id", usuarioId)
+                    .maybeSingle();
+
+
+                // =============================================
+                // ERRO AO CONSULTAR CLIENTE
+                // =============================================
+
+                if (erroCliente) {
+
+                    console.error(
+                        "Erro ao consultar clientes:",
+                        erroCliente
+                    );
+
+
+                    mostrarMensagem(
+                        "Não foi possível verificar seu cadastro.",
+                        "erro"
+                    );
+
+
+                    restaurarBotao();
+
+                    return;
+                }
+
+
+                // =============================================
+                // CLIENTE NÃO ENCONTRADO
+                // =============================================
+
+                if (!cliente) {
+
+                    console.error(
+                        "Usuário autenticado, mas não encontrado na tabela clientes.",
+                        usuarioId
+                    );
+
+
+                    mostrarMensagem(
+                        "Sua conta existe, mas o cadastro de cliente não foi encontrado.",
+                        "erro"
+                    );
+
+
+                    restaurarBotao();
+
+                    return;
+                }
+
+
+                // =============================================
+                // CLIENTE ENCONTRADO
+                // =============================================
+
+                console.log(
+                    "Cliente encontrado:",
+                    cliente
+                );
+
+
+                // Salvar somente identificadores de sessão
+                localStorage.setItem(
+                    "usuarioId",
+                    usuarioId
+                );
+
+
+                localStorage.setItem(
+                    "tipoAcesso",
+                    "cliente"
                 );
 
 
@@ -268,137 +384,160 @@ if (formLogin) {
                 );
 
 
-                if (btnLogin) {
+                // =============================================
+                // REDIRECIONAR
+                // =============================================
 
-                    btnLogin.textContent =
-                        "Entrando...";
+                setTimeout(function () {
 
-                }
+                    window.location.href =
+                        "cliente.html";
 
-
-                // =================================================
-                // SALVAR TIPO DE ACESSO
-                // =================================================
-
-                localStorage.setItem(
-                    "tipoAcesso",
-                    tipoSelecionado
-                );
+                }, 500);
 
 
-                // =================================================
-                // SALVAR ID DO USUÁRIO
-                // =================================================
-
-                localStorage.setItem(
-                    "usuarioId",
-                    data.user.id
-                );
-
-
-                // =================================================
-                // REDIRECIONAMENTO
-                // =================================================
-
-                setTimeout(
-                    function () {
-
-
-                        // =========================================
-                        // CLIENTE
-                        // =========================================
-
-                        if (
-                            tipoSelecionado ===
-                            "cliente"
-                        ) {
-
-                            window.location.href =
-                                "cliente.html";
-
-                            return;
-                        }
-
-
-                        // =========================================
-                        // PARCEIRO
-                        // =========================================
-
-                        if (
-                            tipoSelecionado ===
-                            "parceiro"
-                        ) {
-
-                            window.location.href =
-                                "parceiro.html";
-
-                            return;
-                        }
-
-
-                        // =========================================
-                        // ADMINISTRADOR
-                        // =========================================
-
-                        if (
-                            tipoSelecionado ===
-                            "admin"
-                        ) {
-
-                            window.location.href =
-                                "admin.html";
-
-                            return;
-                        }
-
-
-                        // =========================================
-                        // SEGURANÇA
-                        // =========================================
-
-                        window.location.href =
-                            "index.html";
-
-
-                    },
-                    500
-                );
-
+                return;
             }
 
 
-            // ====================================================
-            // ERRO INESPERADO
-            // ====================================================
+            // =================================================
+            // PARCEIRO
+            // =================================================
 
-            catch (erro) {
+            if (tipoSelecionado === "parceiro") {
 
-                console.error(
-                    "Erro inesperado no login:",
-                    erro
+                console.log(
+                    "Login de parceiro autorizado pelo Auth."
+                );
+
+
+                localStorage.setItem(
+                    "usuarioId",
+                    usuarioId
+                );
+
+
+                localStorage.setItem(
+                    "tipoAcesso",
+                    "parceiro"
                 );
 
 
                 mostrarMensagem(
-                    "Erro ao conectar com o sistema.",
-                    "erro"
+                    "Login realizado com sucesso!",
+                    "sucesso"
                 );
 
 
-                if (btnLogin) {
+                setTimeout(function () {
 
-                    btnLogin.disabled =
-                        false;
+                    window.location.href =
+                        "parceiro.html";
 
-                    btnLogin.textContent =
-                        "Entrar";
+                }, 500);
 
-                }
 
+                return;
             }
 
+
+            // =================================================
+            // ADMIN
+            // =================================================
+
+            if (tipoSelecionado === "admin") {
+
+                console.log(
+                    "Login de administrador autorizado pelo Auth."
+                );
+
+
+                localStorage.setItem(
+                    "usuarioId",
+                    usuarioId
+                );
+
+
+                localStorage.setItem(
+                    "tipoAcesso",
+                    "admin"
+                );
+
+
+                mostrarMensagem(
+                    "Login realizado com sucesso!",
+                    "sucesso"
+                );
+
+
+                setTimeout(function () {
+
+                    window.location.href =
+                        "admin.html";
+
+                }, 500);
+
+
+                return;
+            }
+
+
+            // =================================================
+            // SEGURANÇA
+            // =================================================
+
+            mostrarMensagem(
+                "Tipo de acesso não reconhecido.",
+                "erro"
+            );
+
+
+            restaurarBotao();
+
         }
-    );
+
+
+        // =====================================================
+        // ERRO INESPERADO
+        // =====================================================
+
+        catch (erro) {
+
+            console.error(
+                "Erro inesperado no login:",
+                erro
+            );
+
+
+            mostrarMensagem(
+                "Erro ao conectar com o sistema.",
+                "erro"
+            );
+
+
+            restaurarBotao();
+
+        }
+
+    });
+
+}
+
+
+// ============================================================
+// RESTAURAR BOTÃO
+// ============================================================
+
+function restaurarBotao() {
+
+    if (!btnLogin) {
+        return;
+    }
+
+
+    btnLogin.disabled = false;
+
+    btnLogin.textContent = "Entrar";
 
 }
 
@@ -413,20 +552,14 @@ function mostrarMensagem(
 ) {
 
     if (!mensagemLogin) {
-
         return;
-
     }
 
 
-    mensagemLogin.textContent =
-        texto;
+    mensagemLogin.textContent = texto;
 
 
-    if (
-        tipo ===
-        "sucesso"
-    ) {
+    if (tipo === "sucesso") {
 
         mensagemLogin.style.color =
             "#00cc66";
