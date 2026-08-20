@@ -248,6 +248,7 @@ nav a.active{
 ====================================================== */
 
 .section-title{
+
     text-align:center;
 
     font-size:42px;
@@ -256,6 +257,7 @@ nav a.active{
 }
 
 .section-title span{
+
     color:#FFD000;
 }
 
@@ -264,6 +266,7 @@ nav a.active{
 ====================================================== */
 
 section{
+
     padding:90px 0;
 }
 
@@ -272,6 +275,7 @@ section{
 ====================================================== */
 
 .cards{
+
     display:grid;
 
     grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
@@ -280,7 +284,10 @@ section{
 }
 
 .card{
+
     background:#ffffff;
+
+    color:#111111;
 
     padding:35px;
 
@@ -292,12 +299,14 @@ section{
 }
 
 .card:hover{
+
     transform:translateY(-8px);
 
     border-color:#FFD000;
 }
 
 .card i{
+
     font-size:42px;
 
     color:#FFD000;
@@ -306,11 +315,15 @@ section{
 }
 
 .card h3{
+
     margin-bottom:15px;
+
+    color:#111111;
 }
 
 .card p{
-    color:#bdbdbd;
+
+    color:#111111;
 
     line-height:1.7;
 }
@@ -320,6 +333,7 @@ section{
 ====================================================== */
 
 footer{
+
     background:#0d0d0d;
 
     border-top:1px solid #222;
@@ -330,6 +344,7 @@ footer{
 }
 
 footer p{
+
     color:#999;
 }
 
@@ -338,20 +353,24 @@ footer p{
 ====================================================== */
 
 ::-webkit-scrollbar{
+
     width:10px;
 }
 
 ::-webkit-scrollbar-track{
+
     background:#111;
 }
 
 ::-webkit-scrollbar-thumb{
+
     background:#FFD000;
 
     border-radius:20px;
 }
 
 ::-webkit-scrollbar-thumb:hover{
+
     background:#ffbf00;
 }
 
@@ -360,6 +379,7 @@ footer p{
 ====================================================== */
 
 .header-scroll{
+
     background:#111111;
 
     box-shadow:0 8px 20px rgba(0,0,0,.35);
@@ -372,14 +392,17 @@ footer p{
 ====================================================== */
 
 .services{
+
     background:#181818;
 }
 
 .services .card{
+
     text-align:center;
 }
 
 .services .card i{
+
     font-size:55px;
 
     margin-bottom:20px;
@@ -388,13 +411,17 @@ footer p{
 }
 
 .services .card h3{
+
     margin-bottom:15px;
 
     font-size:24px;
+
+    color:#111111;
 }
 
 .services .card p{
-    color:#c9c9c9;
+
+    color:#111111;
 
     line-height:1.7;
 }
@@ -404,10 +431,12 @@ footer p{
 ====================================================== */
 
 .stats{
+
     background:#111;
 }
 
 .stats-grid{
+
     display:grid;
 
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -416,6 +445,7 @@ footer p{
 }
 
 .stat-card{
+
     background:#1b1b1b;
 
     padding:40px;
@@ -430,12 +460,14 @@ footer p{
 }
 
 .stat-card:hover{
+
     transform:translateY(-8px);
 
     border-color:#FFD000;
 }
 
 .stat-card i{
+
     font-size:55px;
 
     color:#FFD000;
@@ -444,12 +476,14 @@ footer p{
 }
 
 .stat-card h2{
+
     font-size:42px;
 
     margin-bottom:10px;
 }
 
 .stat-card p{
+
     color:#cfcfcf;
 
     font-size:18px;
@@ -460,6 +494,7 @@ footer p{
 ====================================================== */
 
 .page-banner{
+
     width:100%;
 
     min-height:350px;
@@ -487,6 +522,7 @@ footer p{
 }
 
 .page-banner h1{
+
     font-size:48px;
 
     color:#fff;
@@ -495,6 +531,7 @@ footer p{
 }
 
 .page-banner p{
+
     color:#bfbfbf;
 
     font-size:18px;
@@ -507,6 +544,7 @@ footer p{
 .form-login,
 .form-cadastro,
 .form-corrida{
+
     max-width:700px;
 
     margin:60px auto;
@@ -523,6 +561,7 @@ footer p{
 }
 
 .form-group{
+
     display:flex;
 
     flex-direction:column;
@@ -531,6 +570,7 @@ footer p{
 }
 
 .form-group label{
+
     margin-bottom:8px;
 
     font-size:15px;
@@ -543,6 +583,7 @@ footer p{
 .form-group input,
 .form-group select,
 .form-group textarea{
+
     width:100%;
 
     padding:15px 18px;
@@ -565,6 +606,7 @@ footer p{
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus{
+
     outline:none;
 
     border-color:#FFD000;
@@ -573,6 +615,7 @@ footer p{
 }
 
 .form-group textarea{
+
     resize:none;
 
     min-height:140px;
@@ -584,6 +627,7 @@ footer p{
 
 input::placeholder,
 textarea::placeholder{
+
     color:#8f8f8f;
 }
 
@@ -594,6 +638,7 @@ textarea::placeholder{
 .form-login .btn,
 .form-cadastro .btn,
 .form-corrida .btn{
+
     width:100%;
 
     border:none;
@@ -610,6 +655,7 @@ textarea::placeholder{
 ====================================================== */
 
 .search-box{
+
     width:100%;
 
     padding:18px 22px;
@@ -628,6 +674,7 @@ textarea::placeholder{
 }
 
 .search-box:focus{
+
     outline:none;
 
     border-color:#FFD000;
@@ -638,6 +685,7 @@ textarea::placeholder{
 ====================================================== */
 
 table{
+
     width:100%;
 
     border-collapse:collapse;
@@ -652,6 +700,7 @@ table{
 }
 
 table th{
+
     background:#FFD000;
 
     color:#111;
@@ -660,12 +709,14 @@ table th{
 }
 
 table td{
+
     padding:16px;
 
     border-bottom:1px solid #2a2a2a;
 }
 
 table tr:hover{
+
     background:#242424;
 }
 
@@ -674,6 +725,7 @@ table tr:hover{
 ====================================================== */
 
 .success{
+
     background:#1f7a3d;
 
     padding:18px;
@@ -682,6 +734,7 @@ table tr:hover{
 }
 
 .error{
+
     background:#8b1f1f;
 
     padding:18px;
@@ -694,38 +747,47 @@ table tr:hover{
 ====================================================== */
 
 .text-center{
+
     text-align:center;
 }
 
 .mt-1{
+
     margin-top:10px;
 }
 
 .mt-2{
+
     margin-top:20px;
 }
 
 .mt-3{
+
     margin-top:30px;
 }
 
 .mt-4{
+
     margin-top:40px;
 }
 
 .mb-1{
+
     margin-bottom:10px;
 }
 
 .mb-2{
+
     margin-bottom:20px;
 }
 
 .mb-3{
+
     margin-bottom:30px;
 }
 
 .mb-4{
+
     margin-bottom:40px;
 }
 
@@ -734,6 +796,7 @@ table tr:hover{
 ====================================================== */
 
 .form-container{
+
     width:90%;
 
     max-width:420px;
@@ -748,6 +811,7 @@ table tr:hover{
 }
 
 .form-container label{
+
     font-size:14px;
 
     margin-bottom:6px;
@@ -757,6 +821,7 @@ table tr:hover{
 
 .form-container input,
 .form-container select{
+
     width:100%;
 
     height:38px;
@@ -777,6 +842,7 @@ table tr:hover{
 }
 
 .form-container button{
+
     width:100%;
 
     height:40px;
