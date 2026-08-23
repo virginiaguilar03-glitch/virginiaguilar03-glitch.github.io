@@ -1,103 +1,90 @@
 // ============================================================
-// SISTEMA DE CORRIDAS - VAIDTÁXI
+// CORRIDA - VAIDTÁXI
+// Cliente solicita corrida
+// Supabase + Motoristas + Pagamento
 // ============================================================
+
+
+// ============================================================
+// CONFIGURAÇÃO
+// ============================================================
+
+const paginaCorrida = document.getElementById("formCorrida");
 
 
 // ============================================================
 // ELEMENTOS
 // ============================================================
 
-const formCorrida =
-    document.getElementById("formCorrida");
-
-const origem =
-    document.getElementById("origem");
-
-const destino =
-    document.getElementById("destino");
-
-const observacao =
-    document.getElementById("observacao");
-
-const tipoServico =
-    document.getElementById("tipoServico");
-
-const formaPagamento =
-    document.getElementById("formaPagamento");
-
 const mensagemCorrida =
     document.getElementById("mensagemCorrida");
 
-const btnSolicitarCorrida =
+const btnSolicitar =
     document.getElementById("btnSolicitarCorrida");
 
-const btnConfirmarCorrida =
-    document.getElementById("btnConfirmarCorrida");
-
 
 // ============================================================
-// RESUMO
+// VERIFICAR LOGIN
 // ============================================================
 
-const resumoOrigem =
-    document.getElementById("resumoOrigem");
+async function verificarUsuario() {
 
-const resumoDestino =
-    document.getElementById("resumoDestino");
+    if (
+        typeof supabaseClient === "undefined" ||
+        !supabaseClient
+    ) {
 
-const resumoServico =
-    document.getElementById("resumoServico");
+        console.error(
+            "supabaseClient não encontrado."
+        );
 
-const resumoPagamento =
-    document.getElementById("resumoPagamento");
-
-const resumoMotorista =
-    document.getElementById("resumoMotorista");
-
-
-// ============================================================
-// STATUS
-// ============================================================
-
-const statusCorrida =
-    document.getElementById("statusCorrida");
-
-const descricaoStatus =
-    document.getElementById("descricaoStatus");
+        return null;
+    }
 
 
-// ============================================================
-// DADOS DA CORRIDA
-// ============================================================
+    const {
+        data,
+        error
+    } = await supabaseClient.auth.getUser();
 
-let corridaAtual = {
 
-    origem: "",
+    if (error) {
 
-    destino: "",
+        console.error(
+            "Erro ao verificar usuário:",
+            error
+        );
 
-    observacao: "",
+        return null;
+    }
 
-    tipoServico: "",
 
-    formaPagamento: "",
+    if (
+        !data ||
+        !data.user
+    ) {
 
-    motorista: "",
+        return null;
+    }
 
-    status: "aguardando"
 
-};
+    return data.user;
+}
 
 
 // ============================================================
 // MENSAGEM
 // ============================================================
 
-function mostrarMensagem(texto, tipo) {
+function mostrarMensagemCorrida(
+    texto,
+    tipo = "erro"
+) {
 
     if (!mensagemCorrida) {
         return;
     }
+
 
     mensagemCorrida.textContent =
         texto;
@@ -119,248 +106,320 @@ function mostrarMensagem(texto, tipo) {
 
 
 // ============================================================
-// ATUALIZAR RESUMO
+// CARREGAR MOTORISTAS
 // ============================================================
 
-function atualizarResumo() {
+async function carregarMotoristas() {
+
+    const listaMotoristas =
+        document.getElementById(
+            "listaMotoristas"
+        );
 
 
-    // --------------------------------------------------------
-    // ORIGEM
-    // --------------------------------------------------------
-
-    if (resumoOrigem) {
-
-        resumoOrigem.textContent =
-            origem.value.trim() ||
-            "Não informada";
-
+    if (!listaMotoristas) {
+        return;
     }
 
 
-    // --------------------------------------------------------
-    // DESTINO
-    // --------------------------------------------------------
+    if (
+        typeof supabaseClient === "undefined"
+    ) {
 
-    if (resumoDestino) {
+        console.error(
+            "Supabase não encontrado."
+        );
 
-        resumoDestino.textContent =
-            destino.value.trim() ||
-            "Não informado";
-
+        return;
     }
 
 
-    // --------------------------------------------------------
-    // SERVIÇO
-    // --------------------------------------------------------
+    listaMotoristas.innerHTML =
+        "<p>Carregando motoristas...</p>";
 
-    if (resumoServico) {
 
-        if (tipoServico.value) {
+    try {
 
-            resumoServico.textContent =
-                tipoServico.options[
-                    tipoServico.selectedIndex
-                ].text;
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("motoristas")
+            .select("*")
+            .eq("ativo", true);
 
-        } else {
 
-            resumoServico.textContent =
-                "Não selecionado";
+        if (error) {
 
+            console.error(
+                "Erro ao carregar motoristas:",
+                error
+            );
+
+
+            listaMotoristas.innerHTML =
+                "<p>Não foi possível carregar os motoristas.</p>";
+
+            return;
         }
 
-    }
 
+        if (
+            !data ||
+            data.length === 0
+        ) {
 
-    // --------------------------------------------------------
-    // PAGAMENTO
-    // --------------------------------------------------------
+            listaMotoristas.innerHTML =
+                "<p>Nenhum motorista disponível no momento.</p>";
 
-    if (resumoPagamento) {
-
-        if (formaPagamento.value) {
-
-            resumoPagamento.textContent =
-                formaPagamento.options[
-                    formaPagamento.selectedIndex
-                ].text;
-
-        } else {
-
-            resumoPagamento.textContent =
-                "Não selecionado";
-
+            return;
         }
 
+
+        listaMotoristas.innerHTML = "";
+
+
+        data.forEach(function(motorista) {
+
+            criarCardMotorista(
+                motorista,
+                listaMotoristas
+            );
+
+        });
+
     }
 
+    catch (erro) {
 
-    // --------------------------------------------------------
-    // MOTORISTA
-    // --------------------------------------------------------
-
-    if (resumoMotorista) {
-
-        resumoMotorista.textContent =
-            corridaAtual.motorista ||
-            "Aguardando seleção";
-
-    }
-
-}
-
-
-// ============================================================
-// ATUALIZAR DADOS
-// ============================================================
-
-function atualizarDadosCorrida() {
-
-    corridaAtual.origem =
-        origem.value.trim();
-
-
-    corridaAtual.destino =
-        destino.value.trim();
-
-
-    corridaAtual.observacao =
-        observacao.value.trim();
-
-
-    corridaAtual.tipoServico =
-        tipoServico.value;
-
-
-    corridaAtual.formaPagamento =
-        formaPagamento.value;
-
-
-    atualizarResumo();
-
-}
-
-
-// ============================================================
-// EVENTOS DOS CAMPOS
-// ============================================================
-
-if (origem) {
-
-    origem.addEventListener(
-        "input",
-        atualizarDadosCorrida
-    );
-
-}
-
-
-if (destino) {
-
-    destino.addEventListener(
-        "input",
-        atualizarDadosCorrida
-    );
-
-}
-
-
-if (observacao) {
-
-    observacao.addEventListener(
-        "input",
-        atualizarDadosCorrida
-    );
-
-}
-
-
-if (tipoServico) {
-
-    tipoServico.addEventListener(
-        "change",
-        atualizarDadosCorrida
-    );
-
-}
-
-
-if (formaPagamento) {
-
-    formaPagamento.addEventListener(
-        "change",
-        atualizarDadosCorrida
-    );
-
-}
-
-
-// ============================================================
-// VALIDAR CORRIDA
-// ============================================================
-
-function validarCorrida() {
-
-
-    if (!corridaAtual.origem) {
-
-        mostrarMensagem(
-            "Informe o local de origem.",
-            "erro"
+        console.error(
+            "Erro inesperado:",
+            erro
         );
 
-        origem.focus();
 
-        return false;
+        listaMotoristas.innerHTML =
+            "<p>Erro ao carregar motoristas.</p>";
 
     }
 
+}
 
-    if (!corridaAtual.destino) {
 
-        mostrarMensagem(
-            "Informe o destino.",
-            "erro"
+// ============================================================
+// CRIAR CARD DO MOTORISTA
+// ============================================================
+
+function criarCardMotorista(
+    motorista,
+    container
+) {
+
+    const card =
+        document.createElement("div");
+
+
+    card.className =
+        "motorista-corrida-card";
+
+
+    card.dataset.motoristaId =
+        motorista.id;
+
+
+    const nome =
+        motorista.nome ||
+        "Motorista";
+
+
+    const modelo =
+        motorista.modelo ||
+        motorista.carro_modelo ||
+        "Veículo não informado";
+
+
+    const marca =
+        motorista.marca ||
+        motorista.carro_marca ||
+        "";
+
+
+    const cor =
+        motorista.cor ||
+        "";
+
+
+    const placa =
+        motorista.placa ||
+        "Placa não informada";
+
+
+    const telefone =
+        motorista.telefone ||
+        "";
+
+
+    card.innerHTML = `
+
+        <div class="motorista-corrida-conteudo">
+
+            <div class="motorista-corrida-icone">
+
+                <i class="fa-solid fa-taxi"></i>
+
+            </div>
+
+
+            <div class="motorista-corrida-info">
+
+                <h3>
+                    ${escaparHTML(nome)}
+                </h3>
+
+                <p>
+                    ${escaparHTML(
+                        marca + " " + modelo
+                    )}
+                </p>
+
+                <p>
+                    Cor:
+                    ${escaparHTML(cor || "Não informada")}
+                </p>
+
+                <p>
+                    Placa:
+                    ${escaparHTML(placa)}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="btn-selecionar-motorista"
+        >
+
+            Escolher motorista
+
+        </button>
+
+    `;
+
+
+    const botao =
+        card.querySelector(
+            ".btn-selecionar-motorista"
         );
 
-        destino.focus();
 
-        return false;
+    if (botao) {
 
-    }
+        botao.addEventListener(
+            "click",
+            function() {
 
+                selecionarMotorista(
+                    motorista
+                );
 
-    if (!corridaAtual.tipoServico) {
-
-        mostrarMensagem(
-            "Selecione o tipo de serviço.",
-            "erro"
+            }
         );
 
-        tipoServico.focus();
-
-        return false;
-
     }
 
 
-    if (!corridaAtual.formaPagamento) {
+    container.appendChild(card);
 
-        mostrarMensagem(
-            "Selecione a forma de pagamento.",
-            "erro"
+}
+
+
+// ============================================================
+// ESCOLHER MOTORISTA
+// ============================================================
+
+let motoristaSelecionado = null;
+
+
+function selecionarMotorista(
+    motorista
+) {
+
+    motoristaSelecionado =
+        motorista;
+
+
+    /*
+     * Remove seleção anterior
+     */
+
+    document
+        .querySelectorAll(
+            ".motorista-corrida-card"
+        )
+        .forEach(function(card) {
+
+            card.classList.remove(
+                "motorista-selecionado"
+            );
+
+        });
+
+
+    /*
+     * Marca o motorista escolhido
+     */
+
+    const cardSelecionado =
+        document.querySelector(
+            `[data-motorista-id="${motorista.id}"]`
         );
 
-        formaPagamento.focus();
 
-        return false;
+    if (cardSelecionado) {
+
+        cardSelecionado.classList.add(
+            "motorista-selecionado"
+        );
 
     }
 
 
-    return true;
+    /*
+     * Salva somente o ID.
+     */
+
+    localStorage.setItem(
+        "motoristaSelecionado",
+        motorista.id
+    );
+
+
+    mostrarMensagemCorrida(
+        "Motorista selecionado. Agora informe os dados da corrida.",
+        "sucesso"
+    );
+
+
+    /*
+     * Mostra a área da solicitação,
+     * caso exista.
+     */
+
+    const areaSolicitacao =
+        document.getElementById(
+            "areaSolicitacao"
+        );
+
+
+    if (areaSolicitacao) {
+
+        areaSolicitacao.style.display =
+            "block";
+
+    }
 
 }
 
@@ -369,87 +428,309 @@ function validarCorrida() {
 // SOLICITAR CORRIDA
 // ============================================================
 
-if (formCorrida) {
+if (paginaCorrida) {
 
-    formCorrida.addEventListener(
+    paginaCorrida.addEventListener(
         "submit",
-        function (event) {
+        async function(event) {
 
             event.preventDefault();
 
 
-            atualizarDadosCorrida();
+            // ================================================
+            // VERIFICAR MOTORISTA
+            // ================================================
 
+            if (!motoristaSelecionado) {
 
-            // -----------------------------------------------
-            // VALIDAR
-            // -----------------------------------------------
-
-            if (!validarCorrida()) {
+                mostrarMensagemCorrida(
+                    "Escolha um motorista antes de solicitar a corrida.",
+                    "erro"
+                );
 
                 return;
-
             }
 
 
-            // -----------------------------------------------
-            // STATUS
-            // -----------------------------------------------
+            // ================================================
+            // VERIFICAR USUÁRIO
+            // ================================================
 
-            corridaAtual.status =
-                "solicitada";
-
-
-            // -----------------------------------------------
-            // SALVAR TEMPORARIAMENTE
-            // -----------------------------------------------
-
-            localStorage.setItem(
-                "corridaAtual",
-                JSON.stringify(corridaAtual)
-            );
+            const usuario =
+                await verificarUsuario();
 
 
-            // -----------------------------------------------
-            // MENSAGEM
-            // -----------------------------------------------
+            if (!usuario) {
 
-            mostrarMensagem(
-                "Corrida solicitada com sucesso!",
-                "sucesso"
-            );
+                mostrarMensagemCorrida(
+                    "Você precisa estar logado para solicitar uma corrida.",
+                    "erro"
+                );
 
 
-            // -----------------------------------------------
-            // ATUALIZAR STATUS
-            // -----------------------------------------------
+                setTimeout(function() {
 
-            atualizarStatus(
-                "Corrida solicitada",
-                "Sua solicitação foi registrada. Agora estamos procurando um motorista disponível."
-            );
+                    window.location.href =
+                        "login.html";
+
+                }, 1500);
 
 
-            // -----------------------------------------------
+                return;
+            }
+
+
+            // ================================================
+            // CAMPOS
+            // ================================================
+
+            const origem =
+                obterValorCampo(
+                    "origem"
+                );
+
+
+            const destino =
+                obterValorCampo(
+                    "destino"
+                );
+
+
+            const formaPagamento =
+                obterValorCampo(
+                    "formaPagamento"
+                );
+
+
+            const valorCampo =
+                obterValorCampo(
+                    "valor"
+                );
+
+
+            // ================================================
+            // VALIDAR ORIGEM
+            // ================================================
+
+            if (!origem) {
+
+                mostrarMensagemCorrida(
+                    "Informe o local de origem.",
+                    "erro"
+                );
+
+                return;
+            }
+
+
+            // ================================================
+            // VALIDAR DESTINO
+            // ================================================
+
+            if (!destino) {
+
+                mostrarMensagemCorrida(
+                    "Informe o destino.",
+                    "erro"
+                );
+
+                return;
+            }
+
+
+            // ================================================
+            // VALIDAR PAGAMENTO
+            // ================================================
+
+            if (!formaPagamento) {
+
+                mostrarMensagemCorrida(
+                    "Escolha uma forma de pagamento.",
+                    "erro"
+                );
+
+                return;
+            }
+
+
+            // ================================================
             // BOTÃO
-            // -----------------------------------------------
+            // ================================================
 
-            if (btnSolicitarCorrida) {
+            if (btnSolicitar) {
 
-                btnSolicitarCorrida.disabled =
+                btnSolicitar.disabled =
                     true;
 
-                btnSolicitarCorrida.innerHTML =
-                    '<i class="fa-solid fa-check"></i> Corrida Solicitada';
+                btnSolicitar.textContent =
+                    "Solicitando...";
 
             }
 
 
-            // -----------------------------------------------
-            // PREPARAR RESUMO
-            // -----------------------------------------------
+            try {
 
-            atualizarResumo();
+                // ============================================
+                // PREPARAR DADOS
+                // ============================================
+
+                const dadosCorrida = {
+
+                    cliente_id:
+                        usuario.id,
+
+                    motorista_id:
+                        motoristaSelecionado.id,
+
+                    origem:
+                        origem,
+
+                    destino:
+                        destino,
+
+                    forma_pagamento:
+                        formaPagamento,
+
+                    status:
+                        "aguardando"
+
+                };
+
+
+                /*
+                 * Só adiciona valor se o campo existir
+                 * e estiver preenchido.
+                 */
+
+                if (valorCampo) {
+
+                    const valor =
+                        parseFloat(
+                            valorCampo
+                                .replace(",", ".")
+                        );
+
+
+                    if (
+                        !isNaN(valor)
+                    ) {
+
+                        dadosCorrida.valor =
+                            valor;
+
+                    }
+
+                }
+
+
+                // ============================================
+                // INSERIR CORRIDA
+                // ============================================
+
+                const {
+                    data,
+                    error
+                } = await supabaseClient
+                    .from("corridas")
+                    .insert(
+                        dadosCorrida
+                    )
+                    .select()
+                    .single();
+
+
+                // ============================================
+                // ERRO
+                // ============================================
+
+                if (error) {
+
+                    console.error(
+                        "Erro ao criar corrida:",
+                        error
+                    );
+
+
+                    mostrarMensagemCorrida(
+                        "Não foi possível solicitar a corrida.",
+                        "erro"
+                    );
+
+
+                    restaurarBotaoCorrida();
+
+                    return;
+                }
+
+
+                // ============================================
+                // SUCESSO
+                // ============================================
+
+                console.log(
+                    "Corrida criada:",
+                    data
+                );
+
+
+                /*
+                 * Guarda a corrida atual
+                 */
+
+                localStorage.setItem(
+                    "corridaAtual",
+                    data.id
+                );
+
+
+                mostrarMensagemCorrida(
+                    "Corrida solicitada com sucesso! Aguardando o motorista.",
+                    "sucesso"
+                );
+
+
+                /*
+                 * Atualiza interface
+                 */
+
+                if (btnSolicitar) {
+
+                    btnSolicitar.textContent =
+                        "Corrida solicitada";
+
+                }
+
+
+                /*
+                 * Não redirecionamos imediatamente.
+                 *
+                 * Assim podemos mostrar o status
+                 * da corrida na própria página.
+                 */
+
+                iniciarAcompanhamentoCorrida(
+                    data.id
+                );
+
+            }
+
+            catch (erro) {
+
+                console.error(
+                    "Erro inesperado:",
+                    erro
+                );
+
+
+                mostrarMensagemCorrida(
+                    "Erro ao conectar com o sistema.",
+                    "erro"
+                );
+
+
+                restaurarBotaoCorrida();
+
+            }
 
         }
     );
@@ -458,63 +739,71 @@ if (formCorrida) {
 
 
 // ============================================================
-// CONFIRMAR CORRIDA
+// ACOMPANHAR CORRIDA
 // ============================================================
 
-if (btnConfirmarCorrida) {
-
-    btnConfirmarCorrida.addEventListener(
-        "click",
-        function () {
+let canalCorrida = null;
 
 
-            if (!corridaAtual.origem ||
-                !corridaAtual.destino) {
+async function iniciarAcompanhamentoCorrida(
+    corridaId
+) {
 
-                mostrarMensagem(
-                    "Primeiro informe origem e destino.",
-                    "erro"
-                );
+    if (
+        !corridaId ||
+        typeof supabaseClient === "undefined"
+    ) {
 
-                return;
-
-            }
-
-
-            if (!corridaAtual.tipoServico ||
-                !corridaAtual.formaPagamento) {
-
-                mostrarMensagem(
-                    "Preencha todos os dados da corrida.",
-                    "erro"
-                );
-
-                return;
-
-            }
+        return;
+    }
 
 
-            /*
-             * Por enquanto não existe motorista
-             * conectado ao sistema.
-             *
-             * Essa parte será ligada ao módulo
-             * de parceiros posteriormente.
-             */
+    /*
+     * Cancela canal anterior.
+     */
 
-            mostrarMensagem(
-                "A corrida está pronta. O próximo passo será selecionar um motorista.",
-                "sucesso"
-            );
+    if (canalCorrida) {
+
+        await supabaseClient.removeChannel(
+            canalCorrida
+        );
+
+    }
 
 
-            atualizarStatus(
-                "Aguardando motorista",
-                "A solicitação está pronta para ser enviada aos motoristas disponíveis."
-            );
+    /*
+     * Canal em tempo real.
+     */
 
-        }
-    );
+    canalCorrida =
+        supabaseClient
+            .channel(
+                "corrida-" + corridaId
+            )
+            .on(
+                "postgres_changes",
+                {
+                    event: "UPDATE",
+                    schema: "public",
+                    table: "corridas",
+                    filter:
+                        "id=eq." + corridaId
+                },
+                function(payload) {
+
+                    console.log(
+                        "Atualização da corrida:",
+                        payload.new
+                    );
+
+
+                    atualizarStatusCorrida(
+                        payload.new
+                    );
+
+                }
+            )
+            .subscribe();
 
 }
 
@@ -523,132 +812,102 @@ if (btnConfirmarCorrida) {
 // ATUALIZAR STATUS
 // ============================================================
 
-function atualizarStatus(
-    titulo,
-    descricao
+function atualizarStatusCorrida(
+    corrida
 ) {
 
-    if (statusCorrida) {
-
-        statusCorrida.textContent =
-            titulo;
-
+    if (!corrida) {
+        return;
     }
 
 
-    if (descricaoStatus) {
-
-        descricaoStatus.textContent =
-            descricao;
-
-    }
-
-}
-
-
-// ============================================================
-// CARREGAR CORRIDA SALVA
-// ============================================================
-
-function carregarCorridaSalva() {
-
-    const corridaSalva =
-        localStorage.getItem(
-            "corridaAtual"
+    const elementoStatus =
+        document.getElementById(
+            "statusCorrida"
         );
 
 
-    if (!corridaSalva) {
-
-        atualizarResumo();
-
+    if (!elementoStatus) {
         return;
-
     }
 
 
-    try {
-
-        const dados =
-            JSON.parse(corridaSalva);
+    const status =
+        corrida.status;
 
 
-        corridaAtual =
-            dados;
+    const mensagens = {
+
+        aguardando:
+            "Aguardando o motorista aceitar a corrida.",
+
+        aceita:
+            "Motorista aceitou sua corrida.",
+
+        motorista_a_caminho:
+            "O motorista está a caminho.",
+
+        chegou:
+            "O motorista chegou ao local.",
+
+        em_andamento:
+            "Corrida em andamento.",
+
+        aguardando_pagamento:
+            "Corrida finalizada. Aguardando pagamento.",
+
+        concluida:
+            "Corrida concluída com sucesso.",
+
+        cancelada:
+            "Corrida cancelada."
+
+    };
 
 
-        // ----------------------------------------------------
-        // PREENCHER FORMULÁRIO
-        // ----------------------------------------------------
-
-        if (origem) {
-
-            origem.value =
-                dados.origem || "";
-
-        }
+    elementoStatus.textContent =
+        mensagens[status] ||
+        "Status: " + status;
 
 
-        if (destino) {
+    /*
+     * Quando chegar em pagamento,
+     * mostramos a área de pagamento.
+     */
 
-            destino.value =
-                dados.destino || "";
+    if (
+        status ===
+        "aguardando_pagamento"
+    ) {
 
-        }
-
-
-        if (observacao) {
-
-            observacao.value =
-                dados.observacao || "";
-
-        }
-
-
-        if (tipoServico) {
-
-            tipoServico.value =
-                dados.tipoServico || "";
-
-        }
-
-
-        if (formaPagamento) {
-
-            formaPagamento.value =
-                dados.formaPagamento || "";
-
-        }
-
-
-        // ----------------------------------------------------
-        // ATUALIZAR TELA
-        // ----------------------------------------------------
-
-        atualizarResumo();
-
-
-        if (dados.status === "solicitada") {
-
-            atualizarStatus(
-                "Corrida solicitada",
-                "Sua solicitação foi registrada e está aguardando um motorista."
+        const pagamento =
+            document.getElementById(
+                "areaPagamento"
             );
 
-        }
 
+        if (pagamento) {
+
+            pagamento.style.display =
+                "block";
+
+        }
 
     }
 
-    catch (erro) {
 
-        console.error(
-            "Erro ao carregar corrida:",
-            erro
-        );
+    /*
+     * Corrida concluída.
+     */
 
-        localStorage.removeItem(
-            "corridaAtual"
+    if (
+        status ===
+        "concluida"
+    ) {
+
+        mostrarMensagemCorrida(
+            "Corrida concluída!",
+            "sucesso"
         );
 
     }
@@ -657,16 +916,119 @@ function carregarCorridaSalva() {
 
 
 // ============================================================
-// INICIALIZAÇÃO
+// RESTAURAR BOTÃO
+// ============================================================
+
+function restaurarBotaoCorrida() {
+
+    if (!btnSolicitar) {
+        return;
+    }
+
+
+    btnSolicitar.disabled =
+        false;
+
+
+    btnSolicitar.textContent =
+        "Solicitar Corrida";
+
+}
+
+
+// ============================================================
+// PEGAR VALOR DE CAMPO
+// ============================================================
+
+function obterValorCampo(
+    id
+) {
+
+    const campo =
+        document.getElementById(id);
+
+
+    if (!campo) {
+        return "";
+    }
+
+
+    return campo.value.trim();
+
+}
+
+
+// ============================================================
+// SEGURANÇA HTML
+// ============================================================
+
+function escaparHTML(
+    texto
+) {
+
+    if (texto === null ||
+        texto === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(texto)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+// ============================================================
+// CARREGAR AO ABRIR A PÁGINA
 // ============================================================
 
 document.addEventListener(
     "DOMContentLoaded",
-    function () {
+    function() {
 
-        carregarCorridaSalva();
+        carregarMotoristas();
 
-        atualizarResumo();
+
+        /*
+         * Verifica se existe uma corrida
+         * anteriormente criada.
+         */
+
+        const corridaAtual =
+            localStorage.getItem(
+                "corridaAtual"
+            );
+
+
+        if (corridaAtual) {
+
+            iniciarAcompanhamentoCorrida(
+                corridaAtual
+            );
+
+        }
 
     }
 );
