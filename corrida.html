@@ -9,6 +9,7 @@
 
     <title>VaidTáxi | Solicitar Corrida</title>
 
+
     <!-- ==================================================
          FONTE
     ================================================== -->
@@ -20,6 +21,16 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet"
+    >
+
+
+    <!-- ==================================================
+         FONT AWESOME
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
 
@@ -47,6 +58,9 @@
 
         <div class="container">
 
+
+            <!-- LOGO -->
+
             <a href="index.html" class="logo">
 
                 <img
@@ -60,6 +74,8 @@
 
             </a>
 
+
+            <!-- MENU -->
 
             <nav>
 
@@ -89,6 +105,8 @@
             </nav>
 
 
+            <!-- BOTÕES DO CABEÇALHO -->
+
             <div class="header-buttons">
 
                 <a
@@ -106,6 +124,16 @@
                 </a>
 
             </div>
+
+
+            <!-- MENU MOBILE -->
+
+            <div id="menu-mobile">
+
+                <i class="fa-solid fa-bars"></i>
+
+            </div>
+
 
         </div>
 
@@ -177,8 +205,6 @@
                     <div class="form-group">
 
                         <label for="origem">
-
-                            
                             Local de partida
                         </label>
 
@@ -273,12 +299,17 @@
          JAVASCRIPT
     ================================================== -->
 
+
     <!-- SUPABASE -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="js/supabase.js"></script>
 
+
+    <!-- MENU -->
+
+    <script src="js/menu.js"></script>
 
 
     <!-- ==================================================
@@ -301,15 +332,18 @@
                         "formCorrida"
                     );
 
+
                 const nomeCliente =
                     document.getElementById(
                         "nomeCliente"
                     );
 
+
                 const mensagem =
                     document.getElementById(
                         "mensagemCorrida"
                     );
+
 
                 const btnSolicitar =
                     document.getElementById(
@@ -338,9 +372,9 @@
 
                 /* ==================================================
                    VERIFICAR SE EXISTE SESSÃO
-                   
+
                    NÃO BLOQUEIA A PÁGINA.
-                   
+
                    O visitante pode preencher normalmente.
                 ================================================== */
 
@@ -388,6 +422,7 @@
                     }
 
                 }
+
                 catch (erro) {
 
                     console.error(
@@ -457,11 +492,13 @@
                                     "Preencha o local de partida."
                                 );
 
+
                                 document
                                     .getElementById(
                                         "origem"
                                     )
                                     .focus();
+
 
                                 return;
 
@@ -481,11 +518,13 @@
                                     "Preencha o destino."
                                 );
 
+
                                 document
                                     .getElementById(
                                         "destino"
                                     )
                                     .focus();
+
 
                                 return;
 
@@ -495,7 +534,7 @@
 
                             /* ==================================================
                                VERIFICAR LOGIN
-                               
+
                                SOMENTE AQUI O LOGIN É EXIGIDO.
                             ================================================== */
 
@@ -518,9 +557,11 @@
                                         error
                                     );
 
+
                                     alert(
                                         "Não foi possível verificar sua sessão."
                                     );
+
 
                                     return;
 
@@ -531,6 +572,7 @@
                                     data.session;
 
                             }
+
                             catch (erro) {
 
                                 console.error(
@@ -538,9 +580,11 @@
                                     erro
                                 );
 
+
                                 alert(
                                     "Não foi possível verificar sua sessão."
                                 );
+
 
                                 return;
 
@@ -554,6 +598,7 @@
 
                             if (!sessao) {
 
+
                                 /*
                                  * Guarda os dados preenchidos
                                  * temporariamente.
@@ -564,10 +609,12 @@
                                     origem
                                 );
 
+
                                 sessionStorage.setItem(
                                     "corridaDestino",
                                     destino
                                 );
+
 
                                 sessionStorage.setItem(
                                     "corridaObservacao",
@@ -603,20 +650,24 @@
                                 usuario.id
                             );
 
+
                             console.log(
                                 "E-mail:",
                                 usuario.email
                             );
+
 
                             console.log(
                                 "Origem:",
                                 origem
                             );
 
+
                             console.log(
                                 "Destino:",
                                 destino
                             );
+
 
                             console.log(
                                 "Observação:",
@@ -634,6 +685,7 @@
                                 mensagem.style.display =
                                     "block";
 
+
                                 mensagem.textContent =
                                     "Cliente autenticado. A corrida está pronta para ser enviada ao sistema.";
 
@@ -649,6 +701,7 @@
 
                                 btnSolicitar.disabled =
                                     true;
+
 
                                 btnSolicitar.textContent =
                                     "Solicitação preparada";
