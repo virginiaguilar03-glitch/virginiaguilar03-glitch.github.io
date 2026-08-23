@@ -6,15 +6,11 @@
 
 
 // ============================================================
-// CONFIGURAÇÃO
-// ============================================================
-
-const paginaCorrida = document.getElementById("formCorrida");
-
-
-// ============================================================
 // ELEMENTOS
 // ============================================================
+
+const paginaCorrida =
+    document.getElementById("formCorrida");
 
 const mensagemCorrida =
     document.getElementById("mensagemCorrida");
@@ -24,7 +20,21 @@ const btnSolicitar =
 
 
 // ============================================================
-// VERIFICAR LOGIN
+// MOTORISTA SELECIONADO
+// ============================================================
+
+let motoristaSelecionado = null;
+
+
+// ============================================================
+// CANAL DA CORRIDA
+// ============================================================
+
+let canalCorrida = null;
+
+
+// ============================================================
+// VERIFICAR USUÁRIO LOGADO
 // ============================================================
 
 async function verificarUsuario() {
@@ -42,33 +52,51 @@ async function verificarUsuario() {
     }
 
 
-    const {
-        data,
-        error
-    } = await supabaseClient.auth.getUser();
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth.getUser();
 
 
-    if (error) {
+        if (error) {
+
+            console.error(
+                "Erro ao verificar usuário:",
+                error
+            );
+
+            return null;
+        }
+
+
+        if (
+            !data ||
+            !data.user
+        ) {
+
+            return null;
+
+        }
+
+
+        return data.user;
+
+    }
+
+    catch (erro) {
 
         console.error(
-            "Erro ao verificar usuário:",
-            error
+            "Erro inesperado ao verificar usuário:",
+            erro
         );
 
         return null;
+
     }
 
-
-    if (
-        !data ||
-        !data.user
-    ) {
-
-        return null;
-    }
-
-
-    return data.user;
 }
 
 
@@ -95,7 +123,9 @@ function mostrarMensagemCorrida(
         mensagemCorrida.style.color =
             "#00cc66";
 
-    } else {
+    }
+
+    else {
 
         mensagemCorrida.style.color =
             "#ff4444";
@@ -123,14 +153,19 @@ async function carregarMotoristas() {
 
 
     if (
-        typeof supabaseClient === "undefined"
+        typeof supabaseClient === "undefined" ||
+        !supabaseClient
     ) {
 
         console.error(
             "Supabase não encontrado."
         );
 
+        listaMotoristas.innerHTML =
+            "<p>Erro de conexão com o sistema.</p>";
+
         return;
+
     }
 
 
@@ -143,10 +178,11 @@ async function carregarMotoristas() {
         const {
             data,
             error
-        } = await supabaseClient
-            .from("motoristas")
-            .select("*")
-            .eq("ativo", true);
+        } =
+            await supabaseClient
+                .from("motoristas")
+                .select("*")
+                .eq("ativo", true);
 
 
         if (error) {
@@ -161,6 +197,7 @@ async function carregarMotoristas() {
                 "<p>Não foi possível carregar os motoristas.</p>";
 
             return;
+
         }
 
 
@@ -173,20 +210,23 @@ async function carregarMotoristas() {
                 "<p>Nenhum motorista disponível no momento.</p>";
 
             return;
+
         }
 
 
         listaMotoristas.innerHTML = "";
 
 
-        data.forEach(function(motorista) {
+        data.forEach(
+            function(motorista) {
 
-            criarCardMotorista(
-                motorista,
-                listaMotoristas
-            );
+                criarCardMotorista(
+                    motorista,
+                    listaMotoristas
+                );
 
-        });
+            }
+        );
 
     }
 
@@ -278,13 +318,15 @@ function criarCardMotorista(
 
                 <p>
                     ${escaparHTML(
-                        marca + " " + modelo
+                        (marca + " " + modelo).trim()
                     )}
                 </p>
 
                 <p>
                     Cor:
-                    ${escaparHTML(cor || "Não informada")}
+                    ${escaparHTML(
+                        cor || "Não informada"
+                    )}
                 </p>
 
                 <p>
@@ -301,9 +343,7 @@ function criarCardMotorista(
             type="button"
             class="btn-selecionar-motorista"
         >
-
             Escolher motorista
-
         </button>
 
     `;
@@ -340,37 +380,48 @@ function criarCardMotorista(
 // ESCOLHER MOTORISTA
 // ============================================================
 
-let motoristaSelecionado = null;
-
-
 function selecionarMotorista(
     motorista
 ) {
+
+    if (!motorista || !motorista.id) {
+
+        mostrarMensagemCorrida(
+            "Não foi possível selecionar este motorista.",
+            "erro"
+        );
+
+        return;
+
+    }
+
 
     motoristaSelecionado =
         motorista;
 
 
-    /*
-     * Remove seleção anterior
-     */
+    // --------------------------------------------------------
+    // Remover seleção anterior
+    // --------------------------------------------------------
 
     document
         .querySelectorAll(
             ".motorista-corrida-card"
         )
-        .forEach(function(card) {
+        .forEach(
+            function(card) {
 
-            card.classList.remove(
-                "motorista-selecionado"
-            );
+                card.classList.remove(
+                    "motorista-selecionado"
+                );
 
-        });
+            }
+        );
 
 
-    /*
-     * Marca o motorista escolhido
-     */
+    // --------------------------------------------------------
+    // Marcar motorista escolhido
+    // --------------------------------------------------------
 
     const cardSelecionado =
         document.querySelector(
@@ -387,9 +438,9 @@ function selecionarMotorista(
     }
 
 
-    /*
-     * Salva somente o ID.
-     */
+    // --------------------------------------------------------
+    // Guardar somente o ID
+    // --------------------------------------------------------
 
     localStorage.setItem(
         "motoristaSelecionado",
@@ -403,10 +454,9 @@ function selecionarMotorista(
     );
 
 
-    /*
-     * Mostra a área da solicitação,
-     * caso exista.
-     */
+    // --------------------------------------------------------
+    // Mostrar área da solicitação
+    // --------------------------------------------------------
 
     const areaSolicitacao =
         document.getElementById(
@@ -418,6 +468,40 @@ function selecionarMotorista(
 
         areaSolicitacao.style.display =
             "block";
+
+    }
+
+}
+
+
+// ============================================================
+// RECUPERAR MOTORISTA SALVO
+// ============================================================
+
+function recuperarMotoristaSelecionado() {
+
+    const motoristaId =
+        localStorage.getItem(
+            "motoristaSelecionado"
+        );
+
+
+    if (!motoristaId) {
+        return;
+    }
+
+
+    const card =
+        document.querySelector(
+            `[data-motorista-id="${motoristaId}"]`
+        );
+
+
+    if (card) {
+
+        card.classList.add(
+            "motorista-selecionado"
+        );
 
     }
 
@@ -437,24 +521,35 @@ if (paginaCorrida) {
             event.preventDefault();
 
 
-            // ================================================
+            // =================================================
             // VERIFICAR MOTORISTA
-            // ================================================
+            // =================================================
 
             if (!motoristaSelecionado) {
 
-                mostrarMensagemCorrida(
-                    "Escolha um motorista antes de solicitar a corrida.",
-                    "erro"
-                );
+                const motoristaIdSalvo =
+                    localStorage.getItem(
+                        "motoristaSelecionado"
+                    );
 
-                return;
+
+                if (!motoristaIdSalvo) {
+
+                    mostrarMensagemCorrida(
+                        "Escolha um motorista antes de solicitar a corrida.",
+                        "erro"
+                    );
+
+                    return;
+
+                }
+
             }
 
 
-            // ================================================
+            // =================================================
             // VERIFICAR USUÁRIO
-            // ================================================
+            // =================================================
 
             const usuario =
                 await verificarUsuario();
@@ -468,21 +563,50 @@ if (paginaCorrida) {
                 );
 
 
-                setTimeout(function() {
+                setTimeout(
+                    function() {
 
-                    window.location.href =
-                        "login.html";
+                        window.location.href =
+                            "login.html";
 
-                }, 1500);
+                    },
+                    1500
+                );
 
 
                 return;
+
             }
 
 
-            // ================================================
+            // =================================================
+            // VERIFICAR TIPO DE ACESSO
+            // =================================================
+
+            const tipoAcesso =
+                localStorage.getItem(
+                    "tipoAcesso"
+                );
+
+
+            if (
+                tipoAcesso &&
+                tipoAcesso !== "cliente"
+            ) {
+
+                mostrarMensagemCorrida(
+                    "Somente clientes podem solicitar corridas.",
+                    "erro"
+                );
+
+                return;
+
+            }
+
+
+            // =================================================
             // CAMPOS
-            // ================================================
+            // =================================================
 
             const origem =
                 obterValorCampo(
@@ -508,9 +632,9 @@ if (paginaCorrida) {
                 );
 
 
-            // ================================================
+            // =================================================
             // VALIDAR ORIGEM
-            // ================================================
+            // =================================================
 
             if (!origem) {
 
@@ -520,12 +644,13 @@ if (paginaCorrida) {
                 );
 
                 return;
+
             }
 
 
-            // ================================================
+            // =================================================
             // VALIDAR DESTINO
-            // ================================================
+            // =================================================
 
             if (!destino) {
 
@@ -535,12 +660,13 @@ if (paginaCorrida) {
                 );
 
                 return;
+
             }
 
 
-            // ================================================
+            // =================================================
             // VALIDAR PAGAMENTO
-            // ================================================
+            // =================================================
 
             if (!formaPagamento) {
 
@@ -550,12 +676,49 @@ if (paginaCorrida) {
                 );
 
                 return;
+
             }
 
 
-            // ================================================
+            // =================================================
+            // VALIDAR VALOR
+            // =================================================
+
+            let valor = null;
+
+
+            if (valorCampo) {
+
+                valor =
+                    parseFloat(
+                        valorCampo
+                            .replace("R$", "")
+                            .replace(/\./g, "")
+                            .replace(",", ".")
+                            .trim()
+                    );
+
+
+                if (
+                    isNaN(valor) ||
+                    valor < 0
+                ) {
+
+                    mostrarMensagemCorrida(
+                        "Informe um valor válido para a corrida.",
+                        "erro"
+                    );
+
+                    return;
+
+                }
+
+            }
+
+
+            // =================================================
             // BOTÃO
-            // ================================================
+            // =================================================
 
             if (btnSolicitar) {
 
@@ -570,9 +733,83 @@ if (paginaCorrida) {
 
             try {
 
-                // ============================================
-                // PREPARAR DADOS
-                // ============================================
+                // =================================================
+                // VERIFICAR MOTORISTA NO BANCO
+                // =================================================
+
+                let motoristaId =
+                    motoristaSelecionado
+                        ? motoristaSelecionado.id
+                        : localStorage.getItem(
+                            "motoristaSelecionado"
+                        );
+
+
+                const {
+                    data: motorista,
+                    error: erroMotorista
+                } =
+                    await supabaseClient
+                        .from("motoristas")
+                        .select("id, ativo")
+                        .eq("id", motoristaId)
+                        .maybeSingle();
+
+
+                if (erroMotorista) {
+
+                    console.error(
+                        "Erro ao verificar motorista:",
+                        erroMotorista
+                    );
+
+
+                    mostrarMensagemCorrida(
+                        "Não foi possível verificar o motorista.",
+                        "erro"
+                    );
+
+
+                    restaurarBotaoCorrida();
+
+                    return;
+
+                }
+
+
+                if (!motorista) {
+
+                    mostrarMensagemCorrida(
+                        "O motorista selecionado não foi encontrado.",
+                        "erro"
+                    );
+
+
+                    restaurarBotaoCorrida();
+
+                    return;
+
+                }
+
+
+                if (!motorista.ativo) {
+
+                    mostrarMensagemCorrida(
+                        "Este motorista não está disponível no momento.",
+                        "erro"
+                    );
+
+
+                    restaurarBotaoCorrida();
+
+                    return;
+
+                }
+
+
+                // =================================================
+                // DADOS DA CORRIDA
+                // =================================================
 
                 const dadosCorrida = {
 
@@ -580,7 +817,7 @@ if (paginaCorrida) {
                         usuario.id,
 
                     motorista_id:
-                        motoristaSelecionado.id,
+                        motoristaId,
 
                     origem:
                         origem,
@@ -597,51 +834,38 @@ if (paginaCorrida) {
                 };
 
 
-                /*
-                 * Só adiciona valor se o campo existir
-                 * e estiver preenchido.
-                 */
+                // -------------------------------------------------
+                // ADICIONAR VALOR
+                // -------------------------------------------------
 
-                if (valorCampo) {
+                if (valor !== null) {
 
-                    const valor =
-                        parseFloat(
-                            valorCampo
-                                .replace(",", ".")
-                        );
-
-
-                    if (
-                        !isNaN(valor)
-                    ) {
-
-                        dadosCorrida.valor =
-                            valor;
-
-                    }
+                    dadosCorrida.valor =
+                        valor;
 
                 }
 
 
-                // ============================================
+                // =================================================
                 // INSERIR CORRIDA
-                // ============================================
+                // =================================================
 
                 const {
                     data,
                     error
-                } = await supabaseClient
-                    .from("corridas")
-                    .insert(
-                        dadosCorrida
-                    )
-                    .select()
-                    .single();
+                } =
+                    await supabaseClient
+                        .from("corridas")
+                        .insert(
+                            dadosCorrida
+                        )
+                        .select()
+                        .single();
 
 
-                // ============================================
+                // =================================================
                 // ERRO
-                // ============================================
+                // =================================================
 
                 if (error) {
 
@@ -660,22 +884,19 @@ if (paginaCorrida) {
                     restaurarBotaoCorrida();
 
                     return;
+
                 }
 
 
-                // ============================================
+                // =================================================
                 // SUCESSO
-                // ============================================
+                // =================================================
 
                 console.log(
                     "Corrida criada:",
                     data
                 );
 
-
-                /*
-                 * Guarda a corrida atual
-                 */
 
                 localStorage.setItem(
                     "corridaAtual",
@@ -689,10 +910,6 @@ if (paginaCorrida) {
                 );
 
 
-                /*
-                 * Atualiza interface
-                 */
-
                 if (btnSolicitar) {
 
                     btnSolicitar.textContent =
@@ -701,12 +918,9 @@ if (paginaCorrida) {
                 }
 
 
-                /*
-                 * Não redirecionamos imediatamente.
-                 *
-                 * Assim podemos mostrar o status
-                 * da corrida na própria página.
-                 */
+                // =================================================
+                // ACOMPANHAR EM TEMPO REAL
+                // =================================================
 
                 iniciarAcompanhamentoCorrida(
                     data.id
@@ -742,25 +956,24 @@ if (paginaCorrida) {
 // ACOMPANHAR CORRIDA
 // ============================================================
 
-let canalCorrida = null;
-
-
 async function iniciarAcompanhamentoCorrida(
     corridaId
 ) {
 
     if (
         !corridaId ||
-        typeof supabaseClient === "undefined"
+        typeof supabaseClient === "undefined" ||
+        !supabaseClient
     ) {
 
         return;
+
     }
 
 
-    /*
-     * Cancela canal anterior.
-     */
+    // --------------------------------------------------------
+    // Remover canal anterior
+    // --------------------------------------------------------
 
     if (canalCorrida) {
 
@@ -771,9 +984,9 @@ async function iniciarAcompanhamentoCorrida(
     }
 
 
-    /*
-     * Canal em tempo real.
-     */
+    // --------------------------------------------------------
+    // Criar canal
+    // --------------------------------------------------------
 
     canalCorrida =
         supabaseClient
@@ -803,7 +1016,16 @@ async function iniciarAcompanhamentoCorrida(
 
                 }
             )
-            .subscribe();
+            .subscribe(
+                function(status) {
+
+                    console.log(
+                        "Canal da corrida:",
+                        status
+                    );
+
+                }
+            );
 
 }
 
@@ -825,11 +1047,6 @@ function atualizarStatusCorrida(
         document.getElementById(
             "statusCorrida"
         );
-
-
-    if (!elementoStatus) {
-        return;
-    }
 
 
     const status =
@@ -865,30 +1082,33 @@ function atualizarStatusCorrida(
     };
 
 
-    elementoStatus.textContent =
-        mensagens[status] ||
-        "Status: " + status;
+    if (elementoStatus) {
+
+        elementoStatus.textContent =
+            mensagens[status] ||
+            "Status: " + status;
+
+    }
 
 
-    /*
-     * Quando chegar em pagamento,
-     * mostramos a área de pagamento.
-     */
+    // =========================================================
+    // PAGAMENTO
+    // =========================================================
 
     if (
         status ===
         "aguardando_pagamento"
     ) {
 
-        const pagamento =
+        const areaPagamento =
             document.getElementById(
                 "areaPagamento"
             );
 
 
-        if (pagamento) {
+        if (areaPagamento) {
 
-            pagamento.style.display =
+            areaPagamento.style.display =
                 "block";
 
         }
@@ -896,9 +1116,9 @@ function atualizarStatusCorrida(
     }
 
 
-    /*
-     * Corrida concluída.
-     */
+    // =========================================================
+    // CONCLUÍDA
+    // =========================================================
 
     if (
         status ===
@@ -909,6 +1129,26 @@ function atualizarStatusCorrida(
             "Corrida concluída!",
             "sucesso"
         );
+
+    }
+
+
+    // =========================================================
+    // CANCELADA
+    // =========================================================
+
+    if (
+        status ===
+        "cancelada"
+    ) {
+
+        mostrarMensagemCorrida(
+            "A corrida foi cancelada.",
+            "erro"
+        );
+
+
+        restaurarBotaoCorrida();
 
     }
 
@@ -937,7 +1177,7 @@ function restaurarBotaoCorrida() {
 
 
 // ============================================================
-// PEGAR VALOR DE CAMPO
+// OBTER VALOR DE CAMPO
 // ============================================================
 
 function obterValorCampo(
@@ -966,7 +1206,8 @@ function escaparHTML(
     texto
 ) {
 
-    if (texto === null ||
+    if (
+        texto === null ||
         texto === undefined
     ) {
 
@@ -1001,34 +1242,141 @@ function escaparHTML(
 
 
 // ============================================================
-// CARREGAR AO ABRIR A PÁGINA
+// CARREGAR CORRIDA ATUAL
+// ============================================================
+
+async function carregarCorridaAtual() {
+
+    const corridaAtual =
+        localStorage.getItem(
+            "corridaAtual"
+        );
+
+
+    if (!corridaAtual) {
+
+        return;
+
+    }
+
+
+    if (
+        typeof supabaseClient === "undefined"
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("corridas")
+                .select("*")
+                .eq("id", corridaAtual)
+                .maybeSingle();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao carregar corrida atual:",
+                error
+            );
+
+            return;
+
+        }
+
+
+        if (!data) {
+
+            localStorage.removeItem(
+                "corridaAtual"
+            );
+
+            return;
+
+        }
+
+
+        atualizarStatusCorrida(
+            data
+        );
+
+
+        iniciarAcompanhamentoCorrida(
+            data.id
+        );
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro ao recuperar corrida:",
+            erro
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// LIMPAR CORRIDA ATUAL
+// ============================================================
+
+function limparCorridaAtual() {
+
+    localStorage.removeItem(
+        "corridaAtual"
+    );
+
+    localStorage.removeItem(
+        "motoristaSelecionado"
+    );
+
+
+    motoristaSelecionado =
+        null;
+
+
+    if (canalCorrida) {
+
+        supabaseClient
+            .removeChannel(
+                canalCorrida
+            );
+
+        canalCorrida =
+            null;
+
+    }
+
+}
+
+
+// ============================================================
+// INICIALIZAÇÃO
 // ============================================================
 
 document.addEventListener(
     "DOMContentLoaded",
-    function() {
+    async function() {
 
-        carregarMotoristas();
-
-
-        /*
-         * Verifica se existe uma corrida
-         * anteriormente criada.
-         */
-
-        const corridaAtual =
-            localStorage.getItem(
-                "corridaAtual"
-            );
+        await carregarMotoristas();
 
 
-        if (corridaAtual) {
+        recuperarMotoristaSelecionado();
 
-            iniciarAcompanhamentoCorrida(
-                corridaAtual
-            );
 
-        }
+        await carregarCorridaAtual();
 
     }
 );
