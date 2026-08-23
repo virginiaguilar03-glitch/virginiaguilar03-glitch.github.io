@@ -1,5 +1,6 @@
 // ============================================================
 // PAINEL DO PARCEIRO / TAXISTA - VAIDTÁXI
+// Supabase
 // ============================================================
 
 
@@ -23,22 +24,18 @@ const notaMotorista = document.getElementById("notaMotorista");
 
 
 // ============================================================
-// DADOS TEMPORÁRIOS
-// ============================================================
-//
-// Por enquanto não vamos buscar esses dados no banco.
-// Quando voltarmos ao Supabase, substituiremos esta parte
-// pelos dados reais do parceiro.
-//
+// DADOS DO PARCEIRO
 // ============================================================
 
-const parceiro = {
+let parceiro = {
 
-    nome: "Parceiro VaidTáxi",
+    id: "",
 
-    email: "E-mail não informado",
+    nome: "Carregando...",
 
-    telefone: "Telefone não informado",
+    email: "Carregando...",
+
+    telefone: "Carregando...",
 
     corridasHoje: 0,
 
@@ -48,13 +45,30 @@ const parceiro = {
 
     ganhosMes: 0,
 
-    avaliacao: 0.0
+    avaliacao: 0
 
 };
 
 
 // ============================================================
-// PREENCHER PAINEL
+// FORMATAR MOEDA
+// ============================================================
+
+function formatarMoeda(valor) {
+
+    return Number(valor || 0).toLocaleString(
+        "pt-BR",
+        {
+            style: "currency",
+            currency: "BRL"
+        }
+    );
+
+}
+
+
+// ============================================================
+// MOSTRAR DADOS NO PAINEL
 // ============================================================
 
 function carregarDadosParceiro() {
@@ -130,7 +144,7 @@ function carregarDadosParceiro() {
     if (notaMotorista) {
 
         notaMotorista.textContent =
-            parceiro.avaliacao.toFixed(1);
+            Number(parceiro.avaliacao || 0).toFixed(1);
 
     }
 
@@ -138,48 +152,23 @@ function carregarDadosParceiro() {
 
 
 // ============================================================
-// FORMATAR VALORES EM REAIS
-// ============================================================
-
-function formatarMoeda(valor) {
-
-    return Number(valor).toLocaleString(
-        "pt-BR",
-        {
-            style: "currency",
-            currency: "BRL"
-        }
-    );
-
-}
-
-
-// ============================================================
-// VERIFICAR LOGIN
-// ============================================================
-//
-// IMPORTANTE:
-// Por enquanto esta função apenas verifica se existe
-// uma sessão do Supabase.
-//
-// Quando fizermos a separação definitiva entre
-// CLIENTE / PARCEIRO / ADMINISTRADOR, vamos acrescentar
-// a validação da função do usuário.
-//
+// VERIFICAR SESSÃO
 // ============================================================
 
 async function verificarSessaoParceiro() {
 
+    // --------------------------------------------------------
+    // Verificar Supabase
+    // --------------------------------------------------------
+
     if (
-        typeof supabaseClient ===
-        "undefined"
+        typeof supabaseClient === "undefined" ||
+        !supabaseClient
     ) {
 
-        console.warn(
-            "Supabase não encontrado. Modo de desenvolvimento ativado."
+        console.error(
+            "supabaseClient não encontrado."
         );
-
-        carregarDadosParceiro();
 
         return;
 
@@ -187,6 +176,10 @@ async function verificarSessaoParceiro() {
 
 
     try {
+
+        // ----------------------------------------------------
+        // PEGAR USUÁRIO LOGADO
+        // ----------------------------------------------------
 
         const {
             data,
@@ -211,64 +204,97 @@ async function verificarSessaoParceiro() {
             data.session;
 
 
+        // ----------------------------------------------------
+        // SEM LOGIN
+        // ----------------------------------------------------
+
         if (!sessao) {
 
             console.warn(
-                "Nenhuma sessão encontrada."
+                "Nenhum parceiro está logado."
             );
 
-            /*
-             * Durante o desenvolvimento vamos deixar
-             * o painel abrir normalmente.
-             *
-             * Depois vamos ativar:
-             *
-             * window.location.href = "login.html";
-             */
-
-            carregarDadosParceiro();
+            window.location.href =
+                "login.html";
 
             return;
 
         }
 
 
-        console.log(
-            "Parceiro conectado:",
-            sessao.user
-        );
+        // ----------------------------------------------------
+        // USUÁRIO
+        // ----------------------------------------------------
+
+        const usuario =
+            sessao.user;
 
 
-        // ==============================================
-        // DADOS DO USUÁRIO
-        // ==============================================
-
-        const dadosUsuario =
-            sessao.user.user_metadata || {};
+        parceiro.id =
+            usuario.id;
 
 
-        if (dadosUsuario.nome) {
+        // ----------------------------------------------------
+        // METADADOS DO AUTH
+        // ----------------------------------------------------
 
-            parceiro.nome =
-                dadosUsuario.nome;
-
-        }
+        const metadata =
+            usuario.user_metadata || {};
 
 
-        if (dadosUsuario.telefone) {
+        parceiro.nome =
+            metadata.nome ||
+            "Parceiro VaidTáxi";
 
-            parceiro.telefone =
-                dadosUsuario.telefone;
 
-        }
+        parceiro.telefone =
+            metadata.telefone ||
+            "Telefone não informado";
 
 
         parceiro.email =
-            sessao.user.email ||
+            usuario.email ||
             "E-mail não informado";
 
 
+        // ----------------------------------------------------
+        // VERIFICAR TIPO DE ACESSO
+        // ----------------------------------------------------
+
+        const tipoAcesso =
+            localStorage.getItem(
+                "tipoAcesso"
+            );
+
+
+        if (
+            tipoAcesso &&
+            tipoAcesso !== "parceiro"
+        ) {
+
+            console.warn(
+                "Usuário logado não é parceiro."
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        // ----------------------------------------------------
+        // MOSTRAR DADOS
+        // ----------------------------------------------------
+
         carregarDadosParceiro();
+
+
+        console.log(
+            "Parceiro carregado:",
+            parceiro
+        );
 
     }
 
@@ -279,7 +305,80 @@ async function verificarSessaoParceiro() {
             erro
         );
 
-        carregarDadosParceiro();
+    }
+
+}
+
+
+// ============================================================
+// LOGOUT
+// ============================================================
+
+async function sairParceiro() {
+
+    if (
+        typeof supabaseClient === "undefined"
+    ) {
+
+        localStorage.removeItem("usuarioId");
+        localStorage.removeItem("tipoAcesso");
+
+        window.location.href =
+            "login.html";
+
+        return;
+
+    }
+
+
+    try {
+
+        const {
+            error
+        } =
+            await supabaseClient.auth.signOut();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao sair:",
+                error
+            );
+
+            return;
+
+        }
+
+
+        // ----------------------------------------------------
+        // LIMPAR DADOS LOCAIS
+        // ----------------------------------------------------
+
+        localStorage.removeItem(
+            "usuarioId"
+        );
+
+        localStorage.removeItem(
+            "tipoAcesso"
+        );
+
+
+        // ----------------------------------------------------
+        // VOLTAR PARA LOGIN
+        // ----------------------------------------------------
+
+        window.location.href =
+            "login.html";
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro ao fazer logout:",
+            erro
+        );
 
     }
 
@@ -293,8 +392,6 @@ async function verificarSessaoParceiro() {
 document.addEventListener(
     "DOMContentLoaded",
     function () {
-
-        carregarDadosParceiro();
 
         verificarSessaoParceiro();
 
