@@ -1,5 +1,6 @@
 // ============================================================
-// CADASTRO - VAIDTÁXI
+// CADASTRO.JS - VAIDTÁXI
+// Supabase Auth + cadastro de cliente/parceiro
 // ============================================================
 
 
@@ -45,39 +46,53 @@ function mostrarMensagem(texto, tipo) {
     mensagemCadastro.textContent =
         texto;
 
+    mensagemCadastro.style.color =
+        tipo === "sucesso"
+            ? "#00cc66"
+            : "#ff4444";
+}
 
-    if (tipo === "sucesso") {
 
-        mensagemCadastro.style.color =
-            "#00cc66";
+// ============================================================
+// TIPO DE CADASTRO
+// ============================================================
 
-    } else {
+function obterTipoCadastro() {
 
-        mensagemCadastro.style.color =
-            "#ff4444";
-
-    }
+    return window.tipoCadastro || "";
 
 }
 
 
 // ============================================================
-// VERIFICAR TIPO DE CADASTRO
+// RESTAURAR BOTÃO
 // ============================================================
 
-function obterTipoCadastro() {
+function restaurarBotao(tipoCadastro) {
 
-    /*
-     * O cadastro.html define:
-     *
-     * window.tipoCadastro = "cliente"
-     *
-     * ou
-     *
-     * window.tipoCadastro = "parceiro"
-     */
+    if (!botaoCadastrar) {
+        return;
+    }
 
-    return window.tipoCadastro || "";
+    botaoCadastrar.disabled = false;
+
+    botaoCadastrar.textContent =
+        tipoCadastro === "parceiro"
+            ? "Enviar Cadastro para Aprovação"
+            : "Criar Conta";
+}
+
+
+// ============================================================
+// VERIFICAR SUPABASE
+// ============================================================
+
+function supabaseDisponivel() {
+
+    return (
+        typeof supabaseClient !== "undefined" &&
+        supabaseClient
+    );
 
 }
 
@@ -103,10 +118,6 @@ if (formCadastro) {
                 obterTipoCadastro();
 
 
-            // =================================================
-            // VERIFICAR TIPO
-            // =================================================
-
             if (
                 tipoCadastro !== "cliente" &&
                 tipoCadastro !== "parceiro"
@@ -122,93 +133,74 @@ if (formCadastro) {
 
 
             // =================================================
-            // PEGAR DADOS PESSOAIS
+            // CAMPOS PESSOAIS
             // =================================================
+
+            const campoNome =
+                document.getElementById("nome");
+
+            const campoCPF =
+                document.getElementById("cpf");
+
+            const campoTelefone =
+                document.getElementById("telefone");
+
+            const campoEmail =
+                document.getElementById("email");
+
+            const campoSenha =
+                document.getElementById("senha");
+
+            const campoConfirmarSenha =
+                document.getElementById("confirmarSenha");
+
 
             const nome =
-                document
-                    .getElementById("nome")
-                    .value
-                    .trim();
-
+                campoNome?.value.trim() || "";
 
             const cpf =
-                document
-                    .getElementById("cpf")
-                    .value
-                    .trim();
-
+                campoCPF?.value.trim() || "";
 
             const telefone =
-                document
-                    .getElementById("telefone")
-                    .value
-                    .trim();
-
+                campoTelefone?.value.trim() || "";
 
             const email =
-                document
-                    .getElementById("email")
-                    .value
-                    .trim();
-
+                campoEmail?.value.trim() || "";
 
             const senha =
-                document
-                    .getElementById("senha")
-                    .value;
-
+                campoSenha?.value || "";
 
             const confirmarSenha =
-                document
-                    .getElementById("confirmarSenha")
-                    .value;
+                campoConfirmarSenha?.value || "";
 
 
             // =================================================
-            // PEGAR DADOS DO VEÍCULO
+            // CAMPOS DO VEÍCULO
             // =================================================
 
             const marca =
-                document
-                    .getElementById("marca")
-                    ?.value
-                    .trim() || "";
-
+                document.getElementById("marca")
+                    ?.value.trim() || "";
 
             const modelo =
-                document
-                    .getElementById("modelo")
-                    ?.value
-                    .trim() || "";
-
+                document.getElementById("modelo")
+                    ?.value.trim() || "";
 
             const cor =
-                document
-                    .getElementById("cor")
-                    ?.value
-                    .trim() || "";
-
+                document.getElementById("cor")
+                    ?.value.trim() || "";
 
             const anoVeiculo =
-                document
-                    .getElementById("anoVeiculo")
-                    ?.value
-                    .trim() || "";
-
+                document.getElementById("anoVeiculo")
+                    ?.value.trim() || "";
 
             const placa =
-                document
-                    .getElementById("placa")
-                    ?.value
-                    .trim() || "";
-
+                document.getElementById("placa")
+                    ?.value.trim() || "";
 
             const assentos =
-                document
-                    .getElementById("assentos")
-                    ?.value
-                    .trim() || "";
+                document.getElementById("assentos")
+                    ?.value.trim() || "";
 
 
             // =================================================
@@ -219,7 +211,7 @@ if (formCadastro) {
 
 
             // =================================================
-            // VALIDAR DADOS PESSOAIS
+            // VALIDAR CAMPOS
             // =================================================
 
             if (
@@ -241,7 +233,26 @@ if (formCadastro) {
 
 
             // =================================================
-            // VALIDAR SENHAS
+            // VALIDAR CPF
+            // =================================================
+
+            const cpfNumeros =
+                cpf.replace(/\D/g, "");
+
+
+            if (cpfNumeros.length !== 11) {
+
+                mostrarMensagem(
+                    "Digite um CPF válido.",
+                    "erro"
+                );
+
+                return;
+            }
+
+
+            // =================================================
+            // VALIDAR SENHA
             // =================================================
 
             if (senha !== confirmarSenha) {
@@ -254,10 +265,6 @@ if (formCadastro) {
                 return;
             }
 
-
-            // =================================================
-            // VALIDAR TAMANHO DA SENHA
-            // =================================================
 
             if (senha.length < 6) {
 
@@ -293,6 +300,44 @@ if (formCadastro) {
                     return;
                 }
 
+
+                const anoNumero =
+                    Number(anoVeiculo);
+
+
+                if (
+                    !Number.isInteger(anoNumero) ||
+                    anoNumero < 1900 ||
+                    anoNumero > 2100
+                ) {
+
+                    mostrarMensagem(
+                        "Informe um ano de veículo válido.",
+                        "erro"
+                    );
+
+                    return;
+                }
+
+
+                const assentosNumero =
+                    Number(assentos);
+
+
+                if (
+                    !Number.isInteger(assentosNumero) ||
+                    assentosNumero < 1 ||
+                    assentosNumero > 20
+                ) {
+
+                    mostrarMensagem(
+                        "Informe uma quantidade de passageiros válida.",
+                        "erro"
+                    );
+
+                    return;
+                }
+
             }
 
 
@@ -300,18 +345,14 @@ if (formCadastro) {
             // VERIFICAR SUPABASE
             // =================================================
 
-            if (
-                typeof supabaseClient ===
-                "undefined"
-            ) {
+            if (!supabaseDisponivel()) {
 
                 console.error(
                     "supabaseClient não está disponível."
                 );
 
-
                 mostrarMensagem(
-                    "Erro: conexão com o sistema não encontrada.",
+                    "Erro de conexão com o sistema.",
                     "erro"
                 );
 
@@ -323,25 +364,19 @@ if (formCadastro) {
             // DESABILITAR BOTÃO
             // =================================================
 
-            botaoCadastrar.disabled =
-                true;
+            if (botaoCadastrar) {
 
-
-            if (tipoCadastro === "parceiro") {
-
-                botaoCadastrar.textContent =
-                    "Enviando cadastro...";
-
-            } else {
+                botaoCadastrar.disabled =
+                    true;
 
                 botaoCadastrar.textContent =
-                    "Criando conta...";
-
+                    tipoCadastro === "parceiro"
+                        ? "Enviando cadastro..."
+                        : "Criando conta...";
             }
 
 
             try {
-
 
                 // =================================================
                 // DADOS DO USUÁRIO
@@ -351,7 +386,7 @@ if (formCadastro) {
 
                     nome: nome,
 
-                    cpf: cpf,
+                    cpf: cpfNumeros,
 
                     telefone: telefone,
 
@@ -364,7 +399,9 @@ if (formCadastro) {
                 // DADOS DO PARCEIRO
                 // =================================================
 
-                if (tipoCadastro === "parceiro") {
+                if (
+                    tipoCadastro === "parceiro"
+                ) {
 
                     dadosUsuario.veiculo = {
 
@@ -376,7 +413,9 @@ if (formCadastro) {
 
                         ano: anoVeiculo,
 
-                        placa: placa,
+                        placa: placa
+                            .replace(/-/g, "")
+                            .toUpperCase(),
 
                         assentos: assentos
 
@@ -385,11 +424,23 @@ if (formCadastro) {
                 }
 
 
+                console.log(
+                    "Iniciando cadastro:",
+                    {
+                        email,
+                        tipo: tipoCadastro
+                    }
+                );
+
+
                 // =================================================
                 // CRIAR CONTA NO SUPABASE AUTH
                 // =================================================
 
-                const { data, error } =
+                const {
+                    data,
+                    error
+                } =
                     await supabaseClient.auth.signUp({
 
                         email: email,
@@ -406,24 +457,23 @@ if (formCadastro) {
 
 
                 // =================================================
-                // ERRO
+                // TRATAR ERRO DO SUPABASE
                 // =================================================
 
                 if (error) {
 
                     console.error(
-                        "ERRO DO SUPABASE AUTH:",
+                        "Erro do Supabase Auth:",
                         error
                     );
 
 
                     const mensagemErro =
-                        error.message.toLowerCase();
+                        (
+                            error.message ||
+                            ""
+                        ).toLowerCase();
 
-
-                    // ---------------------------------------------
-                    // E-MAIL JÁ EXISTENTE
-                    // ---------------------------------------------
 
                     if (
                         mensagemErro.includes(
@@ -431,6 +481,9 @@ if (formCadastro) {
                         ) ||
                         mensagemErro.includes(
                             "already exists"
+                        ) ||
+                        mensagemErro.includes(
+                            "user already registered"
                         )
                     ) {
 
@@ -440,11 +493,6 @@ if (formCadastro) {
                         );
 
                     }
-
-
-                    // ---------------------------------------------
-                    // SENHA
-                    // ---------------------------------------------
 
                     else if (
                         mensagemErro.includes(
@@ -459,11 +507,6 @@ if (formCadastro) {
 
                     }
 
-
-                    // ---------------------------------------------
-                    // E-MAIL
-                    // ---------------------------------------------
-
                     else if (
                         mensagemErro.includes(
                             "email"
@@ -477,11 +520,6 @@ if (formCadastro) {
 
                     }
 
-
-                    // ---------------------------------------------
-                    // ERRO GENÉRICO
-                    // ---------------------------------------------
-
                     else {
 
                         mostrarMensagem(
@@ -493,27 +531,9 @@ if (formCadastro) {
                     }
 
 
-                    // Restaurar botão
-
-                    botaoCadastrar.disabled =
-                        false;
-
-
-                    if (
-                        tipoCadastro ===
-                        "parceiro"
-                    ) {
-
-                        botaoCadastrar.textContent =
-                            "Enviar Cadastro para Aprovação";
-
-                    } else {
-
-                        botaoCadastrar.textContent =
-                            "Criar Conta";
-
-                    }
-
+                    restaurarBotao(
+                        tipoCadastro
+                    );
 
                     return;
                 }
@@ -529,72 +549,91 @@ if (formCadastro) {
                 ) {
 
                     console.error(
-                        "O Supabase não retornou um usuário:",
+                        "Supabase não retornou o usuário:",
                         data
                     );
-
 
                     mostrarMensagem(
                         "Não foi possível concluir o cadastro.",
                         "erro"
                     );
 
-
-                    botaoCadastrar.disabled =
-                        false;
-
-
-                    botaoCadastrar.textContent =
-                        tipoCadastro === "parceiro"
-                            ? "Enviar Cadastro para Aprovação"
-                            : "Criar Conta";
-
+                    restaurarBotao(
+                        tipoCadastro
+                    );
 
                     return;
                 }
 
 
                 // =================================================
-                // USUÁRIO CRIADO
+                // DADOS CRIADOS
                 // =================================================
 
+                const usuarioCriado =
+                    data.user;
+
+
                 console.log(
-                    "USUÁRIO CRIADO:"
+                    "Usuário criado com sucesso:",
+                    usuarioCriado.id
                 );
 
 
                 console.log(
-                    "ID:",
-                    data.user.id
-                );
-
-
-                console.log(
-                    "TIPO:",
+                    "Tipo:",
                     tipoCadastro
                 );
 
 
-                console.log(
-                    "DADOS:",
-                    dadosUsuario
-                );
+                /*
+                 * IMPORTANTE:
+                 *
+                 * Os dados pessoais continuam sendo
+                 * enviados em user_metadata.
+                 *
+                 * Se o seu banco possui trigger para
+                 * criar o registro correspondente em
+                 * clientes/parceiros, ele poderá
+                 * utilizar esses dados.
+                 */
+
+
+                // =================================================
+                // VERIFICAR CONFIRMAÇÃO DE E-MAIL
+                // =================================================
+
+                const emailPrecisaConfirmacao =
+                    !data.session;
 
 
                 // =================================================
                 // CLIENTE
                 // =================================================
 
-                if (tipoCadastro === "cliente") {
+                if (
+                    tipoCadastro === "cliente"
+                ) {
 
-                    mostrarMensagem(
-                        "Conta criada com sucesso!",
-                        "sucesso"
-                    );
+                    if (
+                        emailPrecisaConfirmacao
+                    ) {
 
+                        mostrarMensagem(
+                            "Conta criada! Confirme o e-mail antes de entrar.",
+                            "sucesso"
+                        );
 
-                    botaoCadastrar.textContent =
-                        "Conta criada";
+                    }
+
+                    else {
+
+                        mostrarMensagem(
+                            "Conta criada com sucesso!",
+                            "sucesso"
+                        );
+
+                    }
 
                 }
 
@@ -603,19 +642,30 @@ if (formCadastro) {
                 // PARCEIRO
                 // =================================================
 
-                else if (
-                    tipoCadastro ===
-                    "parceiro"
+                if (
+                    tipoCadastro === "parceiro"
                 ) {
 
                     mostrarMensagem(
-                        "Cadastro enviado com sucesso! Aguarde a aprovação do administrador.",
+                        emailPrecisaConfirmacao
+                            ? "Cadastro enviado! Confirme o e-mail e aguarde a aprovação do administrador."
+                            : "Cadastro enviado com sucesso! Aguarde a aprovação do administrador.",
                         "sucesso"
                     );
 
+                }
+
+
+                // =================================================
+                // BOTÃO
+                // =================================================
+
+                if (botaoCadastrar) {
 
                     botaoCadastrar.textContent =
-                        "Cadastro enviado";
+                        tipoCadastro === "parceiro"
+                            ? "Cadastro enviado"
+                            : "Conta criada";
 
                 }
 
@@ -636,44 +686,24 @@ if (formCadastro) {
 
             }
 
-
-            // ====================================================
-            // ERRO INESPERADO
-            // ====================================================
-
             catch (erro) {
 
                 console.error(
-                    "ERRO INESPERADO NO CADASTRO:",
+                    "Erro inesperado no cadastro:",
                     erro
                 );
 
 
                 mostrarMensagem(
-                    erro.message ||
+                    erro?.message ||
                     "Erro ao conectar com o sistema.",
                     "erro"
                 );
 
 
-                botaoCadastrar.disabled =
-                    false;
-
-
-                if (
-                    tipoCadastro ===
-                    "parceiro"
-                ) {
-
-                    botaoCadastrar.textContent =
-                        "Enviar Cadastro para Aprovação";
-
-                } else {
-
-                    botaoCadastrar.textContent =
-                        "Criar Conta";
-
-                }
+                restaurarBotao(
+                    tipoCadastro
+                );
 
             }
 
@@ -860,14 +890,6 @@ if (campoPlaca) {
                     7
                 );
 
-
-            /*
-             * Formato antigo:
-             * ABC-1234
-             *
-             * Também aceita:
-             * ABC1D23
-             */
 
             if (
                 valor.length > 3
