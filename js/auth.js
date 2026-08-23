@@ -1,107 +1,152 @@
 // ============================================================
-// AUTENTICAÇÃO / PROTEÇÃO DE PÁGINAS - VAIDTÁXI
+// AUTH - VAIDTÁXI
 // ============================================================
 
 (async function () {
 
-    console.log("🔐 Verificando sessão...");
+    console.log("🔐 Iniciando verificação de autenticação...");
 
     try {
 
-        // Recupera a sessão atual do Supabase
+        // --------------------------------------------------------
+        // RECUPERA A SESSÃO
+        // --------------------------------------------------------
+
         const { data, error } =
             await supabaseClient.auth.getSession();
 
         if (error) {
-            console.error("❌ Erro ao recuperar sessão:", error);
-            window.location.href = "entrar.html";
+            console.error("Erro ao recuperar sessão:", error);
             return;
         }
 
         const session = data?.session;
 
+        console.log(
+            session
+                ? "✅ Usuário está logado"
+                : "⚠️ Usuário não está logado"
+        );
+
         // --------------------------------------------------------
-        // NÃO ESTÁ LOGADO
+        // ELEMENTOS DO CABEÇALHO
         // --------------------------------------------------------
 
-        if (!session) {
+        const links = document.querySelectorAll("header a");
 
-            console.warn("⚠️ Nenhuma sessão encontrada.");
+        let linkEntrar = null;
+        let linkCadastro = null;
 
-            window.location.href = "entrar.html";
+        links.forEach(link => {
 
-            return;
+            const texto = link.textContent.trim().toLowerCase();
+
+            if (texto === "entrar") {
+                linkEntrar = link;
+            }
+
+            if (
+                texto === "cadastre-se" ||
+                texto === "cadastre se" ||
+                texto === "cadastrar-se"
+            ) {
+                linkCadastro = link;
+            }
+
+        });
+
+        // --------------------------------------------------------
+        // USUÁRIO LOGADO
+        // --------------------------------------------------------
+
+        if (session) {
+
+            const usuario = session.user;
+
+            window.usuarioLogado = usuario;
+
+            const nome =
+                usuario.user_metadata?.nome ||
+                usuario.user_metadata?.name ||
+                usuario.email?.split("@")[0] ||
+                "Usuário";
+
+            console.log("👤 Usuário:", nome);
+
+            // --------------------------------------------
+            // TROCA "ENTRAR" PELO NOME
+            // --------------------------------------------
+
+            if (linkEntrar) {
+
+                linkEntrar.textContent = `Olá, ${nome}`;
+
+                linkEntrar.removeAttribute("href");
+
+                linkEntrar.style.cursor = "default";
+
+                linkEntrar.classList.add("usuario-logado");
+
+            }
+
+            // --------------------------------------------
+            // TROCA "CADASTRE-SE" POR "SAIR"
+            // --------------------------------------------
+
+            if (linkCadastro) {
+
+                linkCadastro.textContent = "Sair";
+
+                linkCadastro.href = "#";
+
+                linkCadastro.classList.add("btn-sair");
+
+                linkCadastro.addEventListener(
+                    "click",
+                    async function (event) {
+
+                        event.preventDefault();
+
+                        console.log("🚪 Fazendo logout...");
+
+                        const { error } =
+                            await supabaseClient.auth.signOut();
+
+                        if (error) {
+
+                            console.error(
+                                "Erro ao sair:",
+                                error
+                            );
+
+                            return;
+                        }
+
+                        window.location.href = "entrar.html";
+
+                    }
+                );
+
+            }
+
         }
 
         // --------------------------------------------------------
-        // ESTÁ LOGADO
+        // USUÁRIO NÃO LOGADO
         // --------------------------------------------------------
 
-        const usuario = session.user;
+        else {
 
-        console.log("✅ Sessão encontrada:", usuario.email);
+            console.log("👤 Nenhum usuário autenticado.");
 
-        // Disponibiliza o usuário para os outros scripts
-        window.usuarioLogado = usuario;
-
-        // --------------------------------------------------------
-        // MOSTRAR NOME DO USUÁRIO
-        // --------------------------------------------------------
-
-        const nome =
-            usuario.user_metadata?.nome ||
-            usuario.user_metadata?.name ||
-            usuario.email;
-
-        document.querySelectorAll(
-            "#nomeUsuario, .nomeUsuario, [data-user-name]"
-        ).forEach(elemento => {
-
-            elemento.textContent = nome;
-
-        });
-
-        // --------------------------------------------------------
-        // BOTÃO SAIR
-        // --------------------------------------------------------
-
-        document.querySelectorAll(
-            "#btnSair, .btnSair, [data-logout]"
-        ).forEach(botao => {
-
-            botao.addEventListener("click", async function (event) {
-
-                event.preventDefault();
-
-                console.log("🚪 Saindo...");
-
-                const { error } =
-                    await supabaseClient.auth.signOut();
-
-                if (error) {
-
-                    console.error(
-                        "❌ Erro ao sair:",
-                        error
-                    );
-
-                    return;
-                }
-
-                window.location.href = "entrar.html";
-
-            });
-
-        });
+        }
 
     } catch (erro) {
 
         console.error(
-            "❌ Erro inesperado na autenticação:",
+            "❌ Erro no sistema de autenticação:",
             erro
         );
-
-        window.location.href = "entrar.html";
 
     }
 
