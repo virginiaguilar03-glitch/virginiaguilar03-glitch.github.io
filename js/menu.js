@@ -1,15 +1,22 @@
-// ===============================
+// ==========================================
 // MENU MOBILE - VAIDTÁXI
-// ===============================
+// ==========================================
 
-const menuMobile = document.getElementById("menu-mobile");
-const menu = document.querySelector("nav");
+document.addEventListener("DOMContentLoaded", () => {
+
+    const menuMobile = document.getElementById("menu-mobile");
+    const menu = document.querySelector("nav");
+
+    // Verifica se os elementos existem
+    if (!menuMobile || !menu) {
+        return;
+    }
 
 
-// Verifica se o menu mobile existe
-if (menuMobile && menu) {
+    // ==========================================
+    // ABRIR / FECHAR MENU
+    // ==========================================
 
-    // Abrir / fechar menu
     menuMobile.addEventListener("click", () => {
 
         menu.classList.toggle("active");
@@ -17,7 +24,10 @@ if (menuMobile && menu) {
     });
 
 
-    // Fecha o menu ao clicar em um link
+    // ==========================================
+    // FECHAR MENU AO CLICAR EM UM LINK
+    // ==========================================
+
     const links = document.querySelectorAll("nav a");
 
     links.forEach(link => {
@@ -31,7 +41,10 @@ if (menuMobile && menu) {
     });
 
 
-    // Fecha o menu ao redimensionar
+    // ==========================================
+    // FECHAR MENU AO REDIMENSIONAR
+    // ==========================================
+
     window.addEventListener("resize", () => {
 
         if (window.innerWidth > 900) {
@@ -42,4 +55,4 @@ if (menuMobile && menu) {
 
     });
 
-}
+});
