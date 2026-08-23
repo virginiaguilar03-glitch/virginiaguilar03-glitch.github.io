@@ -1,6 +1,6 @@
 // ============================================================
 // CONTATO - VAIDTÁXI
-// Formulário de contato + Supabase
+// Envio de mensagem para o Supabase
 // ============================================================
 
 
@@ -11,97 +11,36 @@
 const formContato =
     document.getElementById("formContato");
 
+const mensagemContato =
+    document.getElementById("mensagemContato");
+
+const btnContato =
+    document.getElementById("btnContato");
+
 
 // ============================================================
-// MENSAGEM
+// MOSTRAR MENSAGEM
 // ============================================================
 
-function mostrarMensagemContato(
-    texto,
-    tipo = "erro"
-) {
+function mostrarMensagemContato(texto, tipo) {
 
-    let mensagem =
-        document.getElementById("mensagemContato");
-
-
-    // Se ainda não existir no HTML,
-    // cria automaticamente.
-
-    if (!mensagem && formContato) {
-
-        mensagem =
-            document.createElement("p");
-
-        mensagem.id =
-            "mensagemContato";
-
-        mensagem.style.marginTop =
-            "15px";
-
-        mensagem.style.textAlign =
-            "center";
-
-        mensagem.style.fontSize =
-            "14px";
-
-        formContato.appendChild(
-            mensagem
-        );
-
-    }
-
-
-    if (!mensagem) {
+    if (!mensagemContato) {
         return;
     }
 
-
-    mensagem.textContent =
-        texto;
-
+    mensagemContato.textContent = texto;
 
     if (tipo === "sucesso") {
 
-        mensagem.style.color =
+        mensagemContato.style.color =
             "#00cc66";
 
     } else {
 
-        mensagem.style.color =
+        mensagemContato.style.color =
             "#ff4444";
 
     }
-
-}
-
-
-// ============================================================
-// VERIFICAR SUPABASE
-// ============================================================
-
-function verificarSupabaseContato() {
-
-    if (
-        typeof supabaseClient ===
-        "undefined" ||
-        !supabaseClient
-    ) {
-
-        console.error(
-            "supabaseClient não encontrado."
-        );
-
-        mostrarMensagemContato(
-            "Erro de conexão com o sistema.",
-            "erro"
-        );
-
-        return false;
-    }
-
-
-    return true;
 
 }
 
@@ -114,87 +53,75 @@ if (formContato) {
 
     formContato.addEventListener(
         "submit",
-        async function(event) {
+        async function (event) {
 
             event.preventDefault();
 
 
-            // ================================================
+            // =================================================
             // VERIFICAR SUPABASE
-            // ================================================
+            // =================================================
 
             if (
-                !verificarSupabaseContato()
+                typeof supabaseClient === "undefined" ||
+                !supabaseClient
             ) {
 
-                return;
+                console.error(
+                    "supabaseClient não encontrado."
+                );
 
+                mostrarMensagemContato(
+                    "Erro: conexão com o sistema não encontrada.",
+                    "erro"
+                );
+
+                return;
             }
 
 
-            // ================================================
-            // CAMPOS
-            // ================================================
-
-            const campoNome =
-                document.getElementById("nome");
-
-            const campoEmail =
-                document.getElementById("email");
-
-            const campoTelefone =
-                document.getElementById("telefone");
-
-            const campoAssunto =
-                document.getElementById("assunto");
-
-            const campoMensagem =
-                document.getElementById("mensagem");
-
+            // =================================================
+            // PEGAR CAMPOS
+            // =================================================
 
             const nome =
-                campoNome
-                    ? campoNome.value.trim()
-                    : "";
+                document
+                    .getElementById("nome")
+                    ?.value
+                    .trim() || "";
 
 
             const email =
-                campoEmail
-                    ? campoEmail.value.trim()
-                    : "";
+                document
+                    .getElementById("email")
+                    ?.value
+                    .trim() || "";
 
 
             const telefone =
-                campoTelefone
-                    ? campoTelefone.value.trim()
-                    : "";
+                document
+                    .getElementById("telefone")
+                    ?.value
+                    .trim() || "";
 
 
             const assunto =
-                campoAssunto
-                    ? campoAssunto.value.trim()
-                    : "";
+                document
+                    .getElementById("assunto")
+                    ?.value
+                    .trim() || "";
 
 
             const mensagem =
-                campoMensagem
-                    ? campoMensagem.value.trim()
-                    : "";
+                document
+                    .getElementById("mensagem")
+                    ?.value
+                    .trim() || "";
 
 
-            // ================================================
-            // LIMPAR MENSAGEM
-            // ================================================
-
-            mostrarMensagemContato(
-                "",
-                "sucesso"
-            );
-
-
-            // ================================================
-            // VALIDAÇÃO
-            // ================================================
+            // =================================================
+            // VALIDAR
+            // =================================================
 
             if (
                 !nome ||
@@ -209,58 +136,34 @@ if (formContato) {
                 );
 
                 return;
-
             }
 
 
-            // ================================================
-            // VALIDAR E-MAIL
-            // ================================================
+            // =================================================
+            // DESABILITAR BOTÃO
+            // =================================================
 
-            const formatoEmail =
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (btnContato) {
 
+                btnContato.disabled = true;
 
-            if (
-                !formatoEmail.test(email)
-            ) {
-
-                mostrarMensagemContato(
-                    "Informe um e-mail válido.",
-                    "erro"
-                );
-
-                return;
-
-            }
-
-
-            // ================================================
-            // BOTÃO
-            // ================================================
-
-            const botao =
-                formContato.querySelector(
-                    'button[type="submit"]'
-                );
-
-
-            if (botao) {
-
-                botao.disabled =
-                    true;
-
-                botao.textContent =
+                btnContato.textContent =
                     "Enviando...";
 
             }
 
 
+            mostrarMensagemContato(
+                "",
+                "sucesso"
+            );
+
+
             try {
 
-                // ============================================
-                // DADOS
-                // ============================================
+                // =================================================
+                // DADOS DO CONTATO
+                // =================================================
 
                 const dadosContato = {
 
@@ -268,7 +171,7 @@ if (formContato) {
 
                     email: email,
 
-                    telefone: telefone || null,
+                    telefone: telefone,
 
                     assunto: assunto,
 
@@ -277,31 +180,23 @@ if (formContato) {
                 };
 
 
-                console.log(
-                    "Enviando contato:",
-                    dadosContato
-                );
-
-
-                // ============================================
-                // SALVAR NO SUPABASE
-                // ============================================
+                // =================================================
+                // ENVIAR PARA SUPABASE
+                // =================================================
 
                 const {
                     data,
                     error
                 } = await supabaseClient
                     .from("contatos")
-                    .insert(
-                        dadosContato
-                    )
+                    .insert(dadosContato)
                     .select()
                     .single();
 
 
-                // ============================================
+                // =================================================
                 // ERRO
-                // ============================================
+                // =================================================
 
                 if (error) {
 
@@ -310,59 +205,62 @@ if (formContato) {
                         error
                     );
 
-
                     mostrarMensagemContato(
                         "Não foi possível enviar sua mensagem.",
                         "erro"
                     );
 
-
                     restaurarBotaoContato();
 
                     return;
-
                 }
 
 
-                // ============================================
+                // =================================================
                 // SUCESSO
-                // ============================================
+                // =================================================
 
                 console.log(
-                    "Mensagem enviada:",
+                    "Contato enviado:",
                     data
                 );
 
 
                 mostrarMensagemContato(
-                    "Mensagem enviada com sucesso! Entraremos em contato em breve.",
+                    "Mensagem enviada com sucesso! Entraremos em contato.",
                     "sucesso"
                 );
 
 
-                // ============================================
-                // LIMPAR FORMULÁRIO
-                // ============================================
+                // Limpar formulário
 
                 formContato.reset();
 
 
-                if (botao) {
+                // Restaurar botão
 
-                    botao.textContent =
+                if (btnContato) {
+
+                    btnContato.disabled = false;
+
+                    btnContato.textContent =
                         "Mensagem enviada";
 
                 }
 
 
-                // ============================================
-                // RESTAURAR BOTÃO
-                // ============================================
+                // Depois de alguns segundos,
+                // volta ao texto original
 
                 setTimeout(
-                    function() {
+                    function () {
 
-                        restaurarBotaoContato();
+                        if (btnContato) {
+
+                            btnContato.textContent =
+                                "Enviar Mensagem";
+
+                        }
 
                     },
                     3000
@@ -370,6 +268,10 @@ if (formContato) {
 
             }
 
+
+            // =================================================
+            // ERRO INESPERADO
+            // =================================================
 
             catch (erro) {
 
@@ -401,27 +303,13 @@ if (formContato) {
 
 function restaurarBotaoContato() {
 
-    if (!formContato) {
+    if (!btnContato) {
         return;
     }
 
+    btnContato.disabled = false;
 
-    const botao =
-        formContato.querySelector(
-            'button[type="submit"]'
-        );
-
-
-    if (!botao) {
-        return;
-    }
-
-
-    botao.disabled =
-        false;
-
-
-    botao.textContent =
+    btnContato.textContent =
         "Enviar Mensagem";
 
 }
