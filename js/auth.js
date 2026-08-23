@@ -1,153 +1,248 @@
 // ============================================================
-// AUTH - VAIDTÁXI
+// AUTENTICAÇÃO GLOBAL - VAIDTÁXI
 // ============================================================
 
-(async function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
-    console.log("🔐 Iniciando verificação de autenticação...");
+    console.log("Auth global iniciado.");
+
+    // ========================================================
+    // ELEMENTOS DO CABEÇALHO
+    // ========================================================
+
+    const headerButtons =
+        document.querySelector(".header-buttons");
+
+
+    // Se a página não tiver o cabeçalho, não faz nada
+    if (!headerButtons) {
+        console.log("Área de usuário não encontrada.");
+        return;
+    }
+
+
+    // ========================================================
+    // VERIFICAR SUPABASE
+    // ========================================================
+
+    if (typeof supabase === "undefined") {
+
+        console.error(
+            "Supabase não foi carregado antes do auth.js."
+        );
+
+        return;
+    }
+
+
+    // ========================================================
+    // BUSCAR SESSÃO
+    // ========================================================
+
+    let session = null;
 
     try {
 
-        // --------------------------------------------------------
-        // RECUPERA A SESSÃO
-        // --------------------------------------------------------
+        const {
+            data,
+            error
+        } = await supabase.auth.getSession();
 
-        const { data, error } =
-            await supabaseClient.auth.getSession();
 
         if (error) {
-            console.error("Erro ao recuperar sessão:", error);
+
+            console.error(
+                "Erro ao recuperar sessão:",
+                error
+            );
+
+            mostrarDeslogado();
+
             return;
         }
 
-        const session = data?.session;
 
-        console.log(
-            session
-                ? "✅ Usuário está logado"
-                : "⚠️ Usuário não está logado"
-        );
+        session = data.session;
 
-        // --------------------------------------------------------
-        // ELEMENTOS DO CABEÇALHO
-        // --------------------------------------------------------
-
-        const links = document.querySelectorAll("header a");
-
-        let linkEntrar = null;
-        let linkCadastro = null;
-
-        links.forEach(link => {
-
-            const texto = link.textContent.trim().toLowerCase();
-
-            if (texto === "entrar") {
-                linkEntrar = link;
-            }
-
-            if (
-                texto === "cadastre-se" ||
-                texto === "cadastre se" ||
-                texto === "cadastrar-se"
-            ) {
-                linkCadastro = link;
-            }
-
-        });
-
-        // --------------------------------------------------------
-        // USUÁRIO LOGADO
-        // --------------------------------------------------------
-
-        if (session) {
-
-            const usuario = session.user;
-
-            window.usuarioLogado = usuario;
-
-            const nome =
-                usuario.user_metadata?.nome ||
-                usuario.user_metadata?.name ||
-                usuario.email?.split("@")[0] ||
-                "Usuário";
-
-            console.log("👤 Usuário:", nome);
-
-            // --------------------------------------------
-            // TROCA "ENTRAR" PELO NOME
-            // --------------------------------------------
-
-            if (linkEntrar) {
-
-                linkEntrar.textContent = `Olá, ${nome}`;
-
-                linkEntrar.removeAttribute("href");
-
-                linkEntrar.style.cursor = "default";
-
-                linkEntrar.classList.add("usuario-logado");
-
-            }
-
-            // --------------------------------------------
-            // TROCA "CADASTRE-SE" POR "SAIR"
-            // --------------------------------------------
-
-            if (linkCadastro) {
-
-                linkCadastro.textContent = "Sair";
-
-                linkCadastro.href = "#";
-
-                linkCadastro.classList.add("btn-sair");
-
-                linkCadastro.addEventListener(
-                    "click",
-                    async function (event) {
-
-                        event.preventDefault();
-
-                        console.log("🚪 Fazendo logout...");
-
-                        const { error } =
-                            await supabaseClient.auth.signOut();
-
-                        if (error) {
-
-                            console.error(
-                                "Erro ao sair:",
-                                error
-                            );
-
-                            return;
-                        }
-
-                        window.location.href = "entrar.html";
-
-                    }
-                );
-
-            }
-
-        }
-
-        // --------------------------------------------------------
-        // USUÁRIO NÃO LOGADO
-        // --------------------------------------------------------
-
-        else {
-
-            console.log("👤 Nenhum usuário autenticado.");
-
-        }
 
     } catch (erro) {
 
         console.error(
-            "❌ Erro no sistema de autenticação:",
+            "Erro inesperado ao recuperar sessão:",
             erro
         );
 
+        mostrarDeslogado();
+
+        return;
     }
 
-})();
+
+    // ========================================================
+    // ATUALIZAR CABEÇALHO
+    // ========================================================
+
+    if (session) {
+
+        console.log(
+            "Usuário autenticado:",
+            session.user.email
+        );
+
+        mostrarLogado(session.user);
+
+    } else {
+
+        console.log(
+            "Nenhum usuário autenticado."
+        );
+
+        mostrarDeslogado();
+    }
+
+
+    // ========================================================
+    // ESCUTAR ALTERAÇÕES DE LOGIN/LOGOUT
+    // ========================================================
+
+    supabase.auth.onAuthStateChange(
+        function (event, sessionAtual) {
+
+            console.log(
+                "Alteração de autenticação:",
+                event
+            );
+
+
+            if (sessionAtual) {
+
+                mostrarLogado(
+                    sessionAtual.user
+                );
+
+            } else {
+
+                mostrarDeslogado();
+
+            }
+
+        }
+    );
+
+
+    // ========================================================
+    // USUÁRIO LOGADO
+    // ========================================================
+
+    function mostrarLogado(usuario) {
+
+        const nome =
+            usuario.user_metadata?.nome ||
+            usuario.user_metadata?.name ||
+            usuario.email?.split("@")[0] ||
+            "Cliente";
+
+
+        headerButtons.innerHTML = `
+
+            <span class="usuario-header">
+                Olá, ${nome}
+            </span>
+
+            <button
+                type="button"
+                id="btnSair"
+                class="btn-outline"
+            >
+                Sair
+            </button>
+
+        `;
+
+
+        // ====================================================
+        // BOTÃO SAIR
+        // ====================================================
+
+        const btnSair =
+            document.getElementById("btnSair");
+
+
+        if (btnSair) {
+
+            btnSair.addEventListener(
+                "click",
+                async function () {
+
+                    btnSair.disabled = true;
+
+                    btnSair.textContent =
+                        "Saindo...";
+
+
+                    const {
+                        error
+                    } =
+                        await supabase.auth.signOut();
+
+
+                    if (error) {
+
+                        console.error(
+                            "Erro ao sair:",
+                            error
+                        );
+
+                        btnSair.disabled =
+                            false;
+
+                        btnSair.textContent =
+                            "Sair";
+
+                        alert(
+                            "Não foi possível sair."
+                        );
+
+                        return;
+                    }
+
+
+                    // Volta para a página inicial
+                    window.location.href =
+                        "index.html";
+
+                }
+            );
+
+        }
+
+    }
+
+
+    // ========================================================
+    // USUÁRIO NÃO LOGADO
+    // ========================================================
+
+    function mostrarDeslogado() {
+
+        headerButtons.innerHTML = `
+
+            <a
+                href="login.html"
+                class="btn-outline"
+            >
+                Entrar
+            </a>
+
+            <a
+                href="cadastro.html"
+                class="btn"
+            >
+                Cadastre-se
+            </a>
+
+        `;
+
+    }
+
+});
