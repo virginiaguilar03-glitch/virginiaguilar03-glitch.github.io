@@ -1,50 +1,23 @@
-// ==========================================
-// AUTENTICAÇÃO DO VAIDTÁXI
-// ==========================================
-
-// Verifica se existe um usuário autenticado
-async function verificarLogin() {
-
-    try {
-
-        const {
-            data,
-            error
-        } = await supabaseClient.auth.getSession();
-
-        if (error) {
-
-            console.error("Erro ao verificar login:", error);
-
-            return null;
-        }
-
-        return data.session;
-
-    } catch (erro) {
-
-        console.error("Erro inesperado ao verificar sessão:", erro);
-
-        return null;
-    }
-}
+// ============================================================
+// AUTH.JS - VAIDTÁXI
+// Controle de sessão e autenticação
+// ============================================================
 
 
-// ==========================================
-// PROTEGER PÁGINAS EXCLUSIVAS
-// ==========================================
+// ============================================================
+// VERIFICAR SE O SUPABASE ESTÁ DISPONÍVEL
+// ============================================================
 
-async function protegerPagina() {
+function verificarSupabase() {
 
-    const session = await verificarLogin();
+    if (
+        typeof supabaseClient === "undefined" ||
+        !supabaseClient
+    ) {
 
-    if (!session) {
-
-        alert(
-            "Você precisa estar cadastrado e logado para acessar esta área."
+        console.error(
+            "supabaseClient não foi encontrado."
         );
-
-        window.location.href = "login.html";
 
         return false;
     }
@@ -53,52 +26,371 @@ async function protegerPagina() {
 }
 
 
-// ==========================================
-// VERIFICAR SE O USUÁRIO ESTÁ LOGADO
-// ==========================================
+// ============================================================
+// OBTER USUÁRIO LOGADO
+// ============================================================
 
-async function usuarioEstaLogado() {
+async function obterUsuarioLogado() {
 
-    const session = await verificarLogin();
-
-    return !!session;
-}
-
-
-// ==========================================
-// FAZER LOGOUT
-// ==========================================
-
-async function sairDaConta() {
-
-    const confirmar = confirm(
-        "Deseja realmente sair da sua conta?"
-    );
-
-    if (!confirmar) {
-        return;
+    if (!verificarSupabase()) {
+        return null;
     }
+
 
     try {
 
-        const { error } = await supabaseClient.auth.signOut();
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.getUser();
+
 
         if (error) {
 
-            console.error("Erro ao sair:", error);
+            console.error(
+                "Erro ao obter usuário:",
+                error
+            );
 
-            alert("Não foi possível sair da conta.");
+            return null;
+        }
+
+
+        return data?.user || null;
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro inesperado ao obter usuário:",
+            erro
+        );
+
+        return null;
+    }
+}
+
+
+// ============================================================
+// OBTER SESSÃO
+// ============================================================
+
+async function obterSessao() {
+
+    if (!verificarSupabase()) {
+        return null;
+    }
+
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.getSession();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao obter sessão:",
+                error
+            );
+
+            return null;
+        }
+
+
+        return data?.session || null;
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro inesperado ao obter sessão:",
+            erro
+        );
+
+        return null;
+    }
+}
+
+
+// ============================================================
+// VERIFICAR LOGIN
+// ============================================================
+
+async function verificarLogin() {
+
+    const sessao =
+        await obterSessao();
+
+
+    return !!sessao;
+}
+
+
+// ============================================================
+// EXIGIR LOGIN
+// ============================================================
+//
+// Use nas páginas que precisam obrigatoriamente
+// de um usuário autenticado.
+//
+// Exemplo:
+//
+// <script src="js/auth.js"></script>
+// <script>
+//     exigirLogin("login.html");
+// </script>
+//
+// ============================================================
+
+async function exigirLogin(
+    paginaLogin = "login.html"
+) {
+
+    const sessao =
+        await obterSessao();
+
+
+    if (!sessao) {
+
+        console.warn(
+            "Usuário não autenticado. Redirecionando..."
+        );
+
+
+        window.location.href =
+            paginaLogin;
+
+
+        return false;
+    }
+
+
+    return true;
+}
+
+
+// ============================================================
+// OBTER TIPO DE ACESSO
+// ============================================================
+
+async function obterTipoUsuario() {
+
+    const usuario =
+        await obterUsuarioLogado();
+
+
+    if (!usuario) {
+        return "";
+    }
+
+
+    /*
+     * Primeiro tenta obter o tipo
+     * dos metadados do usuário.
+     */
+
+    const tipo =
+        usuario.user_metadata?.tipo;
+
+
+    if (
+        tipo === "cliente" ||
+        tipo === "parceiro" ||
+        tipo === "admin"
+    ) {
+
+        return tipo;
+    }
+
+
+    /*
+     * Caso não exista tipo nos metadados,
+     * tenta usar o localStorage antigo.
+     *
+     * Isso mantém compatibilidade com
+     * a estrutura que você já possui.
+     */
+
+    const tipoLocal =
+        localStorage.getItem(
+            "tipoAcesso"
+        );
+
+
+    if (
+        tipoLocal === "cliente" ||
+        tipoLocal === "parceiro" ||
+        tipoLocal === "admin"
+    ) {
+
+        return tipoLocal;
+    }
+
+
+    return "";
+}
+
+
+// ============================================================
+// EXIGIR TIPO DE ACESSO
+// ============================================================
+//
+// Exemplo:
+//
+// exigirTipoAcesso("cliente");
+//
+// ============================================================
+
+async function exigirTipoAcesso(
+    tipoPermitido,
+    paginaLogin = "login.html"
+) {
+
+    const sessao =
+        await obterSessao();
+
+
+    if (!sessao) {
+
+        window.location.href =
+            paginaLogin;
+
+        return false;
+    }
+
+
+    const tipo =
+        await obterTipoUsuario();
+
+
+    if (tipo !== tipoPermitido) {
+
+        console.warn(
+            "Tipo de acesso não permitido:",
+            tipo
+        );
+
+
+        window.location.href =
+            "index.html";
+
+
+        return false;
+    }
+
+
+    return true;
+}
+
+
+// ============================================================
+// ENCERRAR SESSÃO
+// ============================================================
+
+async function sairDaConta() {
+
+    if (!verificarSupabase()) {
+        return;
+    }
+
+
+    try {
+
+        const {
+            error
+        } = await supabaseClient.auth.signOut();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao sair:",
+                error
+            );
 
             return;
         }
 
-        // Após sair, volta para a página inicial
-        window.location.href = "index.html";
 
-    } catch (erro) {
+        /*
+         * Remove apenas os dados auxiliares
+         * antigos do projeto.
+         *
+         * A sessão verdadeira é controlada
+         * pelo Supabase.
+         */
 
-        console.error("Erro inesperado ao sair:", erro);
+        localStorage.removeItem(
+            "usuarioId"
+        );
 
-        alert("Ocorreu um erro ao sair da conta.");
+        localStorage.removeItem(
+            "tipoAcesso"
+        );
+
+
+        window.location.href =
+            "login.html";
+
     }
+
+    catch (erro) {
+
+        console.error(
+            "Erro inesperado ao sair:",
+            erro
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// ESCUTAR ALTERAÇÕES DA SESSÃO
+// ============================================================
+
+if (
+    typeof supabaseClient !== "undefined" &&
+    supabaseClient
+) {
+
+    supabaseClient.auth.onAuthStateChange(
+        function (
+            evento,
+            sessao
+        ) {
+
+            console.log(
+                "Alteração de autenticação:",
+                evento
+            );
+
+
+            if (sessao) {
+
+                console.log(
+                    "Usuário autenticado:",
+                    sessao.user.email
+                );
+
+            }
+
+            else {
+
+                console.log(
+                    "Nenhum usuário autenticado."
+                );
+
+            }
+
+        }
+    );
+
 }
