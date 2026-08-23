@@ -5,25 +5,44 @@
 // Verifica se existe um usuário autenticado
 async function verificarLogin() {
 
-    const { data, error } = await supabaseClient.auth.getSession();
+    try {
 
-    if (error) {
-        console.error("Erro ao verificar login:", error);
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.getSession();
+
+        if (error) {
+
+            console.error("Erro ao verificar login:", error);
+
+            return null;
+        }
+
+        return data.session;
+
+    } catch (erro) {
+
+        console.error("Erro inesperado ao verificar sessão:", erro);
+
         return null;
     }
-
-    return data.session;
 }
 
 
-// Protege páginas exclusivas do cliente
+// ==========================================
+// PROTEGER PÁGINAS EXCLUSIVAS
+// ==========================================
+
 async function protegerPagina() {
 
     const session = await verificarLogin();
 
     if (!session) {
 
-        alert("Você precisa estar cadastrado e logado para acessar esta área.");
+        alert(
+            "Você precisa estar cadastrado e logado para acessar esta área."
+        );
 
         window.location.href = "login.html";
 
@@ -34,7 +53,22 @@ async function protegerPagina() {
 }
 
 
-// Faz logout
+// ==========================================
+// VERIFICAR SE O USUÁRIO ESTÁ LOGADO
+// ==========================================
+
+async function usuarioEstaLogado() {
+
+    const session = await verificarLogin();
+
+    return !!session;
+}
+
+
+// ==========================================
+// FAZER LOGOUT
+// ==========================================
+
 async function sairDaConta() {
 
     const confirmar = confirm(
@@ -45,16 +79,26 @@ async function sairDaConta() {
         return;
     }
 
-    const { error } = await supabaseClient.auth.signOut();
+    try {
 
-    if (error) {
+        const { error } = await supabaseClient.auth.signOut();
 
-        console.error("Erro ao sair:", error);
+        if (error) {
 
-        alert("Não foi possível sair da conta.");
+            console.error("Erro ao sair:", error);
 
-        return;
+            alert("Não foi possível sair da conta.");
+
+            return;
+        }
+
+        // Após sair, volta para a página inicial
+        window.location.href = "index.html";
+
+    } catch (erro) {
+
+        console.error("Erro inesperado ao sair:", erro);
+
+        alert("Ocorreu um erro ao sair da conta.");
     }
-
-    window.location.href = "index.html";
 }
