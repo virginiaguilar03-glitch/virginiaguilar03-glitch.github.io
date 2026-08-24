@@ -1,4 +1,4 @@
- /* ==========================================
+/* ==========================================
    RESPONSIVE.CSS
    VaidTáxi
 ========================================== */
@@ -26,7 +26,7 @@
 
 
 /* ===============================
-   TABLETS
+   TABLETS / MOBILE
 ================================ */
 
 @media (max-width:900px){
@@ -41,17 +41,6 @@
 
 
     /* ===============================
-       BANNER PRINCIPAL
-    =============================== */
-
-    .hero{
-        height:calc(100svh - 80px) !important;
-        margin-top:80px !important;
-        padding:0 !important;
-    }
-
-
-    /* ===============================
        MENU MOBILE
     =============================== */
 
@@ -60,6 +49,7 @@
         position:absolute;
 
         top:80px;
+
         right:20px;
 
         width:240px;
@@ -82,21 +72,29 @@
 
         box-shadow:0 15px 40px rgba(0,0,0,.5);
 
+        z-index:1000;
+
     }
 
+
     nav.active{
+
         display:flex;
+
     }
 
 
     #menu-mobile{
+
         display:block;
+
+        cursor:pointer;
+
     }
 
 
     /* ===============================
-       BOTÕES DE LOGIN
-       DENTRO DO MENU MOBILE
+       BOTÕES ENTRAR / CADASTRE-SE
     =============================== */
 
     .header-buttons{
@@ -105,7 +103,7 @@
 
         position:absolute;
 
-        top:80px;
+        top:calc(80px + 245px);
 
         right:20px;
 
@@ -113,11 +111,15 @@
 
         background:#1b1b1b;
 
-        border:1px solid #333;
+        border-left:1px solid #333;
 
-        border-radius:15px;
+        border-right:1px solid #333;
 
-        padding:20px;
+        border-bottom:1px solid #333;
+
+        border-radius:0 0 15px 15px;
+
+        padding:0 20px 20px;
 
         flex-direction:column;
 
@@ -125,7 +127,9 @@
 
         box-shadow:0 15px 40px rgba(0,0,0,.5);
 
-        z-index:1001;
+        z-index:999;
+
+        box-sizing:border-box;
 
     }
 
@@ -163,11 +167,13 @@
 
     }
 
+
     .hero-text{
 
         width:100%;
 
     }
+
 
     .hero-text h2{
 
@@ -175,11 +181,13 @@
 
     }
 
+
     .hero-text p{
 
         font-size:18px;
 
     }
+
 
     .hero-buttons{
 
@@ -188,6 +196,7 @@
         flex-wrap:wrap;
 
     }
+
 
     .hero-image{
 
@@ -224,6 +233,7 @@
         font-size:24px;
 
     }
+
 
     .logo img{
 
@@ -262,7 +272,6 @@
 
     /* ===============================
        ELEMENTOS ANTIGOS DO HERO
-       Mantidos para outras páginas
     =============================== */
 
     .hero-text h2{
@@ -273,11 +282,13 @@
 
     }
 
+
     .hero-text p{
 
         font-size:16px;
 
     }
+
 
     .hero-buttons{
 
@@ -287,12 +298,15 @@
 
     }
 
+
     .btn,
     .btn-outline{
 
         width:100%;
 
         text-align:center;
+
+        box-sizing:border-box;
 
     }
 
@@ -310,11 +324,14 @@
 
     /* ===============================
        CARDS MOBILE
+       BRANCOS
     =============================== */
 
     .cards{
 
         grid-template-columns:1fr;
+
+        gap:20px;
 
     }
 
@@ -331,6 +348,8 @@
 
         box-shadow:0 8px 25px rgba(0,0,0,.12);
 
+        border-radius:15px;
+
     }
 
 
@@ -344,6 +363,44 @@
     .card p{
 
         color:#555555;
+
+    }
+
+
+    .card i{
+
+        color:#111111;
+
+    }
+
+
+    /* ===============================
+       FORMULÁRIOS
+    =============================== */
+
+    .form-container{
+
+        width:100%;
+
+        box-sizing:border-box;
+
+    }
+
+
+    .form-group{
+
+        width:100%;
+
+    }
+
+
+    input,
+    textarea,
+    select{
+
+        max-width:100%;
+
+        box-sizing:border-box;
 
     }
 
@@ -381,6 +438,7 @@
 
     }
 
+
     .hero-text p{
 
         font-size:15px;
@@ -401,10 +459,6 @@
     }
 
 
-    /* ===============================
-       BOTÕES DO MENU
-    =============================== */
-
     .header-buttons{
 
         width:90%;
@@ -421,6 +475,13 @@
     .card{
 
         padding:22px;
+
+    }
+
+
+    .section-title{
+
+        font-size:28px;
 
     }
 
