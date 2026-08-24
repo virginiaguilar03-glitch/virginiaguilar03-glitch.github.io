@@ -26,23 +26,13 @@
 
     <link
         rel="preconnect"
-        href="https://fonts.googleapis.com"
+        href="https://fonts.gstatic.com"
         crossorigin
     >
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet"
-    >
-
-
-    <!-- ==================================================
-         FONT AWESOME
-    ================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
 
@@ -60,454 +50,552 @@
         href="css/responsive.css"
     >
 
-    <link
-        rel="stylesheet"
-        href="css/animations.css"
-    >
-
 </head>
 
 
 <body>
 
 
-<!-- ==================================================
-     HEADER
-================================================== -->
+    <!-- ==================================================
+         HEADER
+    ================================================== -->
 
-<header>
+    <header class="header">
 
-    <div class="container">
-
-
-        <!-- LOGO -->
-
-        <a
-            href="index.html"
-            class="logo"
-        >
-
-            <img
-                src="logo-vdb.png"
-                alt="Logo VaidTáxi"
-            >
-
-            <h1>
-                Vaid<span>Táxi</span>
-            </h1>
-
-        </a>
+        <div class="container header-container">
 
 
-        <!-- MENU -->
-
-        <nav>
-
-            <a href="index.html">
-                Início
-            </a>
-
-            <a href="motoristas.html">
-                Motoristas
-            </a>
-
-            <a href="corrida.html">
-                Corridas
-            </a>
-
-            <a href="pagamentos.html">
-                Pagamentos
-            </a>
+            <!-- LOGO -->
 
             <a
-                href="contato.html"
-                class="active"
+                href="index.html"
+                class="logo"
             >
-                Contato
+
+                <img
+                    src="img/logo-vdb.png"
+                    alt="VaidTáxi"
+                >
+
             </a>
 
-        </nav>
+
+            <!-- MENU -->
+
+            <nav class="nav">
+
+                <a href="index.html">
+                    Início
+                </a>
+
+                <a href="motoristas.html">
+                    Motoristas
+                </a>
+
+                <a href="corridas.html">
+                    Corridas
+                </a>
+
+                <a href="pagamentos.html">
+                    Pagamentos
+                </a>
+
+                <a
+                    href="contato.html"
+                    class="active"
+                >
+                    Contato
+                </a>
+
+            </nav>
+
+
+            <!-- BOTÕES -->
+
+            <div class="header-buttons">
+
+                <a
+                    href="entrar.html"
+                    class="btn-login"
+                >
+                    Entrar
+                </a>
+
+                <a
+                    href="cadastro.html"
+                    class="btn-primary"
+                >
+                    Criar conta
+                </a>
+
+            </div>
+
+
+            <!-- MENU MOBILE -->
+
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                aria-label="Abrir menu"
+            >
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ==================================================
+         CONTEÚDO PRINCIPAL
+    ================================================== -->
+
+    <main>
 
 
         <!-- ==================================================
-             BOTÕES DO USUÁRIO
-
-             O auth.js atualiza esta área
-             automaticamente.
+             HERO CONTATO
         ================================================== -->
 
-        <div class="header-buttons">
+        <section class="page-hero">
 
-            <a
-                href="login.html"
-                class="btn-outline"
-            >
-                Entrar
-            </a>
+            <div class="container">
 
-            <a
-                href="cadastro.html"
-                class="btn"
-            >
-                Cadastre-se
-            </a>
+                <span class="section-tag">
+                    FALE CONOSCO
+                </span>
 
-        </div>
+                <h1>
+                    Entre em contato
+                    <span>com a VaidTáxi</span>
+                </h1>
 
+                <p>
+                    Estamos aqui para ajudar.
+                    Envie sua mensagem e fale com nossa equipe.
+                </p>
 
-        <!-- MENU MOBILE -->
+            </div>
 
-        <div id="menu-mobile">
-
-            <i class="fa-solid fa-bars"></i>
-
-        </div>
-
-    </div>
-
-</header>
+        </section>
 
 
 
-<!-- ==================================================
-     CONTEÚDO PRINCIPAL
-================================================== -->
+        <!-- ==================================================
+             CARDS DE CONTATO
+        ================================================== -->
 
-<main>
+        <section class="contact-cards">
+
+            <div class="container">
+
+                <div class="cards-grid">
+
+
+                    <!-- CARD 1 -->
+
+                    <div class="info-card">
+
+                        <div class="card-image">
+
+                            <img
+                                src="img/contato-atendimento.png"
+                                alt="Atendimento VaidTáxi"
+                            >
+
+                        </div>
+
+                        <div class="card-content">
+
+                            <h3>
+                                Atendimento
+                            </h3>
+
+                            <p>
+                                Precisa de ajuda?
+                                Nossa equipe está pronta
+                                para atender você.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CARD 2 -->
+
+                    <div class="info-card">
+
+                        <div class="card-image">
+
+                            <img
+                                src="img/contato-whatsapp.png"
+                                alt="WhatsApp VaidTáxi"
+                            >
+
+                        </div>
+
+                        <div class="card-content">
+
+                            <h3>
+                                WhatsApp
+                            </h3>
+
+                            <p>
+                                Entre em contato rapidamente
+                                pelo WhatsApp da VaidTáxi.
+                            </p>
+
+                            <a
+                                href="#"
+                                class="card-link"
+                            >
+                                Falar pelo WhatsApp
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CARD 3 -->
+
+                    <div class="info-card">
+
+                        <div class="card-image">
+
+                            <img
+                                src="img/contato-seguranca.png"
+                                alt="Segurança VaidTáxi"
+                            >
+
+                        </div>
+
+                        <div class="card-content">
+
+                            <h3>
+                                Segurança
+                            </h3>
+
+                            <p>
+                                Sua segurança é uma das
+                                nossas principais prioridades.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==================================================
+             FORMULÁRIO
+        ================================================== -->
+
+        <section class="contact-section">
+
+            <div class="container contact-container">
+
+
+                <!-- TEXTO -->
+
+                <div class="contact-info">
+
+                    <span class="section-tag">
+                        ENVIE UMA MENSAGEM
+                    </span>
+
+                    <h2>
+                        Como podemos
+                        <span>ajudar?</span>
+                    </h2>
+
+                    <p>
+                        Preencha o formulário ao lado
+                        e envie sua mensagem para nossa equipe.
+                    </p>
+
+                    <p>
+                        Responderemos assim que possível.
+                    </p>
+
+                </div>
+
+
+
+                <!-- FORMULÁRIO -->
+
+                <div class="contact-form-container">
+
+                    <form
+                        id="formContato"
+                        class="contact-form"
+                    >
+
+
+                        <!-- NOME -->
+
+                        <div class="form-group">
+
+                            <label for="nomeContato">
+                                Nome
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nomeContato"
+                                name="nome"
+                                placeholder="Digite seu nome"
+                                required
+                            >
+
+                        </div>
+
+
+
+                        <!-- EMAIL -->
+
+                        <div class="form-group">
+
+                            <label for="emailContato">
+                                E-mail
+                            </label>
+
+                            <input
+                                type="email"
+                                id="emailContato"
+                                name="email"
+                                placeholder="Digite seu e-mail"
+                                required
+                            >
+
+                        </div>
+
+
+
+                        <!-- TELEFONE -->
+
+                        <div class="form-group">
+
+                            <label for="telefoneContato">
+                                Telefone
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="telefoneContato"
+                                name="telefone"
+                                placeholder="Digite seu telefone"
+                            >
+
+                        </div>
+
+
+
+                        <!-- ASSUNTO -->
+
+                        <div class="form-group">
+
+                            <label for="assuntoContato">
+                                Assunto
+                            </label>
+
+                            <select
+                                id="assuntoContato"
+                                name="assunto"
+                                required
+                            >
+
+                                <option value="">
+                                    Selecione um assunto
+                                </option>
+
+                                <option value="duvida">
+                                    Dúvida
+                                </option>
+
+                                <option value="corrida">
+                                    Corrida
+                                </option>
+
+                                <option value="pagamento">
+                                    Pagamento
+                                </option>
+
+                                <option value="motorista">
+                                    Motorista
+                                </option>
+
+                                <option value="outro">
+                                    Outro
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+
+                        <!-- MENSAGEM -->
+
+                        <div class="form-group">
+
+                            <label for="mensagemContato">
+                                Mensagem
+                            </label>
+
+                            <textarea
+                                id="mensagemContato"
+                                name="mensagem"
+                                rows="5"
+                                placeholder="Digite sua mensagem"
+                                required
+                            ></textarea>
+
+                        </div>
+
+
+
+                        <!-- BOTÃO -->
+
+                        <button
+                            type="submit"
+                            id="btnContato"
+                            class="btn-primary btn-submit"
+                        >
+                            Enviar mensagem
+                        </button>
+
+
+                        <!-- MENSAGEM DE RETORNO -->
+
+                        <div
+                            id="mensagemStatus"
+                            class="form-message"
+                        ></div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
 
 
     <!-- ==================================================
-         BANNER
+         FOOTER
     ================================================== -->
 
-    <section class="page-banner">
+    <footer class="footer">
 
         <div class="container">
 
-            <h1>
-                Entre em <span>Contato</span>
-            </h1>
-
-            <p>
-                Fale com a equipe VaidTáxi.
-            </p>
-
-        </div>
-
-    </section>
+            <div class="footer-content">
 
 
+                <div class="footer-logo">
 
-    <!-- ==================================================
-         INFORMAÇÕES DE CONTATO
-    ================================================== -->
-
-    <section>
-
-        <div class="container">
-
-
-            <h2 class="section-title">
-
-                Fale <span>Conosco</span>
-
-            </h2>
-
-
-            <div class="cards">
-
-
-                <!-- ==================================================
-                     TELEFONE
-                ================================================== -->
-
-                <div class="card">
-
-                    <i class="fa-solid fa-phone"></i>
-
-                    <h3>
-                        Telefone
-                    </h3>
+                    <img
+                        src="img/logo-vdb.png"
+                        alt="VaidTáxi"
+                    >
 
                     <p>
-                        (00) 00000-0000
+                        Seu táxi com rapidez,
+                        segurança e praticidade.
                     </p>
 
                 </div>
 
 
+                <div class="footer-links">
 
-                <!-- ==================================================
-                     E-MAIL
-                ================================================== -->
+                    <h4>
+                        Links rápidos
+                    </h4>
 
-                <div class="card">
+                    <a href="index.html">
+                        Início
+                    </a>
 
-                    <i class="fa-solid fa-envelope"></i>
+                    <a href="motoristas.html">
+                        Motoristas
+                    </a>
 
-                    <h3>
-                        E-mail
-                    </h3>
+                    <a href="corridas.html">
+                        Corridas
+                    </a>
 
-                    <p>
-                        contato@vaidtaxi.com
-                    </p>
+                    <a href="pagamentos.html">
+                        Pagamentos
+                    </a>
 
-                </div>
-
-
-
-                <!-- ==================================================
-                     WHATSAPP
-                ================================================== -->
-
-                <div class="card">
-
-                    <i class="fa-brands fa-whatsapp"></i>
-
-                    <h3>
-                        WhatsApp
-                    </h3>
-
-                    <p>
-                        Entre em contato diretamente
-                        pelo WhatsApp.
-                    </p>
+                    <a href="contato.html">
+                        Contato
+                    </a>
 
                 </div>
 
+
+                <div class="footer-links">
+
+                    <h4>
+                        VaidTáxi
+                    </h4>
+
+                    <a href="entrar.html">
+                        Entrar
+                    </a>
+
+                    <a href="cadastro.html">
+                        Criar conta
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="footer-bottom">
+
+                <p>
+                    © 2026 VaidTáxi. Todos os direitos reservados.
+                </p>
 
             </div>
 
         </div>
 
-    </section>
+    </footer>
 
 
 
     <!-- ==================================================
-         FORMULÁRIO DE CONTATO
+         JAVASCRIPT
     ================================================== -->
 
-    <section class="services">
+    <script src="js/menu.js"></script>
 
-        <div class="container">
-
-
-            <h2 class="section-title">
-
-                Envie uma <span>Mensagem</span>
-
-            </h2>
-
-
-            <form
-                class="form-container"
-                id="formContato"
-            >
-
-
-                <!-- ==================================================
-                     NOME
-                ================================================== -->
-
-                <div class="form-group">
-
-                    <label for="nome">
-                        Nome
-                    </label>
-
-                    <input
-                        type="text"
-                        id="nome"
-                        name="nome"
-                        placeholder="Digite seu nome"
-                        required
-                    >
-
-                </div>
-
-
-
-                <!-- ==================================================
-                     E-MAIL
-                ================================================== -->
-
-                <div class="form-group">
-
-                    <label for="email">
-                        E-mail
-                    </label>
-
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="Digite seu e-mail"
-                        required
-                    >
-
-                </div>
-
-
-
-                <!-- ==================================================
-                     TELEFONE
-                ================================================== -->
-
-                <div class="form-group">
-
-                    <label for="telefone">
-                        Telefone
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="telefone"
-                        name="telefone"
-                        placeholder="Digite seu telefone"
-                        required
-                    >
-
-                </div>
-
-
-
-                <!-- ==================================================
-                     MENSAGEM
-                ================================================== -->
-
-                <div class="form-group">
-
-                    <label for="mensagem">
-                        Mensagem
-                    </label>
-
-                    <textarea
-                        id="mensagem"
-                        name="mensagem"
-                        placeholder="Digite sua mensagem..."
-                        required
-                    ></textarea>
-
-                </div>
-
-
-
-                <!-- ==================================================
-                     MENSAGEM DE RETORNO
-                ================================================== -->
-
-                <p
-                    id="mensagemContato"
-                    style="
-                        margin-top: 15px;
-                        text-align: center;
-                        font-size: 14px;
-                    "
-                ></p>
-
-
-
-                <!-- ==================================================
-                     BOTÃO
-                ================================================== -->
-
-                <button
-                    type="submit"
-                    class="btn"
-                    id="btnContato"
-                >
-                    Enviar Mensagem
-                </button>
-
-
-            </form>
-
-        </div>
-
-    </section>
-
-
-</main>
-
-
-
-<!-- ==================================================
-     FOOTER
-================================================== -->
-
-<footer>
-
-    <div class="container">
-
-        <p>
-
-            ©
-            <span id="ano"></span>
-            VaidTáxi -
-            Todos os direitos reservados.
-
-        </p>
-
-    </div>
-
-</footer>
-
-
-
-<!-- ==================================================
-     JAVASCRIPT
-================================================== -->
-
-
-<!-- ==================================================
-     SUPABASE
-================================================== -->
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="js/supabase.js"></script>
-
-
-<!-- ==================================================
-     AUTENTICAÇÃO GLOBAL
-================================================== -->
-
-<script src="js/auth.js"></script>
-
-
-<!-- ==================================================
-     MENU MOBILE
-================================================== -->
-
-<script src="js/menu.js"></script>
-
-
-<!-- ==================================================
-     CONTATO
-================================================== -->
-
-<script src="js/contato.js"></script>
-
-
-<!-- ==================================================
-     ANO DO RODAPÉ
-================================================== -->
-
-<script>
-
-    const ano =
-        document.getElementById("ano");
-
-    if (ano) {
-
-        ano.textContent =
-            new Date().getFullYear();
-
-    }
-
-</script>
+    <script src="js/contato.js"></script>
 
 
 </body>
