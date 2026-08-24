@@ -5,9 +5,14 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>Contato | VaidTáxi</title>
+    <title>
+        Pagamentos | VaidTáxi
+    </title>
 
 
     <!-- ==================================================
@@ -16,7 +21,11 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -38,11 +47,20 @@
          CSS
     ================================================== -->
 
-    <link rel="stylesheet" href="css/style.css">
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
-    <link rel="stylesheet" href="css/responsive.css">
+    <link
+        rel="stylesheet"
+        href="css/responsive.css"
+    >
 
-    <link rel="stylesheet" href="css/animations.css">
+    <link
+        rel="stylesheet"
+        href="css/animations.css"
+    >
 
 </head>
 
@@ -61,7 +79,10 @@
 
         <!-- LOGO -->
 
-        <a href="index.html" class="logo">
+        <a
+            href="index.html"
+            class="logo"
+        >
 
             <img
                 src="logo-vdb.png"
@@ -91,18 +112,26 @@
                 Corridas
             </a>
 
-            <a href="pagamentos.html">
+            <a
+                href="pagamentos.html"
+                class="active"
+            >
                 Pagamentos
             </a>
 
-            <a href="contato.html" class="active">
+            <a href="contato.html">
                 Contato
             </a>
 
         </nav>
 
 
-        <!-- BOTÕES -->
+        <!-- ==================================================
+             BOTÕES DO USUÁRIO
+
+             O auth.js vai atualizar esta área
+             automaticamente.
+        ================================================== -->
 
         <div class="header-buttons">
 
@@ -153,11 +182,12 @@
         <div class="container">
 
             <h1>
-                Entre em <span>Contato</span>
+                Formas de <span>Pagamento</span>
             </h1>
 
             <p>
-                Fale com a equipe VaidTáxi.
+                Escolha a forma de pagamento mais conveniente
+                para sua corrida.
             </p>
 
         </div>
@@ -167,7 +197,7 @@
 
 
     <!-- ==================================================
-         INFORMAÇÕES DE CONTATO
+         FORMAS DE PAGAMENTO
     ================================================== -->
 
     <section>
@@ -177,7 +207,7 @@
 
             <h2 class="section-title">
 
-                Fale <span>Conosco</span>
+                Escolha como <span>pagar</span>
 
             </h2>
 
@@ -186,19 +216,20 @@
 
 
                 <!-- ==================================================
-                     TELEFONE
+                     PIX
                 ================================================== -->
 
                 <div class="card">
 
-                    <i class="fa-solid fa-phone"></i>
+                    <i class="fa-brands fa-pix"></i>
 
                     <h3>
-                        Telefone
+                        PIX
                     </h3>
 
                     <p>
-                        (00) 00000-0000
+                        Faça o pagamento da sua corrida através
+                        do PIX diretamente ao motorista.
                     </p>
 
                 </div>
@@ -206,19 +237,20 @@
 
 
                 <!-- ==================================================
-                     E-MAIL
+                     DINHEIRO
                 ================================================== -->
 
                 <div class="card">
 
-                    <i class="fa-solid fa-envelope"></i>
+                    <i class="fa-solid fa-money-bill-wave"></i>
 
                     <h3>
-                        E-mail
+                        Dinheiro
                     </h3>
 
                     <p>
-                        contato@vaidtaxi.com
+                        Você também pode pagar sua corrida em
+                        dinheiro diretamente ao motorista.
                     </p>
 
                 </div>
@@ -226,20 +258,20 @@
 
 
                 <!-- ==================================================
-                     WHATSAPP
+                     CARTÃO
                 ================================================== -->
 
                 <div class="card">
 
-                    <i class="fa-brands fa-whatsapp"></i>
+                    <i class="fa-solid fa-credit-card"></i>
 
                     <h3>
-                        WhatsApp
+                        Cartão
                     </h3>
 
                     <p>
-                        Entre em contato diretamente
-                        pelo WhatsApp.
+                        Consulte o motorista sobre a disponibilidade
+                        de pagamento com cartão.
                     </p>
 
                 </div>
@@ -254,7 +286,7 @@
 
 
     <!-- ==================================================
-         FORMULÁRIO DE CONTATO
+         COMO FUNCIONA
     ================================================== -->
 
     <section class="services">
@@ -264,140 +296,35 @@
 
             <h2 class="section-title">
 
-                Envie uma <span>Mensagem</span>
+                Como funciona o <span>pagamento?</span>
 
             </h2>
 
 
-            <form
-                class="form-container"
-                id="formContato"
-            >
+            <div class="card">
+
+                <p>
+
+                    Após escolher seu motorista e realizar sua
+                    corrida, o pagamento é feito diretamente
+                    ao motorista.
+
+                </p>
 
 
-                <!-- NOME -->
-
-                <div class="form-group">
-
-                    <label for="nome">
-                        Nome
-                    </label>
-
-                    <input
-                        type="text"
-                        id="nome"
-                        name="nome"
-                        placeholder="Digite seu nome"
-                        required
-                    >
-
-                </div>
+                <br>
 
 
+                <p>
 
-                <!-- E-MAIL -->
+                    Antes de iniciar a viagem, você poderá verificar
+                    as formas de pagamento disponíveis para aquela
+                    corrida.
 
-                <div class="form-group">
+                </p>
 
-                    <label for="email">
-                        E-mail
-                    </label>
+            </div>
 
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="Digite seu e-mail"
-                        required
-                    >
-
-                </div>
-
-
-
-                <!-- TELEFONE -->
-
-                <div class="form-group">
-
-                    <label for="telefone">
-                        Telefone
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="telefone"
-                        name="telefone"
-                        placeholder="Digite seu telefone"
-                    >
-
-                </div>
-
-
-
-                <!-- ASSUNTO -->
-
-                <div class="form-group">
-
-                    <label for="assunto">
-                        Assunto
-                    </label>
-
-                    <input
-                        type="text"
-                        id="assunto"
-                        name="assunto"
-                        placeholder="Digite o assunto"
-                        required
-                    >
-
-                </div>
-
-
-
-                <!-- MENSAGEM -->
-
-                <div class="form-group">
-
-                    <label for="mensagem">
-                        Mensagem
-                    </label>
-
-                    <textarea
-                        id="mensagem"
-                        name="mensagem"
-                        placeholder="Digite sua mensagem..."
-                        required
-                    ></textarea>
-
-                </div>
-
-
-
-                <!-- MENSAGEM DE RETORNO -->
-
-                <p
-                    id="mensagemContato"
-                    style="
-                        margin-top: 15px;
-                        text-align: center;
-                        font-size: 14px;
-                    "
-                ></p>
-
-
-
-                <!-- BOTÃO -->
-
-                <button
-                    type="submit"
-                    class="btn"
-                    id="btnContato"
-                >
-                    Enviar Mensagem
-                </button>
-
-
-            </form>
 
         </div>
 
@@ -418,7 +345,9 @@
 
         <p>
 
-            © <span id="ano"></span> VaidTáxi -
+            ©
+            <span id="ano"></span>
+            VaidTáxi -
             Todos os direitos reservados.
 
         </p>
@@ -433,21 +362,33 @@
      JAVASCRIPT
 ================================================== -->
 
-<!-- MENU MOBILE -->
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+
+
+<!-- AUTENTICAÇÃO GLOBAL -->
+
+<script src="js/auth.js"></script>
+
+
+<!-- MENU -->
 
 <script src="js/menu.js"></script>
 
 
-<!-- CONTATO -->
 
-<script src="js/contato.js"></script>
-
-
-<!-- ANO DO RODAPÉ -->
+<!-- ==================================================
+     ANO DO RODAPÉ
+================================================== -->
 
 <script>
 
-    const ano = document.getElementById("ano");
+    const ano =
+        document.getElementById("ano");
 
     if (ano) {
 
