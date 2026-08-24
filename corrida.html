@@ -47,6 +47,16 @@
 
 
     <!-- ==================================================
+         LEAFLET - MAPA
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+
+    <!-- ==================================================
          CSS
     ================================================== -->
 
@@ -64,6 +74,240 @@
         rel="stylesheet"
         href="css/animations.css"
     >
+
+
+    <!-- ==================================================
+         ESTILO DO MAPA
+    ================================================== -->
+
+    <style>
+
+        /* ==================================================
+           ÁREA DO MAPA
+        ================================================== */
+
+        .mapa-corrida-wrapper {
+
+            width: 100%;
+
+            margin: 25px 0;
+
+        }
+
+
+        /* ==================================================
+           CABEÇALHO DO MAPA
+        ================================================== */
+
+        .mapa-corrida-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .mapa-corrida-header h2 {
+
+            margin: 0;
+
+            font-size: 20px;
+
+            font-weight: 600;
+
+        }
+
+
+        .mapa-corrida-header h2 i {
+
+            color: #FFD400;
+
+            margin-right: 8px;
+
+        }
+
+
+        /* ==================================================
+           BOTÃO LOCALIZAÇÃO
+        ================================================== */
+
+        #btnLocalizacao {
+
+            border: none;
+
+            background: #FFD400;
+
+            color: #111;
+
+            padding: 10px 16px;
+
+            border-radius: 8px;
+
+            font-family: "Poppins", sans-serif;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+
+        }
+
+
+        #btnLocalizacao:hover {
+
+            transform: translateY(-2px);
+
+            filter: brightness(0.95);
+
+        }
+
+
+        #btnLocalizacao i {
+
+            margin-right: 6px;
+
+        }
+
+
+        /* ==================================================
+           MAPA
+        ================================================== */
+
+        #mapaCorrida {
+
+            width: 100%;
+
+            height: 420px;
+
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            border: 1px solid rgba(255, 212, 0, 0.25);
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.20);
+
+            z-index: 1;
+
+        }
+
+
+        /* ==================================================
+           INFORMAÇÃO DO MAPA
+        ================================================== */
+
+        .mapa-info {
+
+            margin-top: 10px;
+
+            padding: 10px 14px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            color: #aaa;
+
+            background: rgba(255, 255, 255, 0.04);
+
+        }
+
+
+        .mapa-info i {
+
+            color: #FFD400;
+
+            margin-right: 5px;
+
+        }
+
+
+        /* ==================================================
+           CAMPOS DE LOCALIZAÇÃO
+        ================================================== */
+
+        .campo-localizacao {
+
+            position: relative;
+
+        }
+
+
+        .campo-localizacao input {
+
+            padding-right: 45px;
+
+        }
+
+
+        .icone-localizacao {
+
+            position: absolute;
+
+            right: 14px;
+
+            bottom: 13px;
+
+            color: #FFD400;
+
+            font-size: 18px;
+
+        }
+
+
+        /* ==================================================
+           RESPONSIVO
+        ================================================== */
+
+        @media (max-width: 768px) {
+
+            .mapa-corrida-header {
+
+                flex-direction: column;
+
+                align-items: stretch;
+
+            }
+
+
+            #btnLocalizacao {
+
+                width: 100%;
+
+            }
+
+
+            #mapaCorrida {
+
+                height: 330px;
+
+                border-radius: 12px;
+
+            }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+            #mapaCorrida {
+
+                height: 280px;
+
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -132,8 +376,7 @@
             <!-- ==================================================
                  BOTÕES DO CABEÇALHO
 
-                 O auth.js vai atualizar esta área
-                 automaticamente.
+                 O auth.js atualiza esta área.
             ================================================== -->
 
             <div class="header-buttons">
@@ -223,6 +466,56 @@
 
 
                 <!-- ==================================================
+                     MAPA
+                ================================================== -->
+
+                <div class="mapa-corrida-wrapper">
+
+
+                    <div class="mapa-corrida-header">
+
+                        <h2>
+
+                            <i class="fa-solid fa-map-location-dot"></i>
+
+                            Localização da corrida
+
+                        </h2>
+
+
+                        <button
+                            type="button"
+                            id="btnLocalizacao"
+                        >
+
+                            <i class="fa-solid fa-location-crosshairs"></i>
+
+                            Usar minha localização
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- MAPA -->
+
+                    <div id="mapaCorrida"></div>
+
+
+                    <div class="mapa-info">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        Use o botão acima para localizar sua posição
+                        automaticamente no mapa.
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ==================================================
                      FORMULÁRIO
                 ================================================== -->
 
@@ -231,11 +524,14 @@
 
                     <!-- ORIGEM -->
 
-                    <div class="form-group">
+                    <div class="form-group campo-localizacao">
 
                         <label for="origem">
+
                             Local de partida
+
                         </label>
+
 
                         <input
                             type="text"
@@ -246,17 +542,25 @@
                             required
                         >
 
+
+                        <i
+                            class="fa-solid fa-location-dot icone-localizacao"
+                        ></i>
+
                     </div>
 
 
 
                     <!-- DESTINO -->
 
-                    <div class="form-group">
+                    <div class="form-group campo-localizacao">
 
                         <label for="destino">
+
                             Destino
+
                         </label>
+
 
                         <input
                             type="text"
@@ -267,6 +571,11 @@
                             required
                         >
 
+
+                        <i
+                            class="fa-solid fa-flag-checkered icone-localizacao"
+                        ></i>
+
                     </div>
 
 
@@ -276,8 +585,11 @@
                     <div class="form-group">
 
                         <label for="observacao">
+
                             Observação
+
                         </label>
+
 
                         <textarea
                             id="observacao"
@@ -297,7 +609,9 @@
                         class="btn btn-primary"
                         id="btnSolicitar"
                     >
+
                         Solicitar Corrida
+
                     </button>
 
 
@@ -331,7 +645,10 @@
 
     <!-- SUPABASE -->
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+
 
     <script src="js/supabase.js"></script>
 
@@ -344,6 +661,16 @@
     <!-- MENU -->
 
     <script src="js/menu.js"></script>
+
+
+    <!-- ==================================================
+         LEAFLET
+    ================================================== -->
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
+
 
 
     <!-- ==================================================
@@ -385,6 +712,388 @@
                     );
 
 
+                const btnLocalizacao =
+                    document.getElementById(
+                        "btnLocalizacao"
+                    );
+
+
+
+                /* ==================================================
+                   MAPA
+                ================================================== */
+
+                let mapa = null;
+
+                let marcadorUsuario = null;
+
+
+
+                /* ==================================================
+                   INICIALIZAR MAPA
+                ================================================== */
+
+                function iniciarMapa() {
+
+                    if (
+                        typeof L === "undefined"
+                    ) {
+
+                        console.error(
+                            "Leaflet não foi carregado."
+                        );
+
+                        return;
+
+                    }
+
+
+                    const mapaElemento =
+                        document.getElementById(
+                            "mapaCorrida"
+                        );
+
+
+                    if (!mapaElemento) {
+
+                        return;
+
+                    }
+
+
+                    /*
+                     * Coordenadas iniciais.
+                     *
+                     * Usamos uma posição inicial
+                     * aproximada para o mapa.
+                     */
+
+                    const latitudeInicial =
+                        -16.1425;
+
+
+                    const longitudeInicial =
+                        -40.2931;
+
+
+                    mapa =
+                        L.map(
+                            "mapaCorrida"
+                        ).setView(
+                            [
+                                latitudeInicial,
+                                longitudeInicial
+                            ],
+                            14
+                        );
+
+
+                    /*
+                     * OpenStreetMap
+                     */
+
+                    L.tileLayer(
+                        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        {
+
+                            maxZoom: 19,
+
+                            attribution:
+                                '&copy; OpenStreetMap contributors'
+
+                        }
+                    ).addTo(
+                        mapa
+                    );
+
+
+                    /*
+                     * Marcador inicial.
+                     */
+
+                    marcadorUsuario =
+                        L.marker(
+                            [
+                                latitudeInicial,
+                                longitudeInicial
+                            ]
+                        )
+                        .addTo(
+                            mapa
+                        )
+                        .bindPopup(
+                            "Localização inicial do mapa."
+                        );
+
+
+                    /*
+                     * Ajusta o mapa depois
+                     * que a página termina de carregar.
+                     */
+
+                    setTimeout(
+                        function () {
+
+                            mapa.invalidateSize();
+
+                        },
+                        300
+                    );
+
+                }
+
+
+
+                /* ==================================================
+                   USAR LOCALIZAÇÃO ATUAL
+                ================================================== */
+
+                function obterLocalizacao() {
+
+                    if (
+                        !navigator.geolocation
+                    ) {
+
+                        alert(
+                            "Seu navegador não suporta localização."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (
+                        !mapa
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    if (btnLocalizacao) {
+
+                        btnLocalizacao.disabled =
+                            true;
+
+
+                        btnLocalizacao.innerHTML =
+                            '<i class="fa-solid fa-spinner fa-spin"></i> Localizando...';
+
+                    }
+
+
+                    navigator.geolocation.getCurrentPosition(
+
+                        function (posicao) {
+
+
+                            const latitude =
+                                posicao.coords.latitude;
+
+
+                            const longitude =
+                                posicao.coords.longitude;
+
+
+
+                            /* ======================================
+                               MOVER MAPA
+                            ====================================== */
+
+                            mapa.setView(
+                                [
+                                    latitude,
+                                    longitude
+                                ],
+                                16
+                            );
+
+
+
+                            /* ======================================
+                               REMOVER MARCADOR ANTERIOR
+                            ====================================== */
+
+                            if (
+                                marcadorUsuario
+                            ) {
+
+                                mapa.removeLayer(
+                                    marcadorUsuario
+                                );
+
+                            }
+
+
+
+                            /* ======================================
+                               NOVO MARCADOR
+                            ====================================== */
+
+                            marcadorUsuario =
+                                L.marker(
+                                    [
+                                        latitude,
+                                        longitude
+                                    ]
+                                )
+                                .addTo(
+                                    mapa
+                                )
+                                .bindPopup(
+                                    "Você está aqui."
+                                )
+                                .openPopup();
+
+
+
+                            /* ======================================
+                               COLOCAR COORDENADAS NO CAMPO
+                            ====================================== */
+
+                            const origem =
+                                document.getElementById(
+                                    "origem"
+                                );
+
+
+                            if (origem) {
+
+                                origem.value =
+                                    latitude.toFixed(6) +
+                                    ", " +
+                                    longitude.toFixed(6);
+
+                            }
+
+
+
+                            /* ======================================
+                               BOTÃO
+                            ====================================== */
+
+                            if (btnLocalizacao) {
+
+                                btnLocalizacao.disabled =
+                                    false;
+
+
+                                btnLocalizacao.innerHTML =
+                                    '<i class="fa-solid fa-location-crosshairs"></i> Localização encontrada';
+
+                            }
+
+                        },
+
+
+                        function (erro) {
+
+
+                            console.error(
+                                "Erro de localização:",
+                                erro
+                            );
+
+
+                            let mensagemErro =
+                                "Não foi possível obter sua localização.";
+
+
+                            if (
+                                erro.code ===
+                                1
+                            ) {
+
+                                mensagemErro =
+                                    "Permita o acesso à localização no navegador para usar esta função.";
+
+                            }
+
+
+                            else if (
+                                erro.code ===
+                                2
+                            ) {
+
+                                mensagemErro =
+                                    "Sua localização não está disponível no momento.";
+
+                            }
+
+
+                            else if (
+                                erro.code ===
+                                3
+                            ) {
+
+                                mensagemErro =
+                                    "A localização demorou demais para responder.";
+
+                            }
+
+
+                            alert(
+                                mensagemErro
+                            );
+
+
+                            if (btnLocalizacao) {
+
+                                btnLocalizacao.disabled =
+                                    false;
+
+
+                                btnLocalizacao.innerHTML =
+                                    '<i class="fa-solid fa-location-crosshairs"></i> Usar minha localização';
+
+                            }
+
+                        },
+
+
+                        {
+
+                            enableHighAccuracy:
+                                true,
+
+                            timeout:
+                                10000,
+
+                            maximumAge:
+                                0
+
+                        }
+
+                    );
+
+                }
+
+
+
+                /* ==================================================
+                   EVENTO DO BOTÃO DE LOCALIZAÇÃO
+                ================================================== */
+
+                if (btnLocalizacao) {
+
+                    btnLocalizacao.addEventListener(
+                        "click",
+                        obterLocalizacao
+                    );
+
+                }
+
+
+
+                /* ==================================================
+                   INICIAR MAPA
+                ================================================== */
+
+                iniciarMapa();
+
+
 
                 /* ==================================================
                    VERIFICAR SUPABASE
@@ -406,10 +1115,6 @@
 
                 /* ==================================================
                    VERIFICAR SE EXISTE SESSÃO
-
-                   NÃO BLOQUEIA A PÁGINA.
-
-                   O visitante pode preencher normalmente.
                 ================================================== */
 
                 try {
@@ -568,8 +1273,6 @@
 
                             /* ==================================================
                                VERIFICAR LOGIN
-
-                               SOMENTE AQUI O LOGIN É EXIGIDO.
                             ================================================== */
 
                             let sessao = null;
@@ -632,11 +1335,6 @@
 
                             if (!sessao) {
 
-
-                                /*
-                                 * Guarda os dados preenchidos
-                                 * temporariamente.
-                                 */
 
                                 sessionStorage.setItem(
                                     "corridaOrigem",
