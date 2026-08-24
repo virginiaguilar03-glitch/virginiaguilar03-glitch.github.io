@@ -11,7 +11,7 @@
     >
 
     <title>
-        Pagamentos | VaidTáxi
+        Contato | VaidTáxi
     </title>
 
 
@@ -112,14 +112,14 @@
                 Corridas
             </a>
 
-            <a
-                href="pagamentos.html"
-                class="active"
-            >
+            <a href="pagamentos.html">
                 Pagamentos
             </a>
 
-            <a href="contato.html">
+            <a
+                href="contato.html"
+                class="active"
+            >
                 Contato
             </a>
 
@@ -129,7 +129,7 @@
         <!-- ==================================================
              BOTÕES DO USUÁRIO
 
-             O auth.js vai atualizar esta área
+             O auth.js atualiza esta área
              automaticamente.
         ================================================== -->
 
@@ -182,12 +182,11 @@
         <div class="container">
 
             <h1>
-                Formas de <span>Pagamento</span>
+                Entre em <span>Contato</span>
             </h1>
 
             <p>
-                Escolha a forma de pagamento mais conveniente
-                para sua corrida.
+                Fale com a equipe VaidTáxi.
             </p>
 
         </div>
@@ -197,7 +196,7 @@
 
 
     <!-- ==================================================
-         FORMAS DE PAGAMENTO
+         INFORMAÇÕES DE CONTATO
     ================================================== -->
 
     <section>
@@ -207,7 +206,7 @@
 
             <h2 class="section-title">
 
-                Escolha como <span>pagar</span>
+                Fale <span>Conosco</span>
 
             </h2>
 
@@ -216,24 +215,23 @@
 
 
                 <!-- ==================================================
-                     PIX
+                     TELEFONE
                 ================================================== -->
 
                 <div class="card">
 
                     <img
-                        src="pix.png"
-                        alt="Pagamento via PIX"
+                        src="telefone.png"
+                        alt="Telefone"
                         class="card-image"
                     >
 
                     <h3>
-                        PIX
+                        Telefone
                     </h3>
 
                     <p>
-                        Faça o pagamento da sua corrida através
-                        do PIX diretamente ao motorista.
+                        (00) 00000-0000
                     </p>
 
                 </div>
@@ -241,24 +239,23 @@
 
 
                 <!-- ==================================================
-                     DINHEIRO
+                     E-MAIL
                 ================================================== -->
 
                 <div class="card">
 
                     <img
-                        src="dinheiro.png"
-                        alt="Pagamento em dinheiro"
+                        src="email.png"
+                        alt="E-mail"
                         class="card-image"
                     >
 
                     <h3>
-                        Dinheiro
+                        E-mail
                     </h3>
 
                     <p>
-                        Você também pode pagar sua corrida em
-                        dinheiro diretamente ao motorista.
+                        contato@vaidtaxi.com
                     </p>
 
                 </div>
@@ -266,24 +263,24 @@
 
 
                 <!-- ==================================================
-                     CARTÃO
+                     WHATSAPP
                 ================================================== -->
 
                 <div class="card">
 
                     <img
-                        src="cartao.png"
-                        alt="Pagamento com cartão"
+                        src="whatsapp.png"
+                        alt="WhatsApp"
                         class="card-image"
                     >
 
                     <h3>
-                        Cartão
+                        WhatsApp
                     </h3>
 
                     <p>
-                        Consulte o motorista sobre a disponibilidade
-                        de pagamento com cartão.
+                        Entre em contato diretamente
+                        pelo WhatsApp.
                     </p>
 
                 </div>
@@ -298,7 +295,7 @@
 
 
     <!-- ==================================================
-         COMO FUNCIONA
+         FORMULÁRIO DE CONTATO
     ================================================== -->
 
     <section class="services">
@@ -308,35 +305,133 @@
 
             <h2 class="section-title">
 
-                Como funciona o <span>pagamento?</span>
+                Envie uma <span>Mensagem</span>
 
             </h2>
 
 
-            <div class="card">
-
-                <p>
-
-                    Após escolher seu motorista e realizar sua
-                    corrida, o pagamento é feito diretamente
-                    ao motorista.
-
-                </p>
+            <form
+                class="form-container"
+                id="formContato"
+            >
 
 
-                <br>
+                <!-- ==================================================
+                     NOME
+                ================================================== -->
+
+                <div class="form-group">
+
+                    <label for="nome">
+                        Nome
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        placeholder="Digite seu nome"
+                        required
+                    >
+
+                </div>
 
 
-                <p>
 
-                    Antes de iniciar a viagem, você poderá verificar
-                    as formas de pagamento disponíveis para aquela
-                    corrida.
+                <!-- ==================================================
+                     E-MAIL
+                ================================================== -->
 
-                </p>
+                <div class="form-group">
 
-            </div>
+                    <label for="email">
+                        E-mail
+                    </label>
 
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Digite seu e-mail"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     TELEFONE
+                ================================================== -->
+
+                <div class="form-group">
+
+                    <label for="telefone">
+                        Telefone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="telefone"
+                        name="telefone"
+                        placeholder="Digite seu telefone"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     MENSAGEM
+                ================================================== -->
+
+                <div class="form-group">
+
+                    <label for="mensagem">
+                        Mensagem
+                    </label>
+
+                    <textarea
+                        id="mensagem"
+                        name="mensagem"
+                        placeholder="Digite sua mensagem..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     MENSAGEM DE RETORNO
+                ================================================== -->
+
+                <p
+                    id="mensagemContato"
+                    style="
+                        margin-top: 15px;
+                        text-align: center;
+                        font-size: 14px;
+                    "
+                ></p>
+
+
+
+                <!-- ==================================================
+                     BOTÃO
+                ================================================== -->
+
+                <button
+                    type="submit"
+                    class="btn"
+                    id="btnContato"
+                >
+                    Enviar Mensagem
+                </button>
+
+
+            </form>
 
         </div>
 
@@ -375,22 +470,34 @@
 ================================================== -->
 
 
-<!-- SUPABASE -->
+<!-- ==================================================
+     SUPABASE
+================================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/supabase.js"></script>
 
 
-<!-- AUTENTICAÇÃO GLOBAL -->
+<!-- ==================================================
+     AUTENTICAÇÃO GLOBAL
+================================================== -->
 
 <script src="js/auth.js"></script>
 
 
-<!-- MENU -->
+<!-- ==================================================
+     MENU MOBILE
+================================================== -->
 
 <script src="js/menu.js"></script>
 
+
+<!-- ==================================================
+     CONTATO
+================================================== -->
+
+<script src="js/contato.js"></script>
 
 
 <!-- ==================================================
