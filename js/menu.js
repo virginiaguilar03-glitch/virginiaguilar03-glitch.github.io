@@ -4,12 +4,24 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const menuMobile = document.getElementById("menu-mobile");
-    const menu = document.querySelector("nav");
+    const menuMobile =
+        document.getElementById("menu-mobile");
 
-    // Verifica se os elementos existem
+    const menu =
+        document.querySelector("nav");
+
+    const headerButtons =
+        document.querySelector(".header-buttons");
+
+
+    // ==========================================
+    // VERIFICAR ELEMENTOS
+    // ==========================================
+
     if (!menuMobile || !menu) {
+
         return;
+
     }
 
 
@@ -21,6 +33,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         menu.classList.toggle("active");
 
+
+        // --------------------------------------
+        // BOTÕES DE LOGIN / CADASTRO
+        // --------------------------------------
+
+        if (headerButtons) {
+
+            headerButtons.classList.toggle(
+                "active"
+            );
+
+        }
+
     });
 
 
@@ -28,15 +53,31 @@ document.addEventListener("DOMContentLoaded", () => {
     // FECHAR MENU AO CLICAR EM UM LINK
     // ==========================================
 
-    const links = document.querySelectorAll("nav a");
+    const links =
+        document.querySelectorAll("nav a");
+
 
     links.forEach(link => {
 
-        link.addEventListener("click", () => {
+        link.addEventListener(
+            "click",
+            () => {
 
-            menu.classList.remove("active");
+                menu.classList.remove(
+                    "active"
+                );
 
-        });
+
+                if (headerButtons) {
+
+                    headerButtons.classList.remove(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
 
     });
 
@@ -45,14 +86,28 @@ document.addEventListener("DOMContentLoaded", () => {
     // FECHAR MENU AO REDIMENSIONAR
     // ==========================================
 
-    window.addEventListener("resize", () => {
+    window.addEventListener(
+        "resize",
+        () => {
 
-        if (window.innerWidth > 900) {
+            if (window.innerWidth > 900) {
 
-            menu.classList.remove("active");
+                menu.classList.remove(
+                    "active"
+                );
+
+
+                if (headerButtons) {
+
+                    headerButtons.classList.remove(
+                        "active"
+                    );
+
+                }
+
+            }
 
         }
-
-    });
+    );
 
 });
