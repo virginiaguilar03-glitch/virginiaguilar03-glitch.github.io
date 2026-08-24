@@ -853,3 +853,21 @@ table tr:hover{
 
     cursor:pointer;
 }
+
+/* ==========================================
+   IMAGENS DOS CARDS
+========================================== */
+
+.card-image {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
