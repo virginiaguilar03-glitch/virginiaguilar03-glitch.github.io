@@ -5,223 +5,308 @@
 
 
 // ============================================================
-// ELEMENTOS
+// INICIAR CONTATO
 // ============================================================
 
-const formContato =
-    document.getElementById("formContato");
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-const mensagemContato =
-    document.getElementById("mensagemContato");
-
-const btnContato =
-    document.getElementById("btnContato");
-
-
-// ============================================================
-// MOSTRAR MENSAGEM
-// ============================================================
-
-function mostrarMensagem(texto, tipo) {
-
-    if (!mensagemContato) {
-        return;
-    }
-
-    mensagemContato.textContent = texto;
-
-    mensagemContato.className =
-        "mensagem-contato " + tipo;
-
-    mensagemContato.style.display = "block";
-}
+        console.log(
+            "Contato VaidTáxi iniciado."
+        );
 
 
-// ============================================================
-// FORMULÁRIO DE CONTATO
-// ============================================================
+        // ========================================================
+        // ELEMENTOS
+        // ========================================================
 
-if (formContato) {
+        const formContato =
+            document.getElementById(
+                "formContato"
+            );
 
-    formContato.addEventListener(
-        "submit",
-        async function (event) {
+        const mensagemContato =
+            document.getElementById(
+                "mensagemContato"
+            );
 
-            event.preventDefault();
-
-
-            // ====================================================
-            // CAMPOS
-            // ====================================================
-
-            const nome =
-                document.getElementById("nome")?.value.trim();
-
-            const email =
-                document.getElementById("email")?.value.trim();
-
-            const telefone =
-                document.getElementById("telefone")?.value.trim();
-
-            const mensagem =
-                document.getElementById("mensagem")?.value.trim();
+        const btnContato =
+            document.getElementById(
+                "btnContato"
+            );
 
 
-            // ====================================================
-            // VALIDAÇÃO
-            // ====================================================
+        // ========================================================
+        // VERIFICAR FORMULÁRIO
+        // ========================================================
 
-            if (
-                !nome ||
-                !email ||
-                !telefone ||
-                !mensagem
-            ) {
+        if (!formContato) {
 
-                mostrarMensagem(
-                    "Preencha todos os campos.",
-                    "erro"
-                );
+            console.warn(
+                "Formulário de contato não encontrado."
+            );
+
+            return;
+
+        }
+
+
+        // ========================================================
+        // MOSTRAR MENSAGEM
+        // ========================================================
+
+        function mostrarMensagem(
+            texto,
+            tipo
+        ) {
+
+            if (!mensagemContato) {
 
                 return;
+
             }
 
 
-            // ====================================================
-            // VERIFICAR SUPABASE
-            // ====================================================
+            mensagemContato.textContent =
+                texto;
 
-            if (
-                typeof supabaseClient === "undefined"
-            ) {
 
-                console.error(
-                    "supabaseClient não foi encontrado."
+            mensagemContato.className =
+                "mensagem-contato " + tipo;
+
+
+            mensagemContato.style.display =
+                "block";
+
+        }
+
+
+        // ========================================================
+        // FORMULÁRIO
+        // ========================================================
+
+        formContato.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                console.log(
+                    "Formulário de contato enviado."
                 );
-
-                mostrarMensagem(
-                    "Erro de conexão com o sistema.",
-                    "erro"
-                );
-
-                return;
-            }
-
-
-            // ====================================================
-            // DESABILITAR BOTÃO
-            // ====================================================
-
-            if (btnContato) {
-
-                btnContato.disabled = true;
-
-                btnContato.textContent =
-                    "Enviando...";
-            }
-
-
-            // ====================================================
-            // DADOS PARA O SUPABASE
-            // ====================================================
-
-            const dadosContato = {
-
-                nome: nome,
-
-                telefone: telefone,
-
-                email: email,
-
-                mensagem: mensagem
-            };
-
-
-            // ====================================================
-            // ENVIAR PARA A TABELA CONTATOS
-            // ====================================================
-
-            try {
-
-                const {
-                    data,
-                    error
-                } = await supabaseClient
-                    .from("contatos")
-                    .insert(dadosContato)
-                    .select()
-                    .single();
 
 
                 // =================================================
-                // ERRO
+                // CAMPOS
                 // =================================================
 
-                if (error) {
+                const nome =
+                    document.getElementById(
+                        "nome"
+                    )?.value.trim();
 
-                    console.error(
-                        "Erro ao enviar contato:",
-                        error
-                    );
+
+                const email =
+                    document.getElementById(
+                        "email"
+                    )?.value.trim();
+
+
+                const telefone =
+                    document.getElementById(
+                        "telefone"
+                    )?.value.trim();
+
+
+                const mensagem =
+                    document.getElementById(
+                        "mensagem"
+                    )?.value.trim();
+
+
+                // =================================================
+                // VALIDAÇÃO
+                // =================================================
+
+                if (
+                    !nome ||
+                    !email ||
+                    !telefone ||
+                    !mensagem
+                ) {
 
                     mostrarMensagem(
-                        "Não foi possível enviar sua mensagem. Tente novamente.",
+                        "Preencha todos os campos.",
                         "erro"
                     );
 
                     return;
+
                 }
 
 
                 // =================================================
-                // SUCESSO
+                // VERIFICAR SUPABASE
                 // =================================================
 
-                console.log(
-                    "Mensagem enviada com sucesso:",
-                    data
-                );
+                if (
+                    typeof supabaseClient ===
+                        "undefined" ||
+                    !supabaseClient
+                ) {
 
-                mostrarMensagem(
-                    "Mensagem enviada com sucesso!",
-                    "sucesso"
-                );
+                    console.error(
+                        "supabaseClient não encontrado."
+                    );
+
+
+                    mostrarMensagem(
+                        "Erro de conexão com o sistema.",
+                        "erro"
+                    );
+
+
+                    return;
+
+                }
 
 
                 // =================================================
-                // LIMPAR FORMULÁRIO
+                // DESABILITAR BOTÃO
                 // =================================================
-
-                formContato.reset();
-
-
-            } catch (erro) {
-
-                console.error(
-                    "Erro inesperado:",
-                    erro
-                );
-
-                mostrarMensagem(
-                    "Ocorreu um erro ao enviar sua mensagem.",
-                    "erro"
-                );
-
-
-            } finally {
-
-                // ================================================
-                // RESTAURAR BOTÃO
-                // ================================================
 
                 if (btnContato) {
 
-                    btnContato.disabled = false;
+                    btnContato.disabled =
+                        true;
+
 
                     btnContato.textContent =
-                        "Enviar mensagem";
+                        "Enviando...";
+
                 }
+
+
+                // =================================================
+                // DADOS DO CONTATO
+                // =================================================
+
+                const dadosContato = {
+
+                    nome: nome,
+
+                    telefone: telefone,
+
+                    email: email,
+
+                    mensagem: mensagem
+
+                };
+
+
+                // =================================================
+                // ENVIAR PARA O SUPABASE
+                // =================================================
+
+                try {
+
+                    const {
+                        data,
+                        error
+                    } =
+                        await supabaseClient
+                            .from("contatos")
+                            .insert(
+                                dadosContato
+                            );
+
+
+                    // =============================================
+                    // ERRO
+                    // =============================================
+
+                    if (error) {
+
+                        console.error(
+                            "Erro ao enviar contato:",
+                            error
+                        );
+
+
+                        mostrarMensagem(
+                            "Não foi possível enviar sua mensagem. Tente novamente.",
+                            "erro"
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    // =============================================
+                    // SUCESSO
+                    // =============================================
+
+                    console.log(
+                        "Mensagem enviada com sucesso:",
+                        data
+                    );
+
+
+                    mostrarMensagem(
+                        "Mensagem enviada com sucesso!",
+                        "sucesso"
+                    );
+
+
+                    // =============================================
+                    // LIMPAR FORMULÁRIO
+                    // =============================================
+
+                    formContato.reset();
+
+                }
+
+                catch (erro) {
+
+                    console.error(
+                        "Erro inesperado:",
+                        erro
+                    );
+
+
+                    mostrarMensagem(
+                        "Ocorreu um erro ao enviar sua mensagem.",
+                        "erro"
+                    );
+
+                }
+
+
+                finally {
+
+                    // =============================================
+                    // RESTAURAR BOTÃO
+                    // =============================================
+
+                    if (btnContato) {
+
+                        btnContato.disabled =
+                            false;
+
+
+                        btnContato.textContent =
+                            "Enviar mensagem";
+
+                    }
+
+                }
+
             }
-        }
-    );
-}
+        );
+
+    }
+);
