@@ -11,7 +11,7 @@
     >
 
     <title>
-        Contato | VaidTáxi
+        Pagamentos | VaidTáxi
     </title>
 
 
@@ -19,10 +19,7 @@
          GOOGLE FONTS
     ================================================== -->
 
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
     <link
         rel="preconnect"
@@ -31,8 +28,18 @@
     >
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet"
+    >
+
+
+    <!-- ==================================================
+         FONT AWESOME
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
 
@@ -50,552 +57,359 @@
         href="css/responsive.css"
     >
 
+    <link
+        rel="stylesheet"
+        href="css/animations.css"
+    >
+
 </head>
 
 
 <body>
 
 
-    <!-- ==================================================
-         HEADER
-    ================================================== -->
+<!-- ==================================================
+     HEADER
+================================================== -->
 
-    <header class="header">
+<header>
 
-        <div class="container header-container">
+    <div class="container">
 
 
-            <!-- LOGO -->
+        <!-- LOGO -->
 
-            <a
-                href="index.html"
-                class="logo"
+        <a
+            href="index.html"
+            class="logo"
+        >
+
+            <img
+                src="logo-vdb.png"
+                alt="Logo VaidTáxi"
             >
 
-                <img
-                    src="img/logo-vdb.png"
-                    alt="VaidTáxi"
-                >
+            <h1>
+                Vaid<span>Táxi</span>
+            </h1>
 
+        </a>
+
+
+        <!-- MENU -->
+
+        <nav>
+
+            <a href="index.html">
+                Início
             </a>
 
+            <a href="motoristas.html">
+                Motoristas
+            </a>
 
-            <!-- MENU -->
+            <a href="corrida.html">
+                Corridas
+            </a>
 
-            <nav class="nav">
-
-                <a href="index.html">
-                    Início
-                </a>
-
-                <a href="motoristas.html">
-                    Motoristas
-                </a>
-
-                <a href="corridas.html">
-                    Corridas
-                </a>
-
-                <a href="pagamentos.html">
-                    Pagamentos
-                </a>
-
-                <a
-                    href="contato.html"
-                    class="active"
-                >
-                    Contato
-                </a>
-
-            </nav>
-
-
-            <!-- BOTÕES -->
-
-            <div class="header-buttons">
-
-                <a
-                    href="entrar.html"
-                    class="btn-login"
-                >
-                    Entrar
-                </a>
-
-                <a
-                    href="cadastro.html"
-                    class="btn-primary"
-                >
-                    Criar conta
-                </a>
-
-            </div>
-
-
-            <!-- MENU MOBILE -->
-
-            <button
-                class="menu-toggle"
-                id="menuToggle"
-                aria-label="Abrir menu"
+            <a
+                href="pagamentos.html"
+                class="active"
             >
+                Pagamentos
+            </a>
 
-                <span></span>
-                <span></span>
-                <span></span>
+            <a href="contato.html">
+                Contato
+            </a>
 
-            </button>
+        </nav>
+
+
+        <!-- ==================================================
+             BOTÕES DO USUÁRIO
+
+             O auth.js vai atualizar esta área
+             automaticamente.
+        ================================================== -->
+
+        <div class="header-buttons">
+
+            <a
+                href="login.html"
+                class="btn-outline"
+            >
+                Entrar
+            </a>
+
+            <a
+                href="cadastro.html"
+                class="btn"
+            >
+                Cadastre-se
+            </a>
 
         </div>
 
-    </header>
 
+        <!-- MENU MOBILE -->
+
+        <div id="menu-mobile">
+
+            <i class="fa-solid fa-bars"></i>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- ==================================================
+     CONTEÚDO PRINCIPAL
+================================================== -->
+
+<main>
 
 
     <!-- ==================================================
-         CONTEÚDO PRINCIPAL
+         BANNER
     ================================================== -->
 
-    <main>
-
-
-        <!-- ==================================================
-             HERO CONTATO
-        ================================================== -->
-
-        <section class="page-hero">
-
-            <div class="container">
-
-                <span class="section-tag">
-                    FALE CONOSCO
-                </span>
-
-                <h1>
-                    Entre em contato
-                    <span>com a VaidTáxi</span>
-                </h1>
-
-                <p>
-                    Estamos aqui para ajudar.
-                    Envie sua mensagem e fale com nossa equipe.
-                </p>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ==================================================
-             CARDS DE CONTATO
-        ================================================== -->
-
-        <section class="contact-cards">
-
-            <div class="container">
-
-                <div class="cards-grid">
-
-
-                    <!-- CARD 1 -->
-
-                    <div class="info-card">
-
-                        <div class="card-image">
-
-                            <img
-                                src="img/contato-atendimento.png"
-                                alt="Atendimento VaidTáxi"
-                            >
-
-                        </div>
-
-                        <div class="card-content">
-
-                            <h3>
-                                Atendimento
-                            </h3>
-
-                            <p>
-                                Precisa de ajuda?
-                                Nossa equipe está pronta
-                                para atender você.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- CARD 2 -->
-
-                    <div class="info-card">
-
-                        <div class="card-image">
-
-                            <img
-                                src="img/contato-whatsapp.png"
-                                alt="WhatsApp VaidTáxi"
-                            >
-
-                        </div>
-
-                        <div class="card-content">
-
-                            <h3>
-                                WhatsApp
-                            </h3>
-
-                            <p>
-                                Entre em contato rapidamente
-                                pelo WhatsApp da VaidTáxi.
-                            </p>
-
-                            <a
-                                href="#"
-                                class="card-link"
-                            >
-                                Falar pelo WhatsApp
-                            </a>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- CARD 3 -->
-
-                    <div class="info-card">
-
-                        <div class="card-image">
-
-                            <img
-                                src="img/contato-seguranca.png"
-                                alt="Segurança VaidTáxi"
-                            >
-
-                        </div>
-
-                        <div class="card-content">
-
-                            <h3>
-                                Segurança
-                            </h3>
-
-                            <p>
-                                Sua segurança é uma das
-                                nossas principais prioridades.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ==================================================
-             FORMULÁRIO
-        ================================================== -->
-
-        <section class="contact-section">
-
-            <div class="container contact-container">
-
-
-                <!-- TEXTO -->
-
-                <div class="contact-info">
-
-                    <span class="section-tag">
-                        ENVIE UMA MENSAGEM
-                    </span>
-
-                    <h2>
-                        Como podemos
-                        <span>ajudar?</span>
-                    </h2>
-
-                    <p>
-                        Preencha o formulário ao lado
-                        e envie sua mensagem para nossa equipe.
-                    </p>
-
-                    <p>
-                        Responderemos assim que possível.
-                    </p>
-
-                </div>
-
-
-
-                <!-- FORMULÁRIO -->
-
-                <div class="contact-form-container">
-
-                    <form
-                        id="formContato"
-                        class="contact-form"
-                    >
-
-
-                        <!-- NOME -->
-
-                        <div class="form-group">
-
-                            <label for="nomeContato">
-                                Nome
-                            </label>
-
-                            <input
-                                type="text"
-                                id="nomeContato"
-                                name="nome"
-                                placeholder="Digite seu nome"
-                                required
-                            >
-
-                        </div>
-
-
-
-                        <!-- EMAIL -->
-
-                        <div class="form-group">
-
-                            <label for="emailContato">
-                                E-mail
-                            </label>
-
-                            <input
-                                type="email"
-                                id="emailContato"
-                                name="email"
-                                placeholder="Digite seu e-mail"
-                                required
-                            >
-
-                        </div>
-
-
-
-                        <!-- TELEFONE -->
-
-                        <div class="form-group">
-
-                            <label for="telefoneContato">
-                                Telefone
-                            </label>
-
-                            <input
-                                type="tel"
-                                id="telefoneContato"
-                                name="telefone"
-                                placeholder="Digite seu telefone"
-                            >
-
-                        </div>
-
-
-
-                        <!-- ASSUNTO -->
-
-                        <div class="form-group">
-
-                            <label for="assuntoContato">
-                                Assunto
-                            </label>
-
-                            <select
-                                id="assuntoContato"
-                                name="assunto"
-                                required
-                            >
-
-                                <option value="">
-                                    Selecione um assunto
-                                </option>
-
-                                <option value="duvida">
-                                    Dúvida
-                                </option>
-
-                                <option value="corrida">
-                                    Corrida
-                                </option>
-
-                                <option value="pagamento">
-                                    Pagamento
-                                </option>
-
-                                <option value="motorista">
-                                    Motorista
-                                </option>
-
-                                <option value="outro">
-                                    Outro
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-
-                        <!-- MENSAGEM -->
-
-                        <div class="form-group">
-
-                            <label for="mensagemContato">
-                                Mensagem
-                            </label>
-
-                            <textarea
-                                id="mensagemContato"
-                                name="mensagem"
-                                rows="5"
-                                placeholder="Digite sua mensagem"
-                                required
-                            ></textarea>
-
-                        </div>
-
-
-
-                        <!-- BOTÃO -->
-
-                        <button
-                            type="submit"
-                            id="btnContato"
-                            class="btn-primary btn-submit"
-                        >
-                            Enviar mensagem
-                        </button>
-
-
-                        <!-- MENSAGEM DE RETORNO -->
-
-                        <div
-                            id="mensagemStatus"
-                            class="form-message"
-                        ></div>
-
-                    </form>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-    </main>
-
-
-
-    <!-- ==================================================
-         FOOTER
-    ================================================== -->
-
-    <footer class="footer">
+    <section class="page-banner">
 
         <div class="container">
 
-            <div class="footer-content">
+            <h1>
+                Formas de <span>Pagamento</span>
+            </h1>
+
+            <p>
+                Escolha a forma de pagamento mais conveniente
+                para sua corrida.
+            </p>
+
+        </div>
+
+    </section>
 
 
-                <div class="footer-logo">
+
+    <!-- ==================================================
+         FORMAS DE PAGAMENTO
+    ================================================== -->
+
+    <section>
+
+        <div class="container">
+
+
+            <h2 class="section-title">
+
+                Escolha como <span>pagar</span>
+
+            </h2>
+
+
+            <div class="cards">
+
+
+                <!-- ==================================================
+                     PIX
+                ================================================== -->
+
+                <div class="card">
 
                     <img
-                        src="img/logo-vdb.png"
-                        alt="VaidTáxi"
+                        src="pix.png"
+                        alt="Pagamento via PIX"
+                        class="card-image"
                     >
 
+                    <h3>
+                        PIX
+                    </h3>
+
                     <p>
-                        Seu táxi com rapidez,
-                        segurança e praticidade.
+                        Faça o pagamento da sua corrida através
+                        do PIX diretamente ao motorista.
                     </p>
 
                 </div>
 
 
-                <div class="footer-links">
 
-                    <h4>
-                        Links rápidos
-                    </h4>
+                <!-- ==================================================
+                     DINHEIRO
+                ================================================== -->
 
-                    <a href="index.html">
-                        Início
-                    </a>
+                <div class="card">
 
-                    <a href="motoristas.html">
-                        Motoristas
-                    </a>
+                    <img
+                        src="dinheiro.png"
+                        alt="Pagamento em dinheiro"
+                        class="card-image"
+                    >
 
-                    <a href="corridas.html">
-                        Corridas
-                    </a>
+                    <h3>
+                        Dinheiro
+                    </h3>
 
-                    <a href="pagamentos.html">
-                        Pagamentos
-                    </a>
-
-                    <a href="contato.html">
-                        Contato
-                    </a>
+                    <p>
+                        Você também pode pagar sua corrida em
+                        dinheiro diretamente ao motorista.
+                    </p>
 
                 </div>
 
 
-                <div class="footer-links">
 
-                    <h4>
-                        VaidTáxi
-                    </h4>
+                <!-- ==================================================
+                     CARTÃO
+                ================================================== -->
 
-                    <a href="entrar.html">
-                        Entrar
-                    </a>
+                <div class="card">
 
-                    <a href="cadastro.html">
-                        Criar conta
-                    </a>
+                    <img
+                        src="cartao.png"
+                        alt="Pagamento com cartão"
+                        class="card-image"
+                    >
+
+                    <h3>
+                        Cartão
+                    </h3>
+
+                    <p>
+                        Consulte o motorista sobre a disponibilidade
+                        de pagamento com cartão.
+                    </p>
 
                 </div>
 
-            </div>
-
-
-            <div class="footer-bottom">
-
-                <p>
-                    © 2026 VaidTáxi. Todos os direitos reservados.
-                </p>
 
             </div>
 
         </div>
 
-    </footer>
+    </section>
 
 
 
     <!-- ==================================================
-         JAVASCRIPT
+         COMO FUNCIONA
     ================================================== -->
 
-    <script src="js/menu.js"></script>
+    <section class="services">
 
-    <script src="js/contato.js"></script>
+        <div class="container">
+
+
+            <h2 class="section-title">
+
+                Como funciona o <span>pagamento?</span>
+
+            </h2>
+
+
+            <div class="card">
+
+                <p>
+
+                    Após escolher seu motorista e realizar sua
+                    corrida, o pagamento é feito diretamente
+                    ao motorista.
+
+                </p>
+
+
+                <br>
+
+
+                <p>
+
+                    Antes de iniciar a viagem, você poderá verificar
+                    as formas de pagamento disponíveis para aquela
+                    corrida.
+
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+
+<!-- ==================================================
+     FOOTER
+================================================== -->
+
+<footer>
+
+    <div class="container">
+
+        <p>
+
+            ©
+            <span id="ano"></span>
+            VaidTáxi -
+            Todos os direitos reservados.
+
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<!-- ==================================================
+     JAVASCRIPT
+================================================== -->
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+
+
+<!-- AUTENTICAÇÃO GLOBAL -->
+
+<script src="js/auth.js"></script>
+
+
+<!-- MENU -->
+
+<script src="js/menu.js"></script>
+
+
+
+<!-- ==================================================
+     ANO DO RODAPÉ
+================================================== -->
+
+<script>
+
+    const ano =
+        document.getElementById("ano");
+
+    if (ano) {
+
+        ano.textContent =
+            new Date().getFullYear();
+
+    }
+
+</script>
 
 
 </body>
