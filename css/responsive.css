@@ -1,4 +1,4 @@
-/* ==========================================
+ /* ==========================================
    RESPONSIVE.CSS
    VaidTáxi
 ========================================== */
@@ -88,12 +88,64 @@
         display:flex;
     }
 
+
     #menu-mobile{
         display:block;
     }
 
+
+    /* ===============================
+       BOTÕES DE LOGIN
+       DENTRO DO MENU MOBILE
+    =============================== */
+
     .header-buttons{
+
         display:none;
+
+        position:absolute;
+
+        top:80px;
+
+        right:20px;
+
+        width:240px;
+
+        background:#1b1b1b;
+
+        border:1px solid #333;
+
+        border-radius:15px;
+
+        padding:20px;
+
+        flex-direction:column;
+
+        gap:12px;
+
+        box-shadow:0 15px 40px rgba(0,0,0,.5);
+
+        z-index:1001;
+
+    }
+
+
+    .header-buttons.active{
+
+        display:flex;
+
+    }
+
+
+    .header-buttons .btn,
+    .header-buttons .btn-outline{
+
+        width:100%;
+
+        text-align:center;
+
+        box-sizing:border-box;
+
     }
 
 
@@ -257,7 +309,7 @@
 
 
     /* ===============================
-       CARDS
+       CARDS MOBILE
     =============================== */
 
     .cards{
@@ -266,9 +318,32 @@
 
     }
 
+
     .card{
 
         padding:25px;
+
+        background:#ffffff;
+
+        color:#111111;
+
+        border:1px solid #e5e5e5;
+
+        box-shadow:0 8px 25px rgba(0,0,0,.12);
+
+    }
+
+
+    .card h3{
+
+        color:#111111;
+
+    }
+
+
+    .card p{
+
+        color:#555555;
 
     }
 
@@ -322,6 +397,30 @@
         width:90%;
 
         right:5%;
+
+    }
+
+
+    /* ===============================
+       BOTÕES DO MENU
+    =============================== */
+
+    .header-buttons{
+
+        width:90%;
+
+        right:5%;
+
+    }
+
+
+    /* ===============================
+       CARDS
+    =============================== */
+
+    .card{
+
+        padding:22px;
 
     }
 
