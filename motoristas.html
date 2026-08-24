@@ -5,72 +5,159 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>Motoristas | VaidTáxi</title>
+    <title>
+        Motoristas | VaidTáxi
+    </title>
 
-    <!-- Google Fonts -->
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- ==================================================
+         GOOGLE FONTS
+    ================================================== -->
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
-    <!-- Font Awesome -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <!-- CSS -->
+    <!-- ==================================================
+         FONT AWESOME
+    ================================================== -->
 
-    <link rel="stylesheet" href="css/style.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
 
-    <link rel="stylesheet" href="css/responsive.css">
 
-    <link rel="stylesheet" href="css/animations.css">
+    <!-- ==================================================
+         CSS
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/responsive.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/animations.css"
+    >
 
 </head>
 
+
 <body>
+
 
 <header>
 
     <div class="container">
 
-        <a href="index.html" class="logo">
 
-            <img src="logo-vdb.png" alt="Logo">
+        <!-- ==================================================
+             LOGO
+        ================================================== -->
 
-            <h1>Vaid<span>Táxi</span></h1>
+        <a
+            href="index.html"
+            class="logo"
+        >
+
+            <img
+                src="logo-vdb.png"
+                alt="VaidTáxi"
+            >
+
+            <h1>
+                Vaid<span>Táxi</span>
+            </h1>
 
         </a>
 
+
+        <!-- ==================================================
+             MENU
+        ================================================== -->
+
         <nav>
 
-            <a href="index.html">Início</a>
+            <a href="index.html">
+                Início
+            </a>
 
-            <a href="motoristas.html" class="active">Motoristas</a>
+            <a
+                href="motoristas.html"
+                class="active"
+            >
+                Motoristas
+            </a>
 
-            <a href="corrida.html">Corridas</a>
+            <a href="corrida.html">
+                Corridas
+            </a>
 
-            <a href="pagamentos.html">Pagamentos</a>
+            <a href="pagamentos.html">
+                Pagamentos
+            </a>
 
-            <a href="contato.html">Contato</a>
+            <a href="contato.html">
+                Contato
+            </a>
 
         </nav>
 
+
+        <!-- ==================================================
+             BOTÕES DO USUÁRIO
+
+             O auth.js vai atualizar esta área
+             automaticamente.
+        ================================================== -->
+
         <div class="header-buttons">
 
-            <a href="login.html" class="btn-outline">
+            <a
+                href="login.html"
+                class="btn-outline"
+            >
                 Entrar
             </a>
 
-            <a href="cadastro.html" class="btn">
+            <a
+                href="cadastro.html"
+                class="btn"
+            >
                 Cadastre-se
             </a>
 
         </div>
+
+
+        <!-- ==================================================
+             MENU MOBILE
+        ================================================== -->
 
         <div id="menu-mobile">
 
@@ -82,40 +169,74 @@
 
 </header>
 
+
+
 <main>
 
-<section class="page-banner">
 
-    <div class="container">
+    <!-- ==================================================
+         BANNER
+    ================================================== -->
 
-        <h1>Motoristas Disponíveis</h1>
+    <section class="page-banner">
 
-        <p>Escolha o motorista ideal para sua viagem.</p>
+        <div class="container">
 
-    </div>
+            <h1>
+                Motoristas Disponíveis
+            </h1>
 
-</section>
+            <p>
+                Escolha o motorista ideal para sua viagem.
+            </p>
 
-<section class="container">
+        </div>
 
-    <input
-    type="text"
-    class="search-box"
-    placeholder="Pesquisar motorista...">
+    </section>
 
-</section>
 
-<section class="container">
 
-    <div id="lista-motoristas">
+    <!-- ==================================================
+         PESQUISA
+    ================================================== -->
 
-        <!-- Os motoristas serão carregados aqui futuramente pelo JavaScript -->
+    <section class="container">
 
-    </div>
+        <input
+            type="text"
+            class="search-box"
+            placeholder="Pesquisar motorista..."
+        >
 
-</section>
+    </section>
+
+
+
+    <!-- ==================================================
+         LISTA DE MOTORISTAS
+    ================================================== -->
+
+    <section class="container">
+
+        <div id="lista-motoristas">
+
+            <!--
+                Os motoristas serão carregados
+                futuramente pelo JavaScript.
+            -->
+
+        </div>
+
+    </section>
+
 
 </main>
+
+
+
+<!-- ==================================================
+     RODAPÉ
+================================================== -->
 
 <footer>
 
@@ -123,7 +244,9 @@
 
         <p>
 
-            © <span id="ano"></span> VaidTáxi - Todos os direitos reservados.
+            ©
+            <span id="ano"></span>
+            VaidTáxi - Todos os direitos reservados.
 
         </p>
 
@@ -131,11 +254,58 @@
 
 </footer>
 
+
+
+<!-- ==================================================
+     JAVASCRIPT
+================================================== -->
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+
+
+<!-- AUTENTICAÇÃO GLOBAL -->
+
+<script src="js/auth.js"></script>
+
+
+<!-- MENU -->
+
 <script src="js/menu.js"></script>
+
+
+<!-- APLICAÇÃO -->
 
 <script src="js/app.js"></script>
 
+
+<!-- MOTORISTAS -->
+
 <script src="js/motoristas.js"></script>
+
+
+<!-- ==================================================
+     ANO DO RODAPÉ
+================================================== -->
+
+<script>
+
+    const ano =
+        document.getElementById("ano");
+
+    if (ano) {
+
+        ano.textContent =
+            new Date().getFullYear();
+
+    }
+
+</script>
+
 
 </body>
 
