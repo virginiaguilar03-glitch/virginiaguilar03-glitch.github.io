@@ -1,54 +1,191 @@
 // ============================================================
 // CORRIDA - VAIDTÁXI
-// Cliente solicita corrida
-// Supabase + Motoristas + Pagamento
+// Solicitação de corrida
+// Supabase + Leaflet + Autenticação
 // ============================================================
+
+
+// ============================================================
+// VARIÁVEIS
+// ============================================================
+
+let mapaCorrida = null;
+
+let marcadorUsuario = null;
+
+let canalCorrida = null;
 
 
 // ============================================================
 // ELEMENTOS
 // ============================================================
 
-const paginaCorrida =
-    document.getElementById("formCorrida");
+let formCorrida = null;
 
-const mensagemCorrida =
-    document.getElementById("mensagemCorrida");
+let nomeCliente = null;
 
-const btnSolicitar =
-    document.getElementById("btnSolicitarCorrida");
+let mensagemCorrida = null;
 
+let btnSolicitar = null;
 
-// ============================================================
-// MOTORISTA SELECIONADO
-// ============================================================
+let btnLocalizacao = null;
 
-let motoristaSelecionado = null;
+let campoOrigem = null;
 
+let campoDestino = null;
 
-// ============================================================
-// CANAL DA CORRIDA
-// ============================================================
-
-let canalCorrida = null;
+let campoObservacao = null;
 
 
 // ============================================================
-// VERIFICAR USUÁRIO LOGADO
+// INICIALIZAÇÃO
 // ============================================================
 
-async function verificarUsuario() {
+document.addEventListener(
+    "DOMContentLoaded",
+    async function () {
 
-    if (
-        typeof supabaseClient === "undefined" ||
-        !supabaseClient
-    ) {
+        console.log(
+            "Corrida VaidTáxi iniciada."
+        );
+
+
+        // --------------------------------------------------------
+        // ELEMENTOS
+        // --------------------------------------------------------
+
+        formCorrida =
+            document.getElementById(
+                "formCorrida"
+            );
+
+        nomeCliente =
+            document.getElementById(
+                "nomeCliente"
+            );
+
+        mensagemCorrida =
+            document.getElementById(
+                "mensagemCorrida"
+            );
+
+        btnSolicitar =
+            document.getElementById(
+                "btnSolicitar"
+            );
+
+        btnLocalizacao =
+            document.getElementById(
+                "btnLocalizacao"
+            );
+
+        campoOrigem =
+            document.getElementById(
+                "origem"
+            );
+
+        campoDestino =
+            document.getElementById(
+                "destino"
+            );
+
+        campoObservacao =
+            document.getElementById(
+                "observacao"
+            );
+
+
+        // --------------------------------------------------------
+        // VERIFICAR ELEMENTOS
+        // --------------------------------------------------------
+
+        if (!formCorrida) {
+
+            console.error(
+                "Formulário de corrida não encontrado."
+            );
+
+            return;
+
+        }
+
+
+        // --------------------------------------------------------
+        // INICIAR MAPA
+        // --------------------------------------------------------
+
+        iniciarMapa();
+
+
+        // --------------------------------------------------------
+        // VERIFICAR USUÁRIO
+        // --------------------------------------------------------
+
+        await carregarUsuario();
+
+
+        // --------------------------------------------------------
+        // BOTÃO DE LOCALIZAÇÃO
+        // --------------------------------------------------------
+
+        if (btnLocalizacao) {
+
+            btnLocalizacao.addEventListener(
+                "click",
+                obterLocalizacao
+            );
+
+        }
+
+
+        // --------------------------------------------------------
+        // FORMULÁRIO
+        // --------------------------------------------------------
+
+        formCorrida.addEventListener(
+            "submit",
+            solicitarCorrida
+        );
+
+
+        // --------------------------------------------------------
+        // RECUPERAR CORRIDA
+        // --------------------------------------------------------
+
+        await carregarCorridaAtual();
+
+    }
+);
+
+
+// ============================================================
+// VERIFICAR SUPABASE
+// ============================================================
+
+function supabaseDisponivel() {
+
+    return (
+        typeof supabaseClient !== "undefined" &&
+        supabaseClient
+    );
+
+}
+
+
+// ============================================================
+// BUSCAR USUÁRIO
+// ============================================================
+
+async function obterUsuario() {
+
+    if (!supabaseDisponivel()) {
 
         console.error(
             "supabaseClient não encontrado."
         );
 
         return null;
+
     }
 
 
@@ -64,32 +201,23 @@ async function verificarUsuario() {
         if (error) {
 
             console.error(
-                "Erro ao verificar usuário:",
+                "Erro ao buscar usuário:",
                 error
             );
 
             return null;
-        }
-
-
-        if (
-            !data ||
-            !data.user
-        ) {
-
-            return null;
 
         }
 
 
-        return data.user;
+        return data?.user || null;
 
     }
 
     catch (erro) {
 
         console.error(
-            "Erro inesperado ao verificar usuário:",
+            "Erro inesperado ao buscar usuário:",
             erro
         );
 
@@ -101,16 +229,727 @@ async function verificarUsuario() {
 
 
 // ============================================================
+// CARREGAR USUÁRIO
+// ============================================================
+
+async function carregarUsuario() {
+
+    const usuario =
+        await obterUsuario();
+
+
+    if (!usuario) {
+
+        if (nomeCliente) {
+
+            nomeCliente.textContent =
+                "Visitante";
+
+        }
+
+        return;
+
+    }
+
+
+    const nome =
+        usuario.user_metadata?.nome ||
+        usuario.user_metadata?.name ||
+        usuario.email?.split("@")[0] ||
+        "Cliente";
+
+
+    if (nomeCliente) {
+
+        nomeCliente.textContent =
+            nome;
+
+    }
+
+
+    console.log(
+        "Cliente identificado:",
+        usuario.id
+    );
+
+}
+
+
+// ============================================================
+// MAPA
+// ============================================================
+
+function iniciarMapa() {
+
+    if (
+        typeof L === "undefined"
+    ) {
+
+        console.error(
+            "Leaflet não foi carregado."
+        );
+
+        return;
+
+    }
+
+
+    const elementoMapa =
+        document.getElementById(
+            "mapaCorrida"
+        );
+
+
+    if (!elementoMapa) {
+
+        console.error(
+            "Elemento mapaCorrida não encontrado."
+        );
+
+        return;
+
+    }
+
+
+    // --------------------------------------------------------
+    // Coordenadas iniciais
+    // --------------------------------------------------------
+
+    const latitudeInicial =
+        -16.1425;
+
+    const longitudeInicial =
+        -40.2931;
+
+
+    mapaCorrida =
+        L.map(
+            "mapaCorrida"
+        ).setView(
+            [
+                latitudeInicial,
+                longitudeInicial
+            ],
+            14
+        );
+
+
+    // --------------------------------------------------------
+    // OpenStreetMap
+    // --------------------------------------------------------
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+
+            maxZoom: 19,
+
+            attribution:
+                "&copy; OpenStreetMap contributors"
+
+        }
+    ).addTo(
+        mapaCorrida
+    );
+
+
+    // --------------------------------------------------------
+    // Marcador inicial
+    // --------------------------------------------------------
+
+    marcadorUsuario =
+        L.marker(
+            [
+                latitudeInicial,
+                longitudeInicial
+            ]
+        )
+        .addTo(
+            mapaCorrida
+        )
+        .bindPopup(
+            "Localização inicial do mapa."
+        );
+
+
+    // --------------------------------------------------------
+    // Corrigir tamanho do mapa
+    // --------------------------------------------------------
+
+    setTimeout(
+        function () {
+
+            if (mapaCorrida) {
+
+                mapaCorrida.invalidateSize();
+
+            }
+
+        },
+        300
+    );
+
+
+    console.log(
+        "Mapa da corrida iniciado."
+    );
+
+}
+
+
+// ============================================================
+// LOCALIZAÇÃO ATUAL
+// ============================================================
+
+function obterLocalizacao() {
+
+    if (
+        !navigator.geolocation
+    ) {
+
+        mostrarMensagem(
+            "Seu navegador não suporta localização.",
+            "erro"
+        );
+
+        return;
+
+    }
+
+
+    if (!mapaCorrida) {
+
+        mostrarMensagem(
+            "O mapa ainda não foi carregado.",
+            "erro"
+        );
+
+        return;
+
+    }
+
+
+    if (btnLocalizacao) {
+
+        btnLocalizacao.disabled =
+            true;
+
+        btnLocalizacao.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Localizando...';
+
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function (posicao) {
+
+            const latitude =
+                posicao.coords.latitude;
+
+            const longitude =
+                posicao.coords.longitude;
+
+
+            // ------------------------------------------------
+            // Centralizar mapa
+            // ------------------------------------------------
+
+            mapaCorrida.setView(
+                [
+                    latitude,
+                    longitude
+                ],
+                17
+            );
+
+
+            // ------------------------------------------------
+            // Remover marcador anterior
+            // ------------------------------------------------
+
+            if (marcadorUsuario) {
+
+                mapaCorrida.removeLayer(
+                    marcadorUsuario
+                );
+
+            }
+
+
+            // ------------------------------------------------
+            // Criar novo marcador
+            // ------------------------------------------------
+
+            marcadorUsuario =
+                L.marker(
+                    [
+                        latitude,
+                        longitude
+                    ]
+                )
+                .addTo(
+                    mapaCorrida
+                )
+                .bindPopup(
+                    "Você está aqui."
+                )
+                .openPopup();
+
+
+            // ------------------------------------------------
+            // Preencher origem
+            // ------------------------------------------------
+
+            if (campoOrigem) {
+
+                campoOrigem.value =
+                    latitude.toFixed(6) +
+                    ", " +
+                    longitude.toFixed(6);
+
+            }
+
+
+            // ------------------------------------------------
+            // Botão
+            // ------------------------------------------------
+
+            if (btnLocalizacao) {
+
+                btnLocalizacao.disabled =
+                    false;
+
+                btnLocalizacao.innerHTML =
+                    '<i class="fa-solid fa-location-crosshairs"></i> Localização encontrada';
+
+            }
+
+
+            mostrarMensagem(
+                "Sua localização foi encontrada.",
+                "sucesso"
+            );
+
+        },
+
+
+        function (erro) {
+
+            console.error(
+                "Erro de localização:",
+                erro
+            );
+
+
+            let texto =
+                "Não foi possível obter sua localização.";
+
+
+            if (
+                erro.code === 1
+            ) {
+
+                texto =
+                    "Permita o acesso à localização no navegador.";
+
+            }
+
+            else if (
+                erro.code === 2
+            ) {
+
+                texto =
+                    "Sua localização não está disponível.";
+
+            }
+
+            else if (
+                erro.code === 3
+            ) {
+
+                texto =
+                    "A localização demorou demais para responder.";
+
+            }
+
+
+            mostrarMensagem(
+                texto,
+                "erro"
+            );
+
+
+            if (btnLocalizacao) {
+
+                btnLocalizacao.disabled =
+                    false;
+
+                btnLocalizacao.innerHTML =
+                    '<i class="fa-solid fa-location-crosshairs"></i> Usar minha localização';
+
+            }
+
+        },
+
+        {
+            enableHighAccuracy: true,
+
+            timeout: 10000,
+
+            maximumAge: 0
+
+        }
+
+    );
+
+}
+
+
+// ============================================================
+// SOLICITAR CORRIDA
+// ============================================================
+
+async function solicitarCorrida(
+    evento
+) {
+
+    evento.preventDefault();
+
+
+    console.log(
+        "Solicitação de corrida iniciada."
+    );
+
+
+    // --------------------------------------------------------
+    // Verificar Supabase
+    // --------------------------------------------------------
+
+    if (!supabaseDisponivel()) {
+
+        mostrarMensagem(
+            "Erro de conexão com o sistema.",
+            "erro"
+        );
+
+        return;
+
+    }
+
+
+    // --------------------------------------------------------
+    // Verificar usuário
+    // --------------------------------------------------------
+
+    const usuario =
+        await obterUsuario();
+
+
+    if (!usuario) {
+
+        mostrarMensagem(
+            "Você precisa estar logado para solicitar uma corrida.",
+            "erro"
+        );
+
+
+        setTimeout(
+            function () {
+
+                window.location.href =
+                    "login.html";
+
+            },
+            1500
+        );
+
+
+        return;
+
+    }
+
+
+    // --------------------------------------------------------
+    // Verificar tipo de acesso
+    // --------------------------------------------------------
+
+    const tipoAcesso =
+        localStorage.getItem(
+            "tipoAcesso"
+        );
+
+
+    if (
+        tipoAcesso &&
+        tipoAcesso !== "cliente"
+    ) {
+
+        mostrarMensagem(
+            "Somente clientes podem solicitar corridas.",
+            "erro"
+        );
+
+        return;
+
+    }
+
+
+    // --------------------------------------------------------
+    // Campos
+    // --------------------------------------------------------
+
+    const origem =
+        campoOrigem?.value.trim() ||
+        "";
+
+    const destino =
+        campoDestino?.value.trim() ||
+        "";
+
+    const observacao =
+        campoObservacao?.value.trim() ||
+        "";
+
+
+    // --------------------------------------------------------
+    // Validar origem
+    // --------------------------------------------------------
+
+    if (!origem) {
+
+        mostrarMensagem(
+            "Informe o local de partida.",
+            "erro"
+        );
+
+        campoOrigem?.focus();
+
+        return;
+
+    }
+
+
+    // --------------------------------------------------------
+    // Validar destino
+    // --------------------------------------------------------
+
+    if (!destino) {
+
+        mostrarMensagem(
+            "Informe o destino.",
+            "erro"
+        );
+
+        campoDestino?.focus();
+
+        return;
+
+    }
+
+
+    // --------------------------------------------------------
+    // Botão
+    // --------------------------------------------------------
+
+    if (btnSolicitar) {
+
+        btnSolicitar.disabled =
+            true;
+
+        btnSolicitar.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Solicitando...';
+
+    }
+
+
+    try {
+
+        // ====================================================
+        // DADOS DA CORRIDA
+        // ====================================================
+
+        const dadosCorrida = {
+
+            cliente_id:
+                usuario.id,
+
+            origem:
+                origem,
+
+            destino:
+                destino,
+
+            observacao:
+                observacao || null,
+
+            status:
+                "aguardando"
+
+        };
+
+
+        console.log(
+            "Dados enviados para corrida:",
+            dadosCorrida
+        );
+
+
+        // ====================================================
+        // INSERIR NO SUPABASE
+        // ====================================================
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("corridas")
+                .insert(
+                    dadosCorrida
+                )
+                .select()
+                .single();
+
+
+        // ====================================================
+        // TRATAR ERRO
+        // ====================================================
+
+        if (error) {
+
+            console.error(
+                "Erro ao criar corrida:",
+                error
+            );
+
+
+            console.error(
+                "Código:",
+                error.code
+            );
+
+            console.error(
+                "Mensagem:",
+                error.message
+            );
+
+            console.error(
+                "Detalhes:",
+                error.details
+            );
+
+
+            mostrarMensagem(
+                "Não foi possível solicitar a corrida. Verifique o console para mais detalhes.",
+                "erro"
+            );
+
+
+            restaurarBotao();
+
+            return;
+
+        }
+
+
+        // ====================================================
+        // SUCESSO
+        // ====================================================
+
+        console.log(
+            "Corrida criada com sucesso:",
+            data
+        );
+
+
+        // ----------------------------------------------------
+        // Salvar corrida atual
+        // ----------------------------------------------------
+
+        if (data?.id) {
+
+            localStorage.setItem(
+                "corridaAtual",
+                data.id
+            );
+
+        }
+
+
+        // ----------------------------------------------------
+        // Mensagem
+        // ----------------------------------------------------
+
+        mostrarMensagem(
+            "Corrida solicitada com sucesso! Aguardando atendimento.",
+            "sucesso"
+        );
+
+
+        // ----------------------------------------------------
+        // Botão
+        // ----------------------------------------------------
+
+        if (btnSolicitar) {
+
+            btnSolicitar.disabled =
+                true;
+
+            btnSolicitar.innerHTML =
+                '<i class="fa-solid fa-check"></i> Corrida solicitada';
+
+        }
+
+
+        // ----------------------------------------------------
+        // Acompanhar
+        // ----------------------------------------------------
+
+        if (data?.id) {
+
+            iniciarAcompanhamentoCorrida(
+                data.id
+            );
+
+        }
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro inesperado ao solicitar corrida:",
+            erro
+        );
+
+
+        mostrarMensagem(
+            "Ocorreu um erro ao conectar com o sistema.",
+            "erro"
+        );
+
+
+        restaurarBotao();
+
+    }
+
+}
+
+
+// ============================================================
 // MENSAGEM
 // ============================================================
 
-function mostrarMensagemCorrida(
+function mostrarMensagem(
     texto,
     tipo = "erro"
 ) {
 
     if (!mensagemCorrida) {
+
         return;
+
     }
 
 
@@ -118,7 +957,13 @@ function mostrarMensagemCorrida(
         texto;
 
 
-    if (tipo === "sucesso") {
+    mensagemCorrida.style.display =
+        "block";
+
+
+    if (
+        tipo === "sucesso"
+    ) {
 
         mensagemCorrida.style.color =
             "#00cc66";
@@ -136,818 +981,23 @@ function mostrarMensagemCorrida(
 
 
 // ============================================================
-// CARREGAR MOTORISTAS
+// RESTAURAR BOTÃO
 // ============================================================
 
-async function carregarMotoristas() {
+function restaurarBotao() {
 
-    const listaMotoristas =
-        document.getElementById(
-            "listaMotoristas"
-        );
-
-
-    if (!listaMotoristas) {
-        return;
-    }
-
-
-    if (
-        typeof supabaseClient === "undefined" ||
-        !supabaseClient
-    ) {
-
-        console.error(
-            "Supabase não encontrado."
-        );
-
-        listaMotoristas.innerHTML =
-            "<p>Erro de conexão com o sistema.</p>";
+    if (!btnSolicitar) {
 
         return;
 
     }
 
 
-    listaMotoristas.innerHTML =
-        "<p>Carregando motoristas...</p>";
-
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("motoristas")
-                .select("*")
-                .eq("ativo", true);
-
-
-        if (error) {
-
-            console.error(
-                "Erro ao carregar motoristas:",
-                error
-            );
-
-
-            listaMotoristas.innerHTML =
-                "<p>Não foi possível carregar os motoristas.</p>";
-
-            return;
-
-        }
-
-
-        if (
-            !data ||
-            data.length === 0
-        ) {
-
-            listaMotoristas.innerHTML =
-                "<p>Nenhum motorista disponível no momento.</p>";
-
-            return;
-
-        }
-
-
-        listaMotoristas.innerHTML = "";
-
-
-        data.forEach(
-            function(motorista) {
-
-                criarCardMotorista(
-                    motorista,
-                    listaMotoristas
-                );
-
-            }
-        );
-
-    }
-
-    catch (erro) {
-
-        console.error(
-            "Erro inesperado:",
-            erro
-        );
-
-
-        listaMotoristas.innerHTML =
-            "<p>Erro ao carregar motoristas.</p>";
-
-    }
-
-}
-
-
-// ============================================================
-// CRIAR CARD DO MOTORISTA
-// ============================================================
-
-function criarCardMotorista(
-    motorista,
-    container
-) {
-
-    const card =
-        document.createElement("div");
-
-
-    card.className =
-        "motorista-corrida-card";
-
-
-    card.dataset.motoristaId =
-        motorista.id;
-
-
-    const nome =
-        motorista.nome ||
-        "Motorista";
-
-
-    const modelo =
-        motorista.modelo ||
-        motorista.carro_modelo ||
-        "Veículo não informado";
-
-
-    const marca =
-        motorista.marca ||
-        motorista.carro_marca ||
-        "";
-
-
-    const cor =
-        motorista.cor ||
-        "";
-
-
-    const placa =
-        motorista.placa ||
-        "Placa não informada";
-
-
-    const telefone =
-        motorista.telefone ||
-        "";
-
-
-    card.innerHTML = `
-
-        <div class="motorista-corrida-conteudo">
-
-            <div class="motorista-corrida-icone">
-
-                <i class="fa-solid fa-taxi"></i>
-
-            </div>
-
-
-            <div class="motorista-corrida-info">
-
-                <h3>
-                    ${escaparHTML(nome)}
-                </h3>
-
-                <p>
-                    ${escaparHTML(
-                        (marca + " " + modelo).trim()
-                    )}
-                </p>
-
-                <p>
-                    Cor:
-                    ${escaparHTML(
-                        cor || "Não informada"
-                    )}
-                </p>
-
-                <p>
-                    Placa:
-                    ${escaparHTML(placa)}
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <button
-            type="button"
-            class="btn-selecionar-motorista"
-        >
-            Escolher motorista
-        </button>
-
-    `;
-
-
-    const botao =
-        card.querySelector(
-            ".btn-selecionar-motorista"
-        );
-
-
-    if (botao) {
-
-        botao.addEventListener(
-            "click",
-            function() {
-
-                selecionarMotorista(
-                    motorista
-                );
-
-            }
-        );
-
-    }
-
-
-    container.appendChild(card);
-
-}
-
-
-// ============================================================
-// ESCOLHER MOTORISTA
-// ============================================================
-
-function selecionarMotorista(
-    motorista
-) {
-
-    if (!motorista || !motorista.id) {
-
-        mostrarMensagemCorrida(
-            "Não foi possível selecionar este motorista.",
-            "erro"
-        );
-
-        return;
-
-    }
-
-
-    motoristaSelecionado =
-        motorista;
-
-
-    // --------------------------------------------------------
-    // Remover seleção anterior
-    // --------------------------------------------------------
-
-    document
-        .querySelectorAll(
-            ".motorista-corrida-card"
-        )
-        .forEach(
-            function(card) {
-
-                card.classList.remove(
-                    "motorista-selecionado"
-                );
-
-            }
-        );
-
-
-    // --------------------------------------------------------
-    // Marcar motorista escolhido
-    // --------------------------------------------------------
-
-    const cardSelecionado =
-        document.querySelector(
-            `[data-motorista-id="${motorista.id}"]`
-        );
-
-
-    if (cardSelecionado) {
-
-        cardSelecionado.classList.add(
-            "motorista-selecionado"
-        );
-
-    }
-
-
-    // --------------------------------------------------------
-    // Guardar somente o ID
-    // --------------------------------------------------------
-
-    localStorage.setItem(
-        "motoristaSelecionado",
-        motorista.id
-    );
-
-
-    mostrarMensagemCorrida(
-        "Motorista selecionado. Agora informe os dados da corrida.",
-        "sucesso"
-    );
-
-
-    // --------------------------------------------------------
-    // Mostrar área da solicitação
-    // --------------------------------------------------------
-
-    const areaSolicitacao =
-        document.getElementById(
-            "areaSolicitacao"
-        );
-
-
-    if (areaSolicitacao) {
-
-        areaSolicitacao.style.display =
-            "block";
-
-    }
-
-}
-
-
-// ============================================================
-// RECUPERAR MOTORISTA SALVO
-// ============================================================
-
-function recuperarMotoristaSelecionado() {
-
-    const motoristaId =
-        localStorage.getItem(
-            "motoristaSelecionado"
-        );
-
-
-    if (!motoristaId) {
-        return;
-    }
-
-
-    const card =
-        document.querySelector(
-            `[data-motorista-id="${motoristaId}"]`
-        );
-
-
-    if (card) {
-
-        card.classList.add(
-            "motorista-selecionado"
-        );
-
-    }
-
-}
-
-
-// ============================================================
-// SOLICITAR CORRIDA
-// ============================================================
-
-if (paginaCorrida) {
-
-    paginaCorrida.addEventListener(
-        "submit",
-        async function(event) {
-
-            event.preventDefault();
-
-
-            // =================================================
-            // VERIFICAR MOTORISTA
-            // =================================================
-
-            if (!motoristaSelecionado) {
-
-                const motoristaIdSalvo =
-                    localStorage.getItem(
-                        "motoristaSelecionado"
-                    );
-
-
-                if (!motoristaIdSalvo) {
-
-                    mostrarMensagemCorrida(
-                        "Escolha um motorista antes de solicitar a corrida.",
-                        "erro"
-                    );
-
-                    return;
-
-                }
-
-            }
-
-
-            // =================================================
-            // VERIFICAR USUÁRIO
-            // =================================================
-
-            const usuario =
-                await verificarUsuario();
-
-
-            if (!usuario) {
-
-                mostrarMensagemCorrida(
-                    "Você precisa estar logado para solicitar uma corrida.",
-                    "erro"
-                );
-
-
-                setTimeout(
-                    function() {
-
-                        window.location.href =
-                            "login.html";
-
-                    },
-                    1500
-                );
-
-
-                return;
-
-            }
-
-
-            // =================================================
-            // VERIFICAR TIPO DE ACESSO
-            // =================================================
-
-            const tipoAcesso =
-                localStorage.getItem(
-                    "tipoAcesso"
-                );
-
-
-            if (
-                tipoAcesso &&
-                tipoAcesso !== "cliente"
-            ) {
-
-                mostrarMensagemCorrida(
-                    "Somente clientes podem solicitar corridas.",
-                    "erro"
-                );
-
-                return;
-
-            }
-
-
-            // =================================================
-            // CAMPOS
-            // =================================================
-
-            const origem =
-                obterValorCampo(
-                    "origem"
-                );
-
-
-            const destino =
-                obterValorCampo(
-                    "destino"
-                );
-
-
-            const formaPagamento =
-                obterValorCampo(
-                    "formaPagamento"
-                );
-
-
-            const valorCampo =
-                obterValorCampo(
-                    "valor"
-                );
-
-
-            // =================================================
-            // VALIDAR ORIGEM
-            // =================================================
-
-            if (!origem) {
-
-                mostrarMensagemCorrida(
-                    "Informe o local de origem.",
-                    "erro"
-                );
-
-                return;
-
-            }
-
-
-            // =================================================
-            // VALIDAR DESTINO
-            // =================================================
-
-            if (!destino) {
-
-                mostrarMensagemCorrida(
-                    "Informe o destino.",
-                    "erro"
-                );
-
-                return;
-
-            }
-
-
-            // =================================================
-            // VALIDAR PAGAMENTO
-            // =================================================
-
-            if (!formaPagamento) {
-
-                mostrarMensagemCorrida(
-                    "Escolha uma forma de pagamento.",
-                    "erro"
-                );
-
-                return;
-
-            }
-
-
-            // =================================================
-            // VALIDAR VALOR
-            // =================================================
-
-            let valor = null;
-
-
-            if (valorCampo) {
-
-                valor =
-                    parseFloat(
-                        valorCampo
-                            .replace("R$", "")
-                            .replace(/\./g, "")
-                            .replace(",", ".")
-                            .trim()
-                    );
-
-
-                if (
-                    isNaN(valor) ||
-                    valor < 0
-                ) {
-
-                    mostrarMensagemCorrida(
-                        "Informe um valor válido para a corrida.",
-                        "erro"
-                    );
-
-                    return;
-
-                }
-
-            }
-
-
-            // =================================================
-            // BOTÃO
-            // =================================================
-
-            if (btnSolicitar) {
-
-                btnSolicitar.disabled =
-                    true;
-
-                btnSolicitar.textContent =
-                    "Solicitando...";
-
-            }
-
-
-            try {
-
-                // =================================================
-                // VERIFICAR MOTORISTA NO BANCO
-                // =================================================
-
-                let motoristaId =
-                    motoristaSelecionado
-                        ? motoristaSelecionado.id
-                        : localStorage.getItem(
-                            "motoristaSelecionado"
-                        );
-
-
-                const {
-                    data: motorista,
-                    error: erroMotorista
-                } =
-                    await supabaseClient
-                        .from("motoristas")
-                        .select("id, ativo")
-                        .eq("id", motoristaId)
-                        .maybeSingle();
-
-
-                if (erroMotorista) {
-
-                    console.error(
-                        "Erro ao verificar motorista:",
-                        erroMotorista
-                    );
-
-
-                    mostrarMensagemCorrida(
-                        "Não foi possível verificar o motorista.",
-                        "erro"
-                    );
-
-
-                    restaurarBotaoCorrida();
-
-                    return;
-
-                }
-
-
-                if (!motorista) {
-
-                    mostrarMensagemCorrida(
-                        "O motorista selecionado não foi encontrado.",
-                        "erro"
-                    );
-
-
-                    restaurarBotaoCorrida();
-
-                    return;
-
-                }
-
-
-                if (!motorista.ativo) {
-
-                    mostrarMensagemCorrida(
-                        "Este motorista não está disponível no momento.",
-                        "erro"
-                    );
-
-
-                    restaurarBotaoCorrida();
-
-                    return;
-
-                }
-
-
-                // =================================================
-                // DADOS DA CORRIDA
-                // =================================================
-
-                const dadosCorrida = {
-
-                    cliente_id:
-                        usuario.id,
-
-                    motorista_id:
-                        motoristaId,
-
-                    origem:
-                        origem,
-
-                    destino:
-                        destino,
-
-                    forma_pagamento:
-                        formaPagamento,
-
-                    status:
-                        "aguardando"
-
-                };
-
-
-                // -------------------------------------------------
-                // ADICIONAR VALOR
-                // -------------------------------------------------
-
-                if (valor !== null) {
-
-                    dadosCorrida.valor =
-                        valor;
-
-                }
-
-
-                // =================================================
-                // INSERIR CORRIDA
-                // =================================================
-
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient
-                        .from("corridas")
-                        .insert(
-                            dadosCorrida
-                        )
-                        .select()
-                        .single();
-
-
-                // =================================================
-                // ERRO
-                // =================================================
-
-                if (error) {
-
-                    console.error(
-                        "Erro ao criar corrida:",
-                        error
-                    );
-
-
-                    mostrarMensagemCorrida(
-                        "Não foi possível solicitar a corrida.",
-                        "erro"
-                    );
-
-
-                    restaurarBotaoCorrida();
-
-                    return;
-
-                }
-
-
-                // =================================================
-                // SUCESSO
-                // =================================================
-
-                console.log(
-                    "Corrida criada:",
-                    data
-                );
-
-
-                localStorage.setItem(
-                    "corridaAtual",
-                    data.id
-                );
-
-
-                mostrarMensagemCorrida(
-                    "Corrida solicitada com sucesso! Aguardando o motorista.",
-                    "sucesso"
-                );
-
-
-                if (btnSolicitar) {
-
-                    btnSolicitar.textContent =
-                        "Corrida solicitada";
-
-                }
-
-
-                // =================================================
-                // ACOMPANHAR EM TEMPO REAL
-                // =================================================
-
-                iniciarAcompanhamentoCorrida(
-                    data.id
-                );
-
-            }
-
-            catch (erro) {
-
-                console.error(
-                    "Erro inesperado:",
-                    erro
-                );
-
-
-                mostrarMensagemCorrida(
-                    "Erro ao conectar com o sistema.",
-                    "erro"
-                );
-
-
-                restaurarBotaoCorrida();
-
-            }
-
-        }
-    );
+    btnSolicitar.disabled =
+        false;
+
+    btnSolicitar.innerHTML =
+        "Solicitar Corrida";
 
 }
 
@@ -962,8 +1012,7 @@ async function iniciarAcompanhamentoCorrida(
 
     if (
         !corridaId ||
-        typeof supabaseClient === "undefined" ||
-        !supabaseClient
+        !supabaseDisponivel()
     ) {
 
         return;
@@ -977,9 +1026,13 @@ async function iniciarAcompanhamentoCorrida(
 
     if (canalCorrida) {
 
-        await supabaseClient.removeChannel(
-            canalCorrida
-        );
+        await supabaseClient
+            .removeChannel(
+                canalCorrida
+            );
+
+        canalCorrida =
+            null;
 
     }
 
@@ -997,12 +1050,16 @@ async function iniciarAcompanhamentoCorrida(
                 "postgres_changes",
                 {
                     event: "UPDATE",
+
                     schema: "public",
+
                     table: "corridas",
+
                     filter:
-                        "id=eq." + corridaId
+                        "id=eq." +
+                        corridaId
                 },
-                function(payload) {
+                function (payload) {
 
                     console.log(
                         "Atualização da corrida:",
@@ -1017,7 +1074,7 @@ async function iniciarAcompanhamentoCorrida(
                 }
             )
             .subscribe(
-                function(status) {
+                function (status) {
 
                     console.log(
                         "Canal da corrida:",
@@ -1039,27 +1096,19 @@ function atualizarStatusCorrida(
 ) {
 
     if (!corrida) {
+
         return;
+
     }
-
-
-    const elementoStatus =
-        document.getElementById(
-            "statusCorrida"
-        );
-
-
-    const status =
-        corrida.status;
 
 
     const mensagens = {
 
         aguardando:
-            "Aguardando o motorista aceitar a corrida.",
+            "Aguardando atendimento.",
 
         aceita:
-            "Motorista aceitou sua corrida.",
+            "Sua corrida foi aceita.",
 
         motorista_a_caminho:
             "O motorista está a caminho.",
@@ -1077,166 +1126,29 @@ function atualizarStatusCorrida(
             "Corrida concluída com sucesso.",
 
         cancelada:
-            "Corrida cancelada."
+            "A corrida foi cancelada."
 
     };
 
 
-    if (elementoStatus) {
-
-        elementoStatus.textContent =
-            mensagens[status] ||
-            "Status: " + status;
-
-    }
+    const mensagem =
+        mensagens[corrida.status] ||
+        "Status: " +
+        (corrida.status || "aguardando");
 
 
-    // =========================================================
-    // PAGAMENTO
-    // =========================================================
-
-    if (
-        status ===
-        "aguardando_pagamento"
-    ) {
-
-        const areaPagamento =
-            document.getElementById(
-                "areaPagamento"
-            );
+    mostrarMensagem(
+        mensagem,
+        corrida.status === "cancelada"
+            ? "erro"
+            : "sucesso"
+    );
 
 
-        if (areaPagamento) {
-
-            areaPagamento.style.display =
-                "block";
-
-        }
-
-    }
-
-
-    // =========================================================
-    // CONCLUÍDA
-    // =========================================================
-
-    if (
-        status ===
-        "concluida"
-    ) {
-
-        mostrarMensagemCorrida(
-            "Corrida concluída!",
-            "sucesso"
-        );
-
-    }
-
-
-    // =========================================================
-    // CANCELADA
-    // =========================================================
-
-    if (
-        status ===
-        "cancelada"
-    ) {
-
-        mostrarMensagemCorrida(
-            "A corrida foi cancelada.",
-            "erro"
-        );
-
-
-        restaurarBotaoCorrida();
-
-    }
-
-}
-
-
-// ============================================================
-// RESTAURAR BOTÃO
-// ============================================================
-
-function restaurarBotaoCorrida() {
-
-    if (!btnSolicitar) {
-        return;
-    }
-
-
-    btnSolicitar.disabled =
-        false;
-
-
-    btnSolicitar.textContent =
-        "Solicitar Corrida";
-
-}
-
-
-// ============================================================
-// OBTER VALOR DE CAMPO
-// ============================================================
-
-function obterValorCampo(
-    id
-) {
-
-    const campo =
-        document.getElementById(id);
-
-
-    if (!campo) {
-        return "";
-    }
-
-
-    return campo.value.trim();
-
-}
-
-
-// ============================================================
-// SEGURANÇA HTML
-// ============================================================
-
-function escaparHTML(
-    texto
-) {
-
-    if (
-        texto === null ||
-        texto === undefined
-    ) {
-
-        return "";
-
-    }
-
-
-    return String(texto)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    console.log(
+        "Status atual da corrida:",
+        corrida.status
+    );
 
 }
 
@@ -1247,22 +1159,20 @@ function escaparHTML(
 
 async function carregarCorridaAtual() {
 
-    const corridaAtual =
+    const corridaId =
         localStorage.getItem(
             "corridaAtual"
         );
 
 
-    if (!corridaAtual) {
+    if (!corridaId) {
 
         return;
 
     }
 
 
-    if (
-        typeof supabaseClient === "undefined"
-    ) {
+    if (!supabaseDisponivel()) {
 
         return;
 
@@ -1278,7 +1188,10 @@ async function carregarCorridaAtual() {
             await supabaseClient
                 .from("corridas")
                 .select("*")
-                .eq("id", corridaAtual)
+                .eq(
+                    "id",
+                    corridaId
+                )
                 .maybeSingle();
 
 
@@ -1305,6 +1218,12 @@ async function carregarCorridaAtual() {
         }
 
 
+        console.log(
+            "Corrida atual:",
+            data
+        );
+
+
         atualizarStatusCorrida(
             data
         );
@@ -1329,27 +1248,19 @@ async function carregarCorridaAtual() {
 
 
 // ============================================================
-// LIMPAR CORRIDA ATUAL
+// LIMPAR CORRIDA
 // ============================================================
 
-function limparCorridaAtual() {
+async function limparCorridaAtual() {
 
     localStorage.removeItem(
         "corridaAtual"
     );
 
-    localStorage.removeItem(
-        "motoristaSelecionado"
-    );
-
-
-    motoristaSelecionado =
-        null;
-
 
     if (canalCorrida) {
 
-        supabaseClient
+        await supabaseClient
             .removeChannel(
                 canalCorrida
             );
@@ -1359,24 +1270,9 @@ function limparCorridaAtual() {
 
     }
 
+
+    console.log(
+        "Corrida atual removida."
+    );
+
 }
-
-
-// ============================================================
-// INICIALIZAÇÃO
-// ============================================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    async function() {
-
-        await carregarMotoristas();
-
-
-        recuperarMotoristaSelecionado();
-
-
-        await carregarCorridaAtual();
-
-    }
-);
