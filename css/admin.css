@@ -1306,3 +1306,209 @@ body {
     }
 
 }
+/* ============================================================
+   CORREÇÃO DEFINITIVA - CABEÇALHO NÃO PODE COBRIR O CONTEÚDO
+   VAIDTÁXI - PAINEL ADMINISTRATIVO
+============================================================ */
+
+
+/* ------------------------------------------------------------
+   LAYOUT
+------------------------------------------------------------ */
+
+.admin-layout {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+}
+
+
+/* ------------------------------------------------------------
+   MENU LATERAL
+------------------------------------------------------------ */
+
+.admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 270px;
+    height: 100vh;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    z-index: 1000;
+}
+
+
+/* ------------------------------------------------------------
+   ÁREA PRINCIPAL
+------------------------------------------------------------ */
+
+.admin-conteudo {
+
+    margin-left: 270px;
+
+    width: calc(100% - 270px);
+
+    min-height: 100vh;
+
+    box-sizing: border-box;
+
+    /*
+       IMPORTANTE:
+       espaço reservado para o cabeçalho
+    */
+    padding-top: 145px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+}
+
+
+/* ------------------------------------------------------------
+   CABEÇALHO
+------------------------------------------------------------ */
+
+.admin-topo {
+
+    position: fixed;
+
+    top: 0;
+    left: 270px;
+    right: 0;
+
+    width: auto;
+
+    min-height: 145px;
+
+    box-sizing: border-box;
+
+    z-index: 900;
+
+}
+
+
+/* ------------------------------------------------------------
+   PRIMEIRA SEÇÃO
+------------------------------------------------------------ */
+
+.admin-secao {
+
+    position: relative;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ------------------------------------------------------------
+   EVITA QUE O CONTEÚDO FIQUE ESCONDIDO
+------------------------------------------------------------ */
+
+.admin-secao:first-of-type {
+    margin-top: 0;
+}
+
+
+/* ------------------------------------------------------------
+   TABELAS
+------------------------------------------------------------ */
+
+.admin-tabela-container {
+
+    width: 100%;
+
+    overflow-x: auto;
+    overflow-y: visible;
+
+}
+
+
+/* ------------------------------------------------------------
+   TELAS MENORES
+------------------------------------------------------------ */
+
+@media (max-width: 1100px) {
+
+    .admin-sidebar {
+        width: 230px;
+    }
+
+    .admin-conteudo {
+
+        margin-left: 230px;
+
+        width: calc(100% - 230px);
+
+        padding-top: 145px;
+
+    }
+
+    .admin-topo {
+
+        left: 230px;
+
+    }
+
+}
+
+
+/* ------------------------------------------------------------
+   CELULAR
+------------------------------------------------------------ */
+
+@media (max-width: 768px) {
+
+    .admin-layout {
+        display: block;
+    }
+
+
+    .admin-sidebar {
+
+        position: relative;
+
+        width: 100%;
+
+        height: auto;
+
+        min-height: auto;
+
+    }
+
+
+    .admin-conteudo {
+
+        margin-left: 0;
+
+        width: 100%;
+
+        min-height: auto;
+
+        padding-top: 0;
+
+        overflow: visible;
+
+    }
+
+
+    .admin-topo {
+
+        position: relative;
+
+        top: auto;
+        left: auto;
+        right: auto;
+
+        width: 100%;
+
+        min-height: auto;
+
+    }
+
+}
