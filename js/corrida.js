@@ -148,7 +148,7 @@ document.addEventListener(
 
 
         // --------------------------------------------------------
-        // LOCALIZAÇÃO
+        // BOTÃO DE LOCALIZAÇÃO
         // --------------------------------------------------------
 
         if (btnLocalizacao) {
@@ -172,7 +172,7 @@ document.addEventListener(
 
 
         // --------------------------------------------------------
-        // RECUPERAR CORRIDA
+        // RECUPERAR CORRIDA ATUAL
         // --------------------------------------------------------
 
         await carregarCorridaAtual();
@@ -557,6 +557,38 @@ function selecionarMotorista(
 
 
 // ============================================================
+// CRIAR ÍCONE DO VAIDTÁXI
+// ============================================================
+
+function criarIconeVaidTaxi() {
+
+    return L.divIcon({
+
+        className:
+            "marcador-vaidtaxi",
+
+        html:
+            `
+            <div class="marcador-pino">
+                <i class="fa-solid fa-location-dot"></i>
+            </div>
+            `,
+
+        iconSize:
+            [42, 42],
+
+        iconAnchor:
+            [21, 42],
+
+        popupAnchor:
+            [0, -42]
+
+    });
+
+}
+
+
+// ============================================================
 // MAPA
 // ============================================================
 
@@ -592,6 +624,18 @@ function iniciarMapa() {
     }
 
 
+    // --------------------------------------------------------
+    // GARANTIR ALTURA DO MAPA
+    // --------------------------------------------------------
+
+    elementoMapa.style.height =
+        "420px";
+
+
+    // --------------------------------------------------------
+    // COORDENADAS INICIAIS
+    // --------------------------------------------------------
+
     const latitudeInicial =
         -16.1425;
 
@@ -599,49 +643,122 @@ function iniciarMapa() {
         -40.2931;
 
 
+    // --------------------------------------------------------
+    // CRIAR MAPA
+    // --------------------------------------------------------
+
     mapaCorrida =
         L.map(
-            "mapaCorrida"
+            "mapaCorrida",
+            {
+
+                zoomControl:
+                    true,
+
+                scrollWheelZoom:
+                    true
+
+            }
         ).setView(
+
             [
                 latitudeInicial,
                 longitudeInicial
             ],
+
             14
+
         );
 
 
+    // --------------------------------------------------------
+    // MAPA ESCURO
+    // --------------------------------------------------------
+
     L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+
         {
 
-            maxZoom:19,
+            maxZoom:
+                19,
 
             attribution:
-                "&copy; OpenStreetMap contributors"
+                '&copy; OpenStreetMap &copy; CARTO',
+
+            subdomains:
+                "abcd"
 
         }
+
     ).addTo(
         mapaCorrida
     );
 
 
+    // --------------------------------------------------------
+    // ÍCONE DO VAIDTÁXI
+    // --------------------------------------------------------
+
+    const iconeVaidTaxi =
+        criarIconeVaidTaxi();
+
+
+    // --------------------------------------------------------
+    // MARCADOR INICIAL
+    // --------------------------------------------------------
+
     marcadorUsuario =
         L.marker(
+
             [
                 latitudeInicial,
                 longitudeInicial
-            ]
+            ],
+
+            {
+
+                icon:
+                    iconeVaidTaxi
+
+            }
+
         )
         .addTo(
             mapaCorrida
         )
         .bindPopup(
-            "Localização inicial do mapa."
+
+            `
+            <strong>VaidTáxi</strong>
+            <br>
+            Localização inicial do mapa.
+            `
+
         );
 
 
+    // --------------------------------------------------------
+    // CONTROLE DE ESCALA
+    // --------------------------------------------------------
+
+    L.control.scale({
+
+        imperial:
+            false
+
+    }).addTo(
+        mapaCorrida
+    );
+
+
+    // --------------------------------------------------------
+    // CORRIGIR TAMANHO
+    // --------------------------------------------------------
+
     setTimeout(
+
         function () {
 
             if (mapaCorrida) {
@@ -651,7 +768,9 @@ function iniciarMapa() {
             }
 
         },
-        300
+
+        500
+
     );
 
 
@@ -663,7 +782,7 @@ function iniciarMapa() {
 
 
 // ============================================================
-// LOCALIZAÇÃO
+// LOCALIZAÇÃO ATUAL
 // ============================================================
 
 function obterLocalizacao() {
@@ -716,14 +835,25 @@ function obterLocalizacao() {
                 posicao.coords.longitude;
 
 
+            // ------------------------------------------------
+            // CENTRALIZAR MAPA
+            // ------------------------------------------------
+
             mapaCorrida.setView(
+
                 [
                     latitude,
                     longitude
                 ],
+
                 17
+
             );
 
+
+            // ------------------------------------------------
+            // REMOVER MARCADOR ANTERIOR
+            // ------------------------------------------------
 
             if (marcadorUsuario) {
 
@@ -734,31 +864,104 @@ function obterLocalizacao() {
             }
 
 
+            // ------------------------------------------------
+            // CRIAR ÍCONE DO VAIDTÁXI
+            // ------------------------------------------------
+
+            const iconeVaidTaxi =
+                criarIconeVaidTaxi();
+
+
+            // ------------------------------------------------
+            // NOVO MARCADOR
+            // ------------------------------------------------
+
             marcadorUsuario =
                 L.marker(
+
                     [
                         latitude,
                         longitude
-                    ]
+                    ],
+
+                    {
+
+                        icon:
+                            iconeVaidTaxi
+
+                    }
+
                 )
                 .addTo(
                     mapaCorrida
                 )
                 .bindPopup(
-                    "Você está aqui."
+
+                    `
+                    <strong>Você está aqui</strong>
+                    <br>
+                    Localização encontrada pelo GPS.
+                    `
+
                 )
                 .openPopup();
 
 
+            // ------------------------------------------------
+            // CÍRCULO DE PRECISÃO
+            // ------------------------------------------------
+
+            L.circle(
+
+                [
+                    latitude,
+                    longitude
+                ],
+
+                {
+
+                    radius:
+                        posicao.coords.accuracy,
+
+                    color:
+                        "#FFD000",
+
+                    fillColor:
+                        "#FFD000",
+
+                    fillOpacity:
+                        0.10,
+
+                    weight:
+                        2
+
+                }
+
+            ).addTo(
+                mapaCorrida
+            );
+
+
+            // ------------------------------------------------
+            // PREENCHER ORIGEM
+            // ------------------------------------------------
+
             if (campoOrigem) {
 
                 campoOrigem.value =
+
                     latitude.toFixed(6) +
+
                     ", " +
+
                     longitude.toFixed(6);
 
             }
 
+
+            // ------------------------------------------------
+            // BOTÃO
+            // ------------------------------------------------
 
             if (btnLocalizacao) {
 
@@ -791,21 +994,27 @@ function obterLocalizacao() {
                 "Não foi possível obter sua localização.";
 
 
-            if (erro.code === 1) {
+            if (
+                erro.code === 1
+            ) {
 
                 texto =
                     "Permita o acesso à localização no navegador.";
 
             }
 
-            else if (erro.code === 2) {
+            else if (
+                erro.code === 2
+            ) {
 
                 texto =
                     "Sua localização não está disponível.";
 
             }
 
-            else if (erro.code === 3) {
+            else if (
+                erro.code === 3
+            ) {
 
                 texto =
                     "A localização demorou demais para responder.";
@@ -831,13 +1040,17 @@ function obterLocalizacao() {
 
         },
 
+
         {
 
-            enableHighAccuracy:true,
+            enableHighAccuracy:
+                true,
 
-            timeout:10000,
+            timeout:
+                10000,
 
-            maximumAge:0
+            maximumAge:
+                0
 
         }
 
@@ -862,6 +1075,10 @@ async function solicitarCorrida(
     );
 
 
+    // --------------------------------------------------------
+    // SUPABASE
+    // --------------------------------------------------------
+
     if (!supabaseDisponivel()) {
 
         mostrarMensagem(
@@ -873,6 +1090,10 @@ async function solicitarCorrida(
 
     }
 
+
+    // --------------------------------------------------------
+    // USUÁRIO
+    // --------------------------------------------------------
 
     const usuario =
         await obterUsuario();
@@ -887,13 +1108,16 @@ async function solicitarCorrida(
 
 
         setTimeout(
+
             function () {
 
                 window.location.href =
                     "login.html";
 
             },
+
             1500
+
         );
 
 
@@ -901,6 +1125,10 @@ async function solicitarCorrida(
 
     }
 
+
+    // --------------------------------------------------------
+    // TIPO DE ACESSO
+    // --------------------------------------------------------
 
     const tipoAcesso =
         localStorage.getItem(
@@ -924,7 +1152,7 @@ async function solicitarCorrida(
 
 
     // --------------------------------------------------------
-    // MOTORISTA
+    // VERIFICAR MOTORISTA
     // --------------------------------------------------------
 
     if (!motoristaSelecionado) {
@@ -938,6 +1166,10 @@ async function solicitarCorrida(
 
     }
 
+
+    // --------------------------------------------------------
+    // CAMPOS
+    // --------------------------------------------------------
 
     const origem =
         campoOrigem?.value.trim() ||
@@ -954,6 +1186,10 @@ async function solicitarCorrida(
         "";
 
 
+    // --------------------------------------------------------
+    // VALIDAR ORIGEM
+    // --------------------------------------------------------
+
     if (!origem) {
 
         mostrarMensagem(
@@ -967,6 +1203,10 @@ async function solicitarCorrida(
 
     }
 
+
+    // --------------------------------------------------------
+    // VALIDAR DESTINO
+    // --------------------------------------------------------
 
     if (!destino) {
 
@@ -982,6 +1222,10 @@ async function solicitarCorrida(
     }
 
 
+    // --------------------------------------------------------
+    // DESABILITAR BOTÃO
+    // --------------------------------------------------------
+
     if (btnSolicitar) {
 
         btnSolicitar.disabled =
@@ -994,6 +1238,10 @@ async function solicitarCorrida(
 
 
     try {
+
+        // ====================================================
+        // DADOS DA CORRIDA
+        // ====================================================
 
         const dadosCorrida = {
 
@@ -1024,6 +1272,10 @@ async function solicitarCorrida(
         );
 
 
+        // ====================================================
+        // INSERIR NO SUPABASE
+        // ====================================================
+
         const {
             data,
             error
@@ -1036,6 +1288,10 @@ async function solicitarCorrida(
                 .select()
                 .single();
 
+
+        // ====================================================
+        // ERRO
+        // ====================================================
 
         if (error) {
 
@@ -1076,11 +1332,19 @@ async function solicitarCorrida(
         }
 
 
+        // ====================================================
+        // SUCESSO
+        // ====================================================
+
         console.log(
             "Corrida criada com sucesso:",
             data
         );
 
+
+        // ----------------------------------------------------
+        // SALVAR CORRIDA ATUAL
+        // ----------------------------------------------------
 
         if (data?.id) {
 
@@ -1092,11 +1356,19 @@ async function solicitarCorrida(
         }
 
 
+        // ----------------------------------------------------
+        // MENSAGEM
+        // ----------------------------------------------------
+
         mostrarMensagem(
             "Corrida solicitada com sucesso! Aguardando atendimento.",
             "sucesso"
         );
 
+
+        // ----------------------------------------------------
+        // BOTÃO
+        // ----------------------------------------------------
 
         if (btnSolicitar) {
 
@@ -1108,6 +1380,10 @@ async function solicitarCorrida(
 
         }
 
+
+        // ----------------------------------------------------
+        // ACOMPANHAR CORRIDA
+        // ----------------------------------------------------
 
         if (data?.id) {
 
@@ -1223,6 +1499,10 @@ async function iniciarAcompanhamentoCorrida(
     }
 
 
+    // --------------------------------------------------------
+    // REMOVER CANAL ANTERIOR
+    // --------------------------------------------------------
+
     if (canalCorrida) {
 
         await supabaseClient
@@ -1236,26 +1516,36 @@ async function iniciarAcompanhamentoCorrida(
     }
 
 
+    // --------------------------------------------------------
+    // CRIAR CANAL
+    // --------------------------------------------------------
+
     canalCorrida =
         supabaseClient
             .channel(
                 "corrida-" + corridaId
             )
             .on(
+
                 "postgres_changes",
+
                 {
 
-                    event:"UPDATE",
+                    event:
+                        "UPDATE",
 
-                    schema:"public",
+                    schema:
+                        "public",
 
-                    table:"corridas",
+                    table:
+                        "corridas",
 
                     filter:
                         "id=eq." +
                         corridaId
 
                 },
+
                 function (payload) {
 
                     console.log(
@@ -1269,8 +1559,10 @@ async function iniciarAcompanhamentoCorrida(
                     );
 
                 }
+
             )
             .subscribe(
+
                 function (status) {
 
                     console.log(
@@ -1279,6 +1571,7 @@ async function iniciarAcompanhamentoCorrida(
                     );
 
                 }
+
             );
 
 }
@@ -1330,15 +1623,25 @@ function atualizarStatusCorrida(
 
     const mensagem =
         mensagens[corrida.status] ||
+
         "Status: " +
-        (corrida.status || "aguardando");
+
+        (
+            corrida.status ||
+            "aguardando"
+        );
 
 
     mostrarMensagem(
+
         mensagem,
+
         corrida.status === "cancelada"
+
             ? "erro"
+
             : "sucesso"
+
     );
 
 
@@ -1421,10 +1724,42 @@ async function carregarCorridaAtual() {
         );
 
 
+        // ----------------------------------------------------
+        // RECUPERAR MOTORISTA SE EXISTIR
+        // ----------------------------------------------------
+
+        if (
+            data.motorista_id
+        ) {
+
+            motoristaSelecionado =
+                data.motorista_id;
+
+
+            if (
+                campoMotoristaSelecionado
+            ) {
+
+                campoMotoristaSelecionado.value =
+                    data.motorista_id;
+
+            }
+
+        }
+
+
+        // ----------------------------------------------------
+        // ATUALIZAR STATUS
+        // ----------------------------------------------------
+
         atualizarStatusCorrida(
             data
         );
 
+
+        // ----------------------------------------------------
+        // ACOMPANHAR
+        // ----------------------------------------------------
 
         iniciarAcompanhamentoCorrida(
             data.id
@@ -1445,7 +1780,7 @@ async function carregarCorridaAtual() {
 
 
 // ============================================================
-// LIMPAR CORRIDA
+// LIMPAR CORRIDA ATUAL
 // ============================================================
 
 async function limparCorridaAtual() {
