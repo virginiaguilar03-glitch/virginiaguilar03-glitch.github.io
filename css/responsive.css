@@ -551,3 +551,131 @@
     }
 
 }
+/* ============================================================
+   CORREÇÃO - PÁGINA MOTORISTAS
+   VaidTáxi
+   Impede o cabeçalho de cobrir o conteúdo
+============================================================ */
+
+
+/* ============================================================
+   PÁGINA
+============================================================ */
+
+body.pagina-motoristas {
+    overflow-x: hidden;
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+body.pagina-motoristas header {
+    position: relative !important;
+
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+
+    width: 100%;
+
+    z-index: 1000;
+}
+
+
+/* ============================================================
+   CONTEÚDO
+============================================================ */
+
+body.pagina-motoristas main {
+    position: relative;
+
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+}
+
+
+/* ============================================================
+   BANNER
+============================================================ */
+
+body.pagina-motoristas .page-banner {
+    position: relative;
+
+    width: 100%;
+
+    margin: 0;
+}
+
+
+/* ============================================================
+   ÁREA DE PESQUISA
+============================================================ */
+
+body.pagina-motoristas .search-box {
+    position: relative;
+
+    z-index: 1;
+}
+
+
+/* ============================================================
+   LISTA DE MOTORISTAS
+============================================================ */
+
+body.pagina-motoristas #lista-motoristas {
+    position: relative;
+
+    z-index: 1;
+
+    padding-bottom: 40px;
+}
+
+
+/* ============================================================
+   RODAPÉ
+============================================================ */
+
+body.pagina-motoristas footer {
+    position: relative;
+
+    width: 100%;
+
+    z-index: 1;
+}
+
+
+/* ============================================================
+   DESKTOP
+============================================================ */
+
+@media (min-width: 769px) {
+
+    body.pagina-motoristas header {
+        min-height: 80px;
+    }
+
+}
+
+
+/* ============================================================
+   CELULAR
+============================================================ */
+
+@media (max-width: 768px) {
+
+    body.pagina-motoristas header {
+        position: relative !important;
+
+        height: auto;
+        min-height: 70px;
+    }
+
+    body.pagina-motoristas main {
+        padding-top: 0;
+    }
+
+}
