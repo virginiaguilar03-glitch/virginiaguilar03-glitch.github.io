@@ -1,6 +1,6 @@
 // ============================================================
 // CADASTRO.JS - VAIDTÁXI
-// Supabase Auth + cadastro de cliente/parceiro
+// Supabase Auth + Cliente + Parceiro/Motorista
 // ============================================================
 
 
@@ -179,27 +179,33 @@ if (formCadastro) {
             // =================================================
 
             const marca =
-                document.getElementById("marca")
+                document
+                    .getElementById("marca")
                     ?.value.trim() || "";
 
             const modelo =
-                document.getElementById("modelo")
+                document
+                    .getElementById("modelo")
                     ?.value.trim() || "";
 
             const cor =
-                document.getElementById("cor")
+                document
+                    .getElementById("cor")
                     ?.value.trim() || "";
 
             const anoVeiculo =
-                document.getElementById("anoVeiculo")
+                document
+                    .getElementById("anoVeiculo")
                     ?.value.trim() || "";
 
             const placa =
-                document.getElementById("placa")
+                document
+                    .getElementById("placa")
                     ?.value.trim() || "";
 
             const assentos =
-                document.getElementById("assentos")
+                document
+                    .getElementById("assentos")
                     ?.value.trim() || "";
 
 
@@ -211,7 +217,7 @@ if (formCadastro) {
 
 
             // =================================================
-            // VALIDAR CAMPOS
+            // VALIDAR CAMPOS PESSOAIS
             // =================================================
 
             if (
@@ -240,7 +246,9 @@ if (formCadastro) {
                 cpf.replace(/\D/g, "");
 
 
-            if (cpfNumeros.length !== 11) {
+            if (
+                cpfNumeros.length !== 11
+            ) {
 
                 mostrarMensagem(
                     "Digite um CPF válido.",
@@ -255,7 +263,9 @@ if (formCadastro) {
             // VALIDAR SENHA
             // =================================================
 
-            if (senha !== confirmarSenha) {
+            if (
+                senha !== confirmarSenha
+            ) {
 
                 mostrarMensagem(
                     "As senhas não são iguais.",
@@ -266,7 +276,9 @@ if (formCadastro) {
             }
 
 
-            if (senha.length < 6) {
+            if (
+                senha.length < 6
+            ) {
 
                 mostrarMensagem(
                     "A senha deve possuir pelo menos 6 caracteres.",
@@ -281,7 +293,9 @@ if (formCadastro) {
             // VALIDAR PARCEIRO
             // =================================================
 
-            if (tipoCadastro === "parceiro") {
+            if (
+                tipoCadastro === "parceiro"
+            ) {
 
                 if (
                     !marca ||
@@ -345,7 +359,9 @@ if (formCadastro) {
             // VERIFICAR SUPABASE
             // =================================================
 
-            if (!supabaseDisponivel()) {
+            if (
+                !supabaseDisponivel()
+            ) {
 
                 console.error(
                     "supabaseClient não está disponível."
@@ -384,19 +400,23 @@ if (formCadastro) {
 
                 const dadosUsuario = {
 
-                    nome: nome,
+                    nome:
+                        nome,
 
-                    cpf: cpfNumeros,
+                    cpf:
+                        cpfNumeros,
 
-                    telefone: telefone,
+                    telefone:
+                        telefone,
 
-                    tipo: tipoCadastro
+                    tipo:
+                        tipoCadastro
 
                 };
 
 
                 // =================================================
-                // DADOS DO PARCEIRO
+                // DADOS DO VEÍCULO
                 // =================================================
 
                 if (
@@ -405,19 +425,25 @@ if (formCadastro) {
 
                     dadosUsuario.veiculo = {
 
-                        marca: marca,
+                        marca:
+                            marca,
 
-                        modelo: modelo,
+                        modelo:
+                            modelo,
 
-                        cor: cor,
+                        cor:
+                            cor,
 
-                        ano: anoVeiculo,
+                        ano:
+                            Number(anoVeiculo),
 
-                        placa: placa
-                            .replace(/-/g, "")
-                            .toUpperCase(),
+                        placa:
+                            placa
+                                .replace(/-/g, "")
+                                .toUpperCase(),
 
-                        assentos: assentos
+                        assentos:
+                            Number(assentos)
 
                     };
 
@@ -427,14 +453,17 @@ if (formCadastro) {
                 console.log(
                     "Iniciando cadastro:",
                     {
-                        email,
-                        tipo: tipoCadastro
+                        email:
+                            email,
+
+                        tipo:
+                            tipoCadastro
                     }
                 );
 
 
                 // =================================================
-                // CRIAR CONTA NO SUPABASE AUTH
+                // CRIAR USUÁRIO NO SUPABASE AUTH
                 // =================================================
 
                 const {
@@ -443,13 +472,16 @@ if (formCadastro) {
                 } =
                     await supabaseClient.auth.signUp({
 
-                        email: email,
+                        email:
+                            email,
 
-                        password: senha,
+                        password:
+                            senha,
 
                         options: {
 
-                            data: dadosUsuario
+                            data:
+                                dadosUsuario
 
                         }
 
@@ -457,7 +489,7 @@ if (formCadastro) {
 
 
                 // =================================================
-                // TRATAR ERRO DO SUPABASE
+                // ERRO NO AUTH
                 // =================================================
 
                 if (error) {
@@ -540,7 +572,7 @@ if (formCadastro) {
 
 
                 // =================================================
-                // VERIFICAR USUÁRIO
+                // VERIFICAR USUÁRIO CRIADO
                 // =================================================
 
                 if (
@@ -567,44 +599,26 @@ if (formCadastro) {
 
 
                 // =================================================
-                // DADOS CRIADOS
+                // ID DO AUTH
                 // =================================================
 
                 const usuarioCriado =
                     data.user;
 
+                const usuarioId =
+                    usuarioCriado.id;
+
 
                 console.log(
-                    "Usuário criado com sucesso:",
-                    usuarioCriado.id
+                    "Usuário criado no Auth:",
+                    usuarioId
                 );
 
 
                 console.log(
-                    "Tipo:",
+                    "Tipo de cadastro:",
                     tipoCadastro
                 );
-
-
-                /*
-                 * IMPORTANTE:
-                 *
-                 * Os dados pessoais continuam sendo
-                 * enviados em user_metadata.
-                 *
-                 * Se o seu banco possui trigger para
-                 * criar o registro correspondente em
-                 * clientes/parceiros, ele poderá
-                 * utilizar esses dados.
-                 */
-
-
-                // =================================================
-                // VERIFICAR CONFIRMAÇÃO DE E-MAIL
-                // =================================================
-
-                const emailPrecisaConfirmacao =
-                    !data.session;
 
 
                 // =================================================
@@ -615,74 +629,191 @@ if (formCadastro) {
                     tipoCadastro === "cliente"
                 ) {
 
-                    if (
-                        emailPrecisaConfirmacao
-                    ) {
+                    /*
+                     * O cliente será tratado pelo
+                     * registro/trigger da tabela clientes.
+                     */
 
-                        mostrarMensagem(
-                            "Conta criada! Confirme o e-mail antes de entrar.",
-                            "sucesso"
-                        );
+                    mostrarMensagem(
+                        !data.session
+                            ? "Conta criada! Confirme o e-mail antes de entrar."
+                            : "Conta criada com sucesso!",
+                        "sucesso"
+                    );
+
+
+                    if (botaoCadastrar) {
+
+                        botaoCadastrar.textContent =
+                            "Conta criada";
 
                     }
 
-                    else {
 
-                        mostrarMensagem(
-                            "Conta criada com sucesso!",
-                            "sucesso"
-                        );
+                    setTimeout(
+                        function () {
 
-                    }
+                            window.location.href =
+                                "login.html";
 
+                        },
+                        2500
+                    );
+
+
+                    return;
                 }
 
 
                 // =================================================
-                // PARCEIRO
+                // PARCEIRO / MOTORISTA
                 // =================================================
 
                 if (
                     tipoCadastro === "parceiro"
                 ) {
 
+                    console.log(
+                        "Criando registro do motorista..."
+                    );
+
+
+                    // =================================================
+                    // DADOS DO MOTORISTA
+                    // =================================================
+
+                    const dadosMotorista = {
+
+                        id:
+                            usuarioId,
+
+                        nome:
+                            nome,
+
+                        cpf:
+                            cpfNumeros,
+
+                        telefone:
+                            telefone,
+
+                        email:
+                            email,
+
+                        status:
+                            "pendente"
+
+                    };
+
+
+                    console.log(
+                        "Dados enviados para motoristas:",
+                        dadosMotorista
+                    );
+
+
+                    // =================================================
+                    // INSERIR MOTORISTA
+                    // =================================================
+
+                    const {
+                        data: motoristaCriado,
+                        error: erroMotorista
+                    } =
+                        await supabaseClient
+                            .from("motoristas")
+                            .insert(
+                                dadosMotorista
+                            )
+                            .select()
+                            .single();
+
+
+                    // =================================================
+                    // ERRO MOTORISTA
+                    // =================================================
+
+                    if (
+                        erroMotorista
+                    ) {
+
+                        console.error(
+                            "Erro ao criar motorista:",
+                            erroMotorista
+                        );
+
+
+                        console.error(
+                            "Código:",
+                            erroMotorista.code
+                        );
+
+
+                        console.error(
+                            "Mensagem:",
+                            erroMotorista.message
+                        );
+
+
+                        console.error(
+                            "Detalhes:",
+                            erroMotorista.details
+                        );
+
+
+                        mostrarMensagem(
+                            "A conta foi criada, mas não foi possível cadastrar o motorista. Verifique as permissões da tabela motoristas.",
+                            "erro"
+                        );
+
+
+                        restaurarBotao(
+                            tipoCadastro
+                        );
+
+
+                        return;
+                    }
+
+
+                    // =================================================
+                    // MOTORISTA CRIADO
+                    // =================================================
+
+                    console.log(
+                        "Motorista criado com sucesso:",
+                        motoristaCriado
+                    );
+
+
                     mostrarMensagem(
-                        emailPrecisaConfirmacao
-                            ? "Cadastro enviado! Confirme o e-mail e aguarde a aprovação do administrador."
-                            : "Cadastro enviado com sucesso! Aguarde a aprovação do administrador.",
+                        "Cadastro enviado com sucesso! Aguarde a aprovação do administrador.",
                         "sucesso"
                     );
 
+
+                    if (botaoCadastrar) {
+
+                        botaoCadastrar.textContent =
+                            "Cadastro enviado";
+
+                    }
+
+
+                    // =================================================
+                    // REDIRECIONAR
+                    // =================================================
+
+                    setTimeout(
+                        function () {
+
+                            window.location.href =
+                                "login.html";
+
+                        },
+                        3000
+                    );
+
                 }
-
-
-                // =================================================
-                // BOTÃO
-                // =================================================
-
-                if (botaoCadastrar) {
-
-                    botaoCadastrar.textContent =
-                        tipoCadastro === "parceiro"
-                            ? "Cadastro enviado"
-                            : "Conta criada";
-
-                }
-
-
-                // =================================================
-                // REDIRECIONAR
-                // =================================================
-
-                setTimeout(
-                    function () {
-
-                        window.location.href =
-                            "login.html";
-
-                    },
-                    2500
-                );
 
             }
 
