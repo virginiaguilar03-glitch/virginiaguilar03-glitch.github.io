@@ -8,6 +8,7 @@
 
     <title>VaidTáxi | Administração</title>
 
+
     <!-- =====================================================
          FONTE
     ====================================================== -->
@@ -89,6 +90,8 @@
         <nav class="admin-menu">
 
 
+            <!-- DASHBOARD -->
+
             <a
                 href="#"
                 class="admin-menu-item ativo"
@@ -103,6 +106,8 @@
 
             </a>
 
+
+            <!-- CLIENTES -->
 
             <a
                 href="#"
@@ -119,6 +124,8 @@
             </a>
 
 
+            <!-- PARCEIROS -->
+
             <a
                 href="#"
                 class="admin-menu-item"
@@ -133,6 +140,8 @@
 
             </a>
 
+
+            <!-- VALIDAÇÃO -->
 
             <a
                 href="#"
@@ -156,6 +165,8 @@
             </a>
 
 
+            <!-- CORRIDAS -->
+
             <a
                 href="#"
                 class="admin-menu-item"
@@ -171,6 +182,8 @@
             </a>
 
 
+            <!-- PAGAMENTOS -->
+
             <a
                 href="#"
                 class="admin-menu-item"
@@ -185,6 +198,8 @@
 
             </a>
 
+
+            <!-- SUPORTE -->
 
             <a
                 href="#"
@@ -216,6 +231,8 @@
         <div class="admin-menu-bottom">
 
 
+            <!-- CONFIGURAÇÕES -->
+
             <a
                 href="#"
                 class="admin-menu-item"
@@ -230,6 +247,8 @@
 
             </a>
 
+
+            <!-- SAIR -->
 
             <a
                 href="index.html"
@@ -655,7 +674,10 @@
 
                 <div class="admin-tabela-container">
 
-                    <table class="admin-tabela" id="tabelaClientes">
+                    <table
+                        class="admin-tabela"
+                        id="tabelaClientes"
+                    >
 
                         <thead>
 
@@ -1529,7 +1551,34 @@
      JAVASCRIPT
 ========================================================== -->
 
+
+<!-- =========================================================
+     SUPABASE
+========================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<!-- =========================================================
+     CONFIGURAÇÃO DO SUPABASE
+========================================================== -->
+
+<script src="js/supabase.js"></script>
+
+
+<!-- =========================================================
+     AUTENTICAÇÃO GLOBAL
+========================================================== -->
+
+<script src="js/auth.js"></script>
+
+
+<!-- =========================================================
+     PAINEL ADMINISTRATIVO
+========================================================== -->
+
 <script src="js/admin.js"></script>
+
 
 
 <script>
@@ -1540,6 +1589,7 @@
 
     const dataAtual =
         document.getElementById("dataAtual");
+
 
     if (dataAtual) {
 
@@ -1565,14 +1615,21 @@
 
     function mostrarSecao(id, elemento) {
 
-        event.preventDefault();
+        if (event) {
+
+            event.preventDefault();
+
+        }
+
 
         mostrarSecaoPorId(id);
+
 
         const itens =
             document.querySelectorAll(
                 ".admin-menu-item"
             );
+
 
         itens.forEach(function(item) {
 
@@ -1598,6 +1655,7 @@
                 ".admin-secao"
             );
 
+
         secoes.forEach(function(secao) {
 
             secao.classList.remove("ativa");
@@ -1607,6 +1665,7 @@
 
         const secao =
             document.getElementById(id);
+
 
         if (secao) {
 
@@ -1626,6 +1685,7 @@
 
         const tabela =
             document.getElementById(idTabela);
+
 
         if (!tabela) return;
 
