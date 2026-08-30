@@ -907,3 +907,216 @@ table tr:hover{
 .how-it-works .card-content h3 {
     margin-top: 0;
 }
+/* ======================================================
+   VAIDTÁXI
+   SELEÇÃO DE MOTORISTAS
+====================================================== */
+
+.escolha-motorista{
+
+    width:100%;
+
+    margin:35px 0;
+
+    padding:30px;
+
+    background:#181818;
+
+    border:1px solid #2d2d2d;
+
+    border-radius:20px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+
+}
+
+
+.motorista-titulo{
+
+    margin-bottom:25px;
+
+}
+
+
+.motorista-titulo h2{
+
+    margin:0 0 8px;
+
+    font-size:24px;
+
+    color:#fff;
+
+}
+
+
+.motorista-titulo h2 i{
+
+    color:#FFD000;
+
+    margin-right:8px;
+
+}
+
+
+.motorista-titulo p{
+
+    margin:0;
+
+    color:#aaa;
+
+    font-size:14px;
+
+}
+
+
+.lista-motoristas{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(250px,1fr));
+
+    gap:20px;
+
+}
+
+
+.card-motorista{
+
+    padding:22px;
+
+    background:#111111;
+
+    border:1px solid #2d2d2d;
+
+    border-radius:16px;
+
+    transition:.3s;
+
+}
+
+
+.card-motorista:hover{
+
+    transform:translateY(-5px);
+
+    border-color:#FFD000;
+
+}
+
+
+.card-motorista.selecionado{
+
+    border:2px solid #FFD000;
+
+    box-shadow:
+        0 0 20px rgba(255,208,0,.15);
+
+}
+
+
+.card-motorista h3{
+
+    color:#fff;
+
+    margin-bottom:15px;
+
+    font-size:19px;
+
+}
+
+
+.card-motorista h3 i{
+
+    color:#FFD000;
+
+    margin-right:7px;
+
+}
+
+
+.card-motorista p{
+
+    color:#aaa;
+
+    font-size:14px;
+
+    margin:8px 0;
+
+}
+
+
+.card-motorista p i{
+
+    color:#FFD000;
+
+    width:20px;
+
+}
+
+
+.btn-escolher-motorista{
+
+    width:100%;
+
+    margin-top:15px;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#FFD000;
+
+    color:#111;
+
+    font-family:'Poppins',sans-serif;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+.btn-escolher-motorista:hover{
+
+    background:#ffbf00;
+
+    transform:translateY(-2px);
+
+}
+
+
+.card-motorista.selecionado
+.btn-escolher-motorista{
+
+    background:#fff;
+
+}
+
+
+.carregando-motoristas,
+.sem-motoristas{
+
+    width:100%;
+
+    padding:20px;
+
+    text-align:center;
+
+    color:#999;
+
+}
+
+
+.carregando-motoristas i{
+
+    color:#FFD000;
+
+    margin-right:8px;
+
+}
