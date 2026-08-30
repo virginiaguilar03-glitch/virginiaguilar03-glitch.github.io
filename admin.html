@@ -4,17 +4,31 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>VaidTáxi | Administração</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        VaidTáxi | Administração
+    </title>
 
 
     <!-- =====================================================
          FONTE
     ====================================================== -->
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
@@ -36,18 +50,30 @@
          CSS PADRÃO
     ====================================================== -->
 
-    <link rel="stylesheet" href="css/style.css">
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
-    <link rel="stylesheet" href="css/responsive.css">
+    <link
+        rel="stylesheet"
+        href="css/responsive.css"
+    >
 
-    <link rel="stylesheet" href="css/animations.css">
+    <link
+        rel="stylesheet"
+        href="css/animations.css"
+    >
 
 
     <!-- =====================================================
-         CSS ESPECÍFICO DO ADMINISTRADOR
+         CSS DO ADMINISTRADOR
     ====================================================== -->
 
-    <link rel="stylesheet" href="css/admin.css">
+    <link
+        rel="stylesheet"
+        href="css/admin.css"
+    >
 
 </head>
 
@@ -226,7 +252,9 @@
         </nav>
 
 
-        <!-- MENU INFERIOR -->
+        <!-- =================================================
+             MENU INFERIOR
+        ================================================== -->
 
         <div class="admin-menu-bottom">
 
@@ -357,6 +385,7 @@
                     </h2>
 
                 </div>
+
 
                 <span class="admin-data">
 
@@ -878,7 +907,7 @@
 
 
         <!-- =================================================
-             VALIDAÇÃO DE CADASTRO
+             VALIDAÇÃO
         ================================================== -->
 
         <section
@@ -1548,44 +1577,34 @@
 
 
 <!-- =========================================================
-     JAVASCRIPT
-========================================================== -->
-
-
-<!-- =========================================================
      SUPABASE
+     
+     IMPORTANTE:
+     O Supabase precisa carregar ANTES do admin.js.
 ========================================================== -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
 
-
-<!-- =========================================================
-     CONFIGURAÇÃO DO SUPABASE
-========================================================== -->
 
 <script src="js/supabase.js"></script>
 
 
-<!-- =========================================================
-     AUTENTICAÇÃO GLOBAL
-========================================================== -->
-
-<script src="js/auth.js"></script>
-
 
 <!-- =========================================================
-     PAINEL ADMINISTRATIVO
+     ADMIN.JS
 ========================================================== -->
 
 <script src="js/admin.js"></script>
 
 
 
-<script>
+<!-- =========================================================
+     DATA ATUAL
+========================================================== -->
 
-    /* =====================================================
-       DATA ATUAL
-    ====================================================== */
+<script>
 
     const dataAtual =
         document.getElementById("dataAtual");
@@ -1593,7 +1612,9 @@
 
     if (dataAtual) {
 
-        const hoje = new Date();
+        const hoje =
+            new Date();
+
 
         dataAtual.textContent =
             hoje.toLocaleDateString(
@@ -1607,11 +1628,15 @@
 
     }
 
+</script>
 
 
-    /* =====================================================
-       TROCA DE SEÇÕES
-    ====================================================== */
+
+<!-- =========================================================
+     TROCA DE SEÇÕES
+========================================================== -->
+
+<script>
 
     function mostrarSecao(id, elemento) {
 
@@ -1631,16 +1656,22 @@
             );
 
 
-        itens.forEach(function(item) {
+        itens.forEach(
+            function(item) {
 
-            item.classList.remove("ativo");
+                item.classList.remove(
+                    "ativo"
+                );
 
-        });
+            }
+        );
 
 
         if (elemento) {
 
-            elemento.classList.add("ativo");
+            elemento.classList.add(
+                "ativo"
+            );
 
         }
 
@@ -1656,11 +1687,15 @@
             );
 
 
-        secoes.forEach(function(secao) {
+        secoes.forEach(
+            function(secao) {
 
-            secao.classList.remove("ativa");
+                secao.classList.remove(
+                    "ativa"
+                );
 
-        });
+            }
+        );
 
 
         const secao =
@@ -1669,25 +1704,40 @@
 
         if (secao) {
 
-            secao.classList.add("ativa");
+            secao.classList.add(
+                "ativa"
+            );
 
         }
 
     }
 
+</script>
 
 
-    /* =====================================================
-       BUSCA NAS TABELAS
-    ====================================================== */
 
-    function buscarTabela(idTabela, termo) {
+<!-- =========================================================
+     BUSCA NAS TABELAS
+========================================================== -->
+
+<script>
+
+    function buscarTabela(
+        idTabela,
+        termo
+    ) {
 
         const tabela =
-            document.getElementById(idTabela);
+            document.getElementById(
+                idTabela
+            );
 
 
-        if (!tabela) return;
+        if (!tabela) {
+
+            return;
+
+        }
 
 
         const linhas =
@@ -1697,26 +1747,36 @@
 
 
         termo =
-            termo.toLowerCase();
+            String(termo || "")
+                .toLowerCase();
 
 
-        linhas.forEach(function(linha) {
+        linhas.forEach(
+            function(linha) {
 
-            const texto =
-                linha.textContent.toLowerCase();
+                const texto =
+                    linha.textContent
+                        .toLowerCase();
 
 
-            if (texto.includes(termo)) {
+                if (
+                    texto.includes(termo)
+                ) {
 
-                linha.style.display = "";
+                    linha.style.display =
+                        "";
 
-            } else {
+                }
 
-                linha.style.display = "none";
+                else {
+
+                    linha.style.display =
+                        "none";
+
+                }
 
             }
-
-        });
+        );
 
     }
 
