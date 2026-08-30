@@ -1,7 +1,7 @@
 // ============================================================
 // CORRIDA - VAIDTÁXI
 // Solicitação de corrida
-// Supabase + Leaflet + Autenticação
+// Supabase + Leaflet + Autenticação + Motoristas
 // ============================================================
 
 
@@ -14,6 +14,8 @@ let mapaCorrida = null;
 let marcadorUsuario = null;
 
 let canalCorrida = null;
+
+let motoristaSelecionado = null;
 
 
 // ============================================================
@@ -35,6 +37,10 @@ let campoOrigem = null;
 let campoDestino = null;
 
 let campoObservacao = null;
+
+let listaMotoristas = null;
+
+let campoMotoristaSelecionado = null;
 
 
 // ============================================================
@@ -94,9 +100,19 @@ document.addEventListener(
                 "observacao"
             );
 
+        listaMotoristas =
+            document.getElementById(
+                "listaMotoristas"
+            );
+
+        campoMotoristaSelecionado =
+            document.getElementById(
+                "motoristaSelecionado"
+            );
+
 
         // --------------------------------------------------------
-        // VERIFICAR ELEMENTOS
+        // VERIFICAR FORMULÁRIO
         // --------------------------------------------------------
 
         if (!formCorrida) {
@@ -125,7 +141,14 @@ document.addEventListener(
 
 
         // --------------------------------------------------------
-        // BOTÃO DE LOCALIZAÇÃO
+        // CARREGAR MOTORISTAS
+        // --------------------------------------------------------
+
+        await carregarMotoristas();
+
+
+        // --------------------------------------------------------
+        // LOCALIZAÇÃO
         // --------------------------------------------------------
 
         if (btnLocalizacao) {
@@ -173,7 +196,7 @@ function supabaseDisponivel() {
 
 
 // ============================================================
-// BUSCAR USUÁRIO
+// OBTER USUÁRIO
 // ============================================================
 
 async function obterUsuario() {
@@ -276,6 +299,264 @@ async function carregarUsuario() {
 
 
 // ============================================================
+// CARREGAR MOTORISTAS
+// ============================================================
+
+async function carregarMotoristas() {
+
+    if (!listaMotoristas) {
+
+        console.error(
+            "Lista de motoristas não encontrada."
+        );
+
+        return;
+
+    }
+
+
+    if (!supabaseDisponivel()) {
+
+        listaMotoristas.innerHTML = `
+            <p class="sem-motoristas">
+                Erro de conexão com o sistema.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    try {
+
+        console.log(
+            "Buscando motoristas..."
+        );
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("motoristas")
+                .select(
+                    "id, nome, telefone, email"
+                );
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao buscar motoristas:",
+                error
+            );
+
+
+            listaMotoristas.innerHTML = `
+                <p class="sem-motoristas">
+                    Não foi possível carregar os motoristas.
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        console.log(
+            "Motoristas encontrados:",
+            data
+        );
+
+
+        if (!data || data.length === 0) {
+
+            listaMotoristas.innerHTML = `
+                <p class="sem-motoristas">
+                    Nenhum motorista disponível no momento.
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        listaMotoristas.innerHTML = "";
+
+
+        data.forEach(
+            function (motorista) {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "card-motorista";
+
+
+                card.dataset.id =
+                    motorista.id;
+
+
+                card.innerHTML = `
+
+                    <h3>
+
+                        <i class="fa-solid fa-user"></i>
+
+                        ${motorista.nome || "Motorista"}
+
+                    </h3>
+
+
+                    <p>
+
+                        <i class="fa-solid fa-phone"></i>
+
+                        ${motorista.telefone || "Telefone não informado"}
+
+                    </p>
+
+
+                    <p>
+
+                        <i class="fa-solid fa-envelope"></i>
+
+                        ${motorista.email || "E-mail não informado"}
+
+                    </p>
+
+
+                    <button
+                        type="button"
+                        class="btn-escolher-motorista"
+                    >
+
+                        Escolher motorista
+
+                    </button>
+
+                `;
+
+
+                const botao =
+                    card.querySelector(
+                        ".btn-escolher-motorista"
+                    );
+
+
+                botao.addEventListener(
+                    "click",
+                    function () {
+
+                        selecionarMotorista(
+                            motorista,
+                            card
+                        );
+
+                    }
+                );
+
+
+                listaMotoristas.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro inesperado ao carregar motoristas:",
+            erro
+        );
+
+
+        listaMotoristas.innerHTML = `
+            <p class="sem-motoristas">
+                Ocorreu um erro ao carregar os motoristas.
+            </p>
+        `;
+
+    }
+
+}
+
+
+// ============================================================
+// SELECIONAR MOTORISTA
+// ============================================================
+
+function selecionarMotorista(
+    motorista,
+    card
+) {
+
+    if (!motorista) {
+
+        return;
+
+    }
+
+
+    motoristaSelecionado =
+        motorista.id;
+
+
+    if (campoMotoristaSelecionado) {
+
+        campoMotoristaSelecionado.value =
+            motorista.id;
+
+    }
+
+
+    document
+        .querySelectorAll(
+            ".card-motorista"
+        )
+        .forEach(
+            function (item) {
+
+                item.classList.remove(
+                    "selecionado"
+                );
+
+            }
+        );
+
+
+    card.classList.add(
+        "selecionado"
+    );
+
+
+    mostrarMensagem(
+        "Motorista " +
+        motorista.nome +
+        " selecionado!",
+        "sucesso"
+    );
+
+
+    console.log(
+        "Motorista selecionado:",
+        motorista
+    );
+
+}
+
+
+// ============================================================
 // MAPA
 // ============================================================
 
@@ -311,10 +592,6 @@ function iniciarMapa() {
     }
 
 
-    // --------------------------------------------------------
-    // Coordenadas iniciais
-    // --------------------------------------------------------
-
     const latitudeInicial =
         -16.1425;
 
@@ -334,15 +611,11 @@ function iniciarMapa() {
         );
 
 
-    // --------------------------------------------------------
-    // OpenStreetMap
-    // --------------------------------------------------------
-
     L.tileLayer(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
 
-            maxZoom: 19,
+            maxZoom:19,
 
             attribution:
                 "&copy; OpenStreetMap contributors"
@@ -352,10 +625,6 @@ function iniciarMapa() {
         mapaCorrida
     );
 
-
-    // --------------------------------------------------------
-    // Marcador inicial
-    // --------------------------------------------------------
 
     marcadorUsuario =
         L.marker(
@@ -371,10 +640,6 @@ function iniciarMapa() {
             "Localização inicial do mapa."
         );
 
-
-    // --------------------------------------------------------
-    // Corrigir tamanho do mapa
-    // --------------------------------------------------------
 
     setTimeout(
         function () {
@@ -398,7 +663,7 @@ function iniciarMapa() {
 
 
 // ============================================================
-// LOCALIZAÇÃO ATUAL
+// LOCALIZAÇÃO
 // ============================================================
 
 function obterLocalizacao() {
@@ -451,10 +716,6 @@ function obterLocalizacao() {
                 posicao.coords.longitude;
 
 
-            // ------------------------------------------------
-            // Centralizar mapa
-            // ------------------------------------------------
-
             mapaCorrida.setView(
                 [
                     latitude,
@@ -464,10 +725,6 @@ function obterLocalizacao() {
             );
 
 
-            // ------------------------------------------------
-            // Remover marcador anterior
-            // ------------------------------------------------
-
             if (marcadorUsuario) {
 
                 mapaCorrida.removeLayer(
@@ -476,10 +733,6 @@ function obterLocalizacao() {
 
             }
 
-
-            // ------------------------------------------------
-            // Criar novo marcador
-            // ------------------------------------------------
 
             marcadorUsuario =
                 L.marker(
@@ -497,10 +750,6 @@ function obterLocalizacao() {
                 .openPopup();
 
 
-            // ------------------------------------------------
-            // Preencher origem
-            // ------------------------------------------------
-
             if (campoOrigem) {
 
                 campoOrigem.value =
@@ -510,10 +759,6 @@ function obterLocalizacao() {
 
             }
 
-
-            // ------------------------------------------------
-            // Botão
-            // ------------------------------------------------
 
             if (btnLocalizacao) {
 
@@ -546,27 +791,21 @@ function obterLocalizacao() {
                 "Não foi possível obter sua localização.";
 
 
-            if (
-                erro.code === 1
-            ) {
+            if (erro.code === 1) {
 
                 texto =
                     "Permita o acesso à localização no navegador.";
 
             }
 
-            else if (
-                erro.code === 2
-            ) {
+            else if (erro.code === 2) {
 
                 texto =
                     "Sua localização não está disponível.";
 
             }
 
-            else if (
-                erro.code === 3
-            ) {
+            else if (erro.code === 3) {
 
                 texto =
                     "A localização demorou demais para responder.";
@@ -593,11 +832,12 @@ function obterLocalizacao() {
         },
 
         {
-            enableHighAccuracy: true,
 
-            timeout: 10000,
+            enableHighAccuracy:true,
 
-            maximumAge: 0
+            timeout:10000,
+
+            maximumAge:0
 
         }
 
@@ -622,10 +862,6 @@ async function solicitarCorrida(
     );
 
 
-    // --------------------------------------------------------
-    // Verificar Supabase
-    // --------------------------------------------------------
-
     if (!supabaseDisponivel()) {
 
         mostrarMensagem(
@@ -637,10 +873,6 @@ async function solicitarCorrida(
 
     }
 
-
-    // --------------------------------------------------------
-    // Verificar usuário
-    // --------------------------------------------------------
 
     const usuario =
         await obterUsuario();
@@ -670,10 +902,6 @@ async function solicitarCorrida(
     }
 
 
-    // --------------------------------------------------------
-    // Verificar tipo de acesso
-    // --------------------------------------------------------
-
     const tipoAcesso =
         localStorage.getItem(
             "tipoAcesso"
@@ -696,25 +924,35 @@ async function solicitarCorrida(
 
 
     // --------------------------------------------------------
-    // Campos
+    // MOTORISTA
     // --------------------------------------------------------
+
+    if (!motoristaSelecionado) {
+
+        mostrarMensagem(
+            "Escolha um motorista antes de solicitar a corrida.",
+            "erro"
+        );
+
+        return;
+
+    }
+
 
     const origem =
         campoOrigem?.value.trim() ||
         "";
 
+
     const destino =
         campoDestino?.value.trim() ||
         "";
+
 
     const observacao =
         campoObservacao?.value.trim() ||
         "";
 
-
-    // --------------------------------------------------------
-    // Validar origem
-    // --------------------------------------------------------
 
     if (!origem) {
 
@@ -730,10 +968,6 @@ async function solicitarCorrida(
     }
 
 
-    // --------------------------------------------------------
-    // Validar destino
-    // --------------------------------------------------------
-
     if (!destino) {
 
         mostrarMensagem(
@@ -748,10 +982,6 @@ async function solicitarCorrida(
     }
 
 
-    // --------------------------------------------------------
-    // Botão
-    // --------------------------------------------------------
-
     if (btnSolicitar) {
 
         btnSolicitar.disabled =
@@ -765,14 +995,13 @@ async function solicitarCorrida(
 
     try {
 
-        // ====================================================
-        // DADOS DA CORRIDA
-        // ====================================================
-
         const dadosCorrida = {
 
             cliente_id:
                 usuario.id,
+
+            motorista_id:
+                motoristaSelecionado,
 
             origem:
                 origem,
@@ -795,10 +1024,6 @@ async function solicitarCorrida(
         );
 
 
-        // ====================================================
-        // INSERIR NO SUPABASE
-        // ====================================================
-
         const {
             data,
             error
@@ -811,10 +1036,6 @@ async function solicitarCorrida(
                 .select()
                 .single();
 
-
-        // ====================================================
-        // TRATAR ERRO
-        // ====================================================
 
         if (error) {
 
@@ -829,10 +1050,12 @@ async function solicitarCorrida(
                 error.code
             );
 
+
             console.error(
                 "Mensagem:",
                 error.message
             );
+
 
             console.error(
                 "Detalhes:",
@@ -853,19 +1076,11 @@ async function solicitarCorrida(
         }
 
 
-        // ====================================================
-        // SUCESSO
-        // ====================================================
-
         console.log(
             "Corrida criada com sucesso:",
             data
         );
 
-
-        // ----------------------------------------------------
-        // Salvar corrida atual
-        // ----------------------------------------------------
 
         if (data?.id) {
 
@@ -877,19 +1092,11 @@ async function solicitarCorrida(
         }
 
 
-        // ----------------------------------------------------
-        // Mensagem
-        // ----------------------------------------------------
-
         mostrarMensagem(
             "Corrida solicitada com sucesso! Aguardando atendimento.",
             "sucesso"
         );
 
-
-        // ----------------------------------------------------
-        // Botão
-        // ----------------------------------------------------
 
         if (btnSolicitar) {
 
@@ -901,10 +1108,6 @@ async function solicitarCorrida(
 
         }
 
-
-        // ----------------------------------------------------
-        // Acompanhar
-        // ----------------------------------------------------
 
         if (data?.id) {
 
@@ -1020,10 +1223,6 @@ async function iniciarAcompanhamentoCorrida(
     }
 
 
-    // --------------------------------------------------------
-    // Remover canal anterior
-    // --------------------------------------------------------
-
     if (canalCorrida) {
 
         await supabaseClient
@@ -1037,10 +1236,6 @@ async function iniciarAcompanhamentoCorrida(
     }
 
 
-    // --------------------------------------------------------
-    // Criar canal
-    // --------------------------------------------------------
-
     canalCorrida =
         supabaseClient
             .channel(
@@ -1049,15 +1244,17 @@ async function iniciarAcompanhamentoCorrida(
             .on(
                 "postgres_changes",
                 {
-                    event: "UPDATE",
 
-                    schema: "public",
+                    event:"UPDATE",
 
-                    table: "corridas",
+                    schema:"public",
+
+                    table:"corridas",
 
                     filter:
                         "id=eq." +
                         corridaId
+
                 },
                 function (payload) {
 
