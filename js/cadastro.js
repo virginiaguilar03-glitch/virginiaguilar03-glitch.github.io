@@ -1,6 +1,6 @@
 // ============================================================
 // CADASTRO.JS - VAIDTÁXI
-// Supabase Auth + Cliente + Parceiro/Motorista
+// Supabase Auth + Cliente + Motorista
 // ============================================================
 
 
@@ -50,6 +50,7 @@ function mostrarMensagem(texto, tipo) {
         tipo === "sucesso"
             ? "#00cc66"
             : "#ff4444";
+
 }
 
 
@@ -80,6 +81,7 @@ function restaurarBotao(tipoCadastro) {
         tipoCadastro === "parceiro"
             ? "Enviar Cadastro para Aprovação"
             : "Criar Conta";
+
 }
 
 
@@ -110,12 +112,27 @@ if (formCadastro) {
             event.preventDefault();
 
 
+            console.log(
+                "======================================"
+            );
+
+            console.log(
+                "Iniciando processo de cadastro..."
+            );
+
+
             // =================================================
             // TIPO
             // =================================================
 
             const tipoCadastro =
                 obterTipoCadastro();
+
+
+            console.log(
+                "Tipo de cadastro:",
+                tipoCadastro
+            );
 
 
             if (
@@ -129,6 +146,7 @@ if (formCadastro) {
                 );
 
                 return;
+
             }
 
 
@@ -178,42 +196,52 @@ if (formCadastro) {
             // CAMPOS DO VEÍCULO
             // =================================================
 
+            const campoMarca =
+                document.getElementById("marca");
+
+            const campoModelo =
+                document.getElementById("modelo");
+
+            const campoCor =
+                document.getElementById("cor");
+
+            const campoAno =
+                document.getElementById("anoVeiculo");
+
+            const campoPlaca =
+                document.getElementById("placa");
+
+            const campoAssentos =
+                document.getElementById("assentos");
+
+
             const marca =
-                document
-                    .getElementById("marca")
-                    ?.value.trim() || "";
+                campoMarca?.value.trim() || "";
 
             const modelo =
-                document
-                    .getElementById("modelo")
-                    ?.value.trim() || "";
+                campoModelo?.value.trim() || "";
 
             const cor =
-                document
-                    .getElementById("cor")
-                    ?.value.trim() || "";
+                campoCor?.value.trim() || "";
 
             const anoVeiculo =
-                document
-                    .getElementById("anoVeiculo")
-                    ?.value.trim() || "";
+                campoAno?.value.trim() || "";
 
             const placa =
-                document
-                    .getElementById("placa")
-                    ?.value.trim() || "";
+                campoPlaca?.value.trim() || "";
 
             const assentos =
-                document
-                    .getElementById("assentos")
-                    ?.value.trim() || "";
+                campoAssentos?.value.trim() || "";
 
 
             // =================================================
             // LIMPAR MENSAGEM
             // =================================================
 
-            mostrarMensagem("", "sucesso");
+            mostrarMensagem(
+                "",
+                "sucesso"
+            );
 
 
             // =================================================
@@ -235,6 +263,7 @@ if (formCadastro) {
                 );
 
                 return;
+
             }
 
 
@@ -256,6 +285,7 @@ if (formCadastro) {
                 );
 
                 return;
+
             }
 
 
@@ -273,6 +303,7 @@ if (formCadastro) {
                 );
 
                 return;
+
             }
 
 
@@ -286,6 +317,7 @@ if (formCadastro) {
                 );
 
                 return;
+
             }
 
 
@@ -312,8 +344,13 @@ if (formCadastro) {
                     );
 
                     return;
+
                 }
 
+
+                // =============================================
+                // VALIDAR ANO
+                // =============================================
 
                 const anoNumero =
                     Number(anoVeiculo);
@@ -331,8 +368,13 @@ if (formCadastro) {
                     );
 
                     return;
+
                 }
 
+
+                // =============================================
+                // VALIDAR ASSENTOS
+                // =============================================
 
                 const assentosNumero =
                     Number(assentos);
@@ -350,6 +392,32 @@ if (formCadastro) {
                     );
 
                     return;
+
+                }
+
+
+                // =============================================
+                // VALIDAR PLACA
+                // =============================================
+
+                const placaNumeros =
+                    placa.replace(
+                        /[^A-Z0-9]/gi,
+                        ""
+                    );
+
+
+                if (
+                    placaNumeros.length !== 7
+                ) {
+
+                    mostrarMensagem(
+                        "Informe uma placa válida.",
+                        "erro"
+                    );
+
+                    return;
+
                 }
 
             }
@@ -373,6 +441,7 @@ if (formCadastro) {
                 );
 
                 return;
+
             }
 
 
@@ -389,13 +458,14 @@ if (formCadastro) {
                     tipoCadastro === "parceiro"
                         ? "Enviando cadastro..."
                         : "Criando conta...";
+
             }
 
 
             try {
 
                 // =================================================
-                // DADOS DO USUÁRIO
+                // DADOS DO AUTH
                 // =================================================
 
                 const dadosUsuario = {
@@ -415,56 +485,20 @@ if (formCadastro) {
                 };
 
 
-                // =================================================
-                // DADOS DO VEÍCULO
-                // =================================================
-
-                if (
-                    tipoCadastro === "parceiro"
-                ) {
-
-                    dadosUsuario.veiculo = {
-
-                        marca:
-                            marca,
-
-                        modelo:
-                            modelo,
-
-                        cor:
-                            cor,
-
-                        ano:
-                            Number(anoVeiculo),
-
-                        placa:
-                            placa
-                                .replace(/-/g, "")
-                                .toUpperCase(),
-
-                        assentos:
-                            Number(assentos)
-
-                    };
-
-                }
-
-
                 console.log(
-                    "Iniciando cadastro:",
-                    {
-                        email:
-                            email,
-
-                        tipo:
-                            tipoCadastro
-                    }
+                    "Dados do usuário:",
+                    dadosUsuario
                 );
 
 
                 // =================================================
-                // CRIAR USUÁRIO NO SUPABASE AUTH
+                // CRIAR CONTA NO SUPABASE AUTH
                 // =================================================
+
+                console.log(
+                    "Criando usuário no Auth..."
+                );
+
 
                 const {
                     data,
@@ -489,7 +523,7 @@ if (formCadastro) {
 
 
                 // =================================================
-                // ERRO NO AUTH
+                // ERRO AUTH
                 // =================================================
 
                 if (error) {
@@ -568,11 +602,12 @@ if (formCadastro) {
                     );
 
                     return;
+
                 }
 
 
                 // =================================================
-                // VERIFICAR USUÁRIO CRIADO
+                // VERIFICAR USUÁRIO
                 // =================================================
 
                 if (
@@ -595,15 +630,17 @@ if (formCadastro) {
                     );
 
                     return;
+
                 }
 
 
                 // =================================================
-                // ID DO AUTH
+                // USUÁRIO CRIADO
                 // =================================================
 
                 const usuarioCriado =
                     data.user;
+
 
                 const usuarioId =
                     usuarioCriado.id;
@@ -629,39 +666,104 @@ if (formCadastro) {
                     tipoCadastro === "cliente"
                 ) {
 
-                    /*
-                     * O cliente será tratado pelo
-                     * registro/trigger da tabela clientes.
-                     */
-
-                    mostrarMensagem(
-                        !data.session
-                            ? "Conta criada! Confirme o e-mail antes de entrar."
-                            : "Conta criada com sucesso!",
-                        "sucesso"
+                    console.log(
+                        "Criando registro do cliente..."
                     );
 
 
-                    if (botaoCadastrar) {
+                    const dadosCliente = {
 
-                        botaoCadastrar.textContent =
-                            "Conta criada";
+                        id:
+                            usuarioId,
+
+                        nome:
+                            nome,
+
+                        cpf:
+                            cpfNumeros,
+
+                        telefone:
+                            telefone,
+
+                        email:
+                            email,
+
+                        ativo:
+                            true
+
+                    };
+
+
+                    console.log(
+                        "Dados enviados para clientes:",
+                        dadosCliente
+                    );
+
+
+                    const {
+                        data: clienteCriado,
+                        error: erroCliente
+                    } =
+                        await supabaseClient
+                            .from("clientes")
+                            .insert(
+                                dadosCliente
+                            )
+                            .select()
+                            .single();
+
+
+                    if (
+                        erroCliente
+                    ) {
+
+                        console.error(
+                            "Erro ao criar cliente:",
+                            erroCliente
+                        );
+
+                        console.error(
+                            "Código:",
+                            erroCliente.code
+                        );
+
+                        console.error(
+                            "Mensagem:",
+                            erroCliente.message
+                        );
+
+                        console.error(
+                            "Detalhes:",
+                            erroCliente.details
+                        );
+
+
+                        mostrarMensagem(
+                            "A conta foi criada, mas não foi possível cadastrar os dados do cliente. Verifique as permissões da tabela clientes.",
+                            "erro"
+                        );
+
+
+                        restaurarBotao(
+                            tipoCadastro
+                        );
+
+                        return;
 
                     }
 
 
-                    setTimeout(
-                        function () {
-
-                            window.location.href =
-                                "login.html";
-
-                        },
-                        2500
+                    console.log(
+                        "Cliente cadastrado com sucesso:",
+                        clienteCriado
                     );
 
 
-                    return;
+                    mostrarMensagem(
+                        "Conta criada com sucesso!",
+                        "sucesso"
+                    );
+
                 }
 
 
@@ -678,9 +780,14 @@ if (formCadastro) {
                     );
 
 
-                    // =================================================
-                    // DADOS DO MOTORISTA
-                    // =================================================
+                    const placaFinal =
+                        placa
+                            .replace(
+                                /[^A-Z0-9]/gi,
+                                ""
+                            )
+                            .toUpperCase();
+
 
                     const dadosMotorista = {
 
@@ -699,6 +806,24 @@ if (formCadastro) {
                         email:
                             email,
 
+                        marca:
+                            marca,
+
+                        modelo:
+                            modelo,
+
+                        cor:
+                            cor,
+
+                        ano:
+                            Number(anoVeiculo),
+
+                        placa:
+                            placaFinal,
+
+                        assentos:
+                            Number(assentos),
+
                         status:
                             "pendente"
 
@@ -710,10 +835,6 @@ if (formCadastro) {
                         dadosMotorista
                     );
 
-
-                    // =================================================
-                    // INSERIR MOTORISTA
-                    // =================================================
 
                     const {
                         data: motoristaCriado,
@@ -741,18 +862,15 @@ if (formCadastro) {
                             erroMotorista
                         );
 
-
                         console.error(
                             "Código:",
                             erroMotorista.code
                         );
 
-
                         console.error(
                             "Mensagem:",
                             erroMotorista.message
                         );
-
 
                         console.error(
                             "Detalhes:",
@@ -770,17 +888,13 @@ if (formCadastro) {
                             tipoCadastro
                         );
 
-
                         return;
+
                     }
 
 
-                    // =================================================
-                    // MOTORISTA CRIADO
-                    // =================================================
-
                     console.log(
-                        "Motorista criado com sucesso:",
+                        "Motorista cadastrado com sucesso:",
                         motoristaCriado
                     );
 
@@ -790,30 +904,46 @@ if (formCadastro) {
                         "sucesso"
                     );
 
-
-                    if (botaoCadastrar) {
-
-                        botaoCadastrar.textContent =
-                            "Cadastro enviado";
-
-                    }
+                }
 
 
-                    // =================================================
-                    // REDIRECIONAR
-                    // =================================================
+                // =================================================
+                // BOTÃO
+                // =================================================
 
-                    setTimeout(
-                        function () {
+                if (botaoCadastrar) {
 
-                            window.location.href =
-                                "login.html";
-
-                        },
-                        3000
-                    );
+                    botaoCadastrar.textContent =
+                        tipoCadastro === "parceiro"
+                            ? "Cadastro enviado"
+                            : "Conta criada";
 
                 }
+
+
+                // =================================================
+                // SALVAR TIPO DE ACESSO
+                // =================================================
+
+                localStorage.setItem(
+                    "tipoAcesso",
+                    tipoCadastro
+                );
+
+
+                // =================================================
+                // REDIRECIONAR
+                // =================================================
+
+                setTimeout(
+                    function () {
+
+                        window.location.href =
+                            "login.html";
+
+                    },
+                    2500
+                );
 
             }
 
@@ -1046,3 +1176,12 @@ if (campoPlaca) {
     );
 
 }
+
+
+// ============================================================
+// FINAL
+// ============================================================
+
+console.log(
+    "Cadastro VaidTáxi carregado."
+);
