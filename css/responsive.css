@@ -486,3 +486,68 @@
     }
 
 }
+/* ======================================================
+   MOTORISTAS - RESPONSIVO
+====================================================== */
+
+@media (max-width:600px){
+
+    .escolha-motorista{
+
+        padding:20px;
+
+        margin:25px 0;
+
+        border-radius:15px;
+
+    }
+
+
+    .motorista-titulo h2{
+
+        font-size:20px;
+
+    }
+
+
+    .lista-motoristas{
+
+        grid-template-columns:1fr;
+
+        gap:15px;
+
+    }
+
+
+    .card-motorista{
+
+        padding:20px;
+
+    }
+
+}
+
+
+@media (max-width:400px){
+
+    .escolha-motorista{
+
+        padding:16px;
+
+    }
+
+
+    .motorista-titulo h2{
+
+        font-size:18px;
+
+    }
+
+
+    .motorista-titulo p{
+
+        font-size:13px;
+
+    }
+
+}
