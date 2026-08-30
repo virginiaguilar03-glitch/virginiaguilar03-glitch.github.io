@@ -566,7 +566,9 @@ function iniciarMapa() {
     // Verificar Leaflet
     // --------------------------------------------------------
 
-    if (typeof L === "undefined") {
+    if (
+        typeof L === "undefined"
+    ) {
 
         console.error(
             "Leaflet não foi carregado."
@@ -599,9 +601,52 @@ function iniciarMapa() {
 
 
     // --------------------------------------------------------
-    // Coordenadas iniciais
-    // Jacinto - MG
+    // EVITAR DUPLICAÇÃO
     // --------------------------------------------------------
+
+    if (mapaCorrida) {
+
+        mapaCorrida.remove();
+
+        mapaCorrida =
+            null;
+
+    }
+
+
+    // ========================================================
+    // ESTILO DO MAPA
+    // ========================================================
+
+    elementoMapa.style.width =
+        "100%";
+
+    elementoMapa.style.height =
+        "380px";
+
+    elementoMapa.style.minHeight =
+        "380px";
+
+    elementoMapa.style.border =
+        "2px solid #FFD000";
+
+    elementoMapa.style.borderRadius =
+        "18px";
+
+    elementoMapa.style.overflow =
+        "hidden";
+
+    elementoMapa.style.background =
+        "#f4f4f4";
+
+    elementoMapa.style.boxShadow =
+        "0 8px 25px rgba(0,0,0,.20)";
+
+
+    // ========================================================
+    // COORDENADAS INICIAIS
+    // Jacinto - MG
+    // ========================================================
 
     const latitudeInicial =
         -16.1425;
@@ -610,17 +655,18 @@ function iniciarMapa() {
         -40.2931;
 
 
-    // --------------------------------------------------------
-    // Criar mapa
-    // --------------------------------------------------------
+    // ========================================================
+    // CRIAR MAPA
+    // ========================================================
 
     mapaCorrida =
         L.map(
             "mapaCorrida",
             {
-                zoomControl: true
+                zoomControl: false
             }
-        ).setView(
+        )
+        .setView(
             [
                 latitudeInicial,
                 longitudeInicial
@@ -629,11 +675,23 @@ function iniciarMapa() {
         );
 
 
-    // --------------------------------------------------------
-    // MAPA CLARO
+    // ========================================================
+    // CONTROLE DE ZOOM
+    // ========================================================
+
+    L.control.zoom(
+        {
+            position: "topleft"
+        }
+    ).addTo(
+        mapaCorrida
+    );
+
+
+    // ========================================================
     // OPENSTREETMAP
     // SEM API KEY
-    // --------------------------------------------------------
+    // ========================================================
 
     L.tileLayer(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -641,10 +699,10 @@ function iniciarMapa() {
 
             maxZoom: 19,
 
-            minZoom: 5,
+            minZoom: 3,
 
             attribution:
-                '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+                '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
 
         }
     ).addTo(
@@ -652,38 +710,71 @@ function iniciarMapa() {
     );
 
 
-    // --------------------------------------------------------
+    // ========================================================
+    // ÍCONE AMARELO DO VAIDTÁXI
+    // ========================================================
+
+    const iconeUsuario =
+        L.divIcon(
+            {
+
+                className:
+                    "marcador-vaidtaxi",
+
+                html: `
+                    <div class="marcador-vaidtaxi-pin">
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                    </div>
+                `,
+
+                iconSize:
+                    [42, 42],
+
+                iconAnchor:
+                    [21, 42],
+
+                popupAnchor:
+                    [0, -42]
+
+            }
+        );
+
+
+    // ========================================================
     // MARCADOR INICIAL
-    // --------------------------------------------------------
+    // ========================================================
 
     marcadorUsuario =
         L.marker(
             [
                 latitudeInicial,
                 longitudeInicial
-            ]
+            ],
+            {
+                icon:
+                    iconeUsuario
+            }
         )
         .addTo(
             mapaCorrida
         )
         .bindPopup(
-            "<strong>VaidTáxi</strong><br>" +
-            "Localização inicial"
+            "<strong>VaidTáxi</strong><br>Jacinto - MG"
         );
 
 
-    // --------------------------------------------------------
-    // POSIÇÃO DO CONTROLE DE ZOOM
-    // --------------------------------------------------------
+    // ========================================================
+    // CSS DO MARCADOR
+    // ========================================================
 
-    mapaCorrida.zoomControl.setPosition(
-        "bottomright"
-    );
+    adicionarEstiloMapa();
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // CORRIGIR TAMANHO
-    // --------------------------------------------------------
+    // ========================================================
 
     setTimeout(
         function () {
@@ -700,7 +791,294 @@ function iniciarMapa() {
 
 
     console.log(
-        "Mapa claro da corrida iniciado."
+        "Mapa claro do VaidTáxi iniciado sem API Key."
+    );
+
+}
+
+
+// ============================================================
+// ESTILO EXTRA DO MAPA
+// ============================================================
+
+function adicionarEstiloMapa() {
+
+    // --------------------------------------------------------
+    // Evitar duplicação
+    // --------------------------------------------------------
+
+    if (
+        document.getElementById(
+            "estiloMapaVaidTaxi"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const estilo =
+        document.createElement(
+            "style"
+        );
+
+
+    estilo.id =
+        "estiloMapaVaidTaxi";
+
+
+    estilo.textContent = `
+
+        /* ==========================================
+           MAPA VAIDTÁXI
+        ========================================== */
+
+        #mapaCorrida {
+
+            position: relative;
+
+            z-index: 1;
+
+        }
+
+
+        /* ==========================================
+           CONTROLE DE ZOOM
+        ========================================== */
+
+        #mapaCorrida
+        .leaflet-control-zoom {
+
+            border: none !important;
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,.20);
+
+        }
+
+
+        #mapaCorrida
+        .leaflet-control-zoom a {
+
+            width: 42px !important;
+
+            height: 42px !important;
+
+            line-height: 42px !important;
+
+            background: #ffffff !important;
+
+            color: #222222 !important;
+
+            border: none !important;
+
+            font-size: 22px !important;
+
+            font-weight: 600;
+
+            transition: .2s;
+
+        }
+
+
+        #mapaCorrida
+        .leaflet-control-zoom a:hover {
+
+            background: #FFD000 !important;
+
+            color: #111111 !important;
+
+        }
+
+
+        #mapaCorrida
+        .leaflet-control-zoom
+        a:first-child {
+
+            border-radius:
+                10px 10px 0 0 !important;
+
+        }
+
+
+        #mapaCorrida
+        .leaflet-control-zoom
+        a:last-child {
+
+            border-radius:
+                0 0 10px 10px !important;
+
+        }
+
+
+        /* ==========================================
+           ATRIBUIÇÃO
+        ========================================== */
+
+        #mapaCorrida
+        .leaflet-control-attribution {
+
+            background:
+                rgba(255,255,255,.92) !important;
+
+            color:
+                #555 !important;
+
+            border-radius:
+                8px 0 0 0;
+
+            font-size:
+                11px;
+
+        }
+
+
+        #mapaCorrida
+        .leaflet-control-attribution a {
+
+            color:
+                #555 !important;
+
+        }
+
+
+        /* ==========================================
+           MARCADOR
+        ========================================== */
+
+        .marcador-vaidtaxi {
+
+            background:
+                transparent !important;
+
+            border:
+                none !important;
+
+        }
+
+
+        .marcador-vaidtaxi-pin {
+
+            width:
+                42px;
+
+            height:
+                42px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            background:
+                #FFD000;
+
+            color:
+                #111111;
+
+            border:
+                3px solid #ffffff;
+
+            border-radius:
+                50% 50% 50% 0;
+
+            transform:
+                rotate(-45deg);
+
+            box-shadow:
+                0 5px 15px rgba(0,0,0,.35);
+
+        }
+
+
+        .marcador-vaidtaxi-pin i {
+
+            transform:
+                rotate(45deg);
+
+            font-size:
+                21px;
+
+        }
+
+
+        /* ==========================================
+           POPUP
+        ========================================== */
+
+        #mapaCorrida
+        .leaflet-popup-content-wrapper {
+
+            border-radius:
+                12px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,.25);
+
+        }
+
+
+        #mapaCorrida
+        .leaflet-popup-content {
+
+            font-family:
+                'Poppins',
+                sans-serif;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.5;
+
+        }
+
+
+        /* ==========================================
+           MOBILE
+        ========================================== */
+
+        @media (max-width:600px) {
+
+            #mapaCorrida {
+
+                height:
+                    300px !important;
+
+                min-height:
+                    300px !important;
+
+                border-radius:
+                    15px;
+
+            }
+
+            #mapaCorrida
+            .leaflet-control-zoom a {
+
+                width:
+                    38px !important;
+
+                height:
+                    38px !important;
+
+                line-height:
+                    38px !important;
+
+            }
+
+        }
+
+    `;
+
+
+    document.head.appendChild(
+        estilo
     );
 
 }
@@ -712,7 +1090,9 @@ function iniciarMapa() {
 
 function obterLocalizacao() {
 
-    if (!navigator.geolocation) {
+    if (
+        !navigator.geolocation
+    ) {
 
         mostrarMensagem(
             "Seu navegador não suporta localização.",
@@ -736,10 +1116,6 @@ function obterLocalizacao() {
     }
 
 
-    // --------------------------------------------------------
-    // Alterar botão
-    // --------------------------------------------------------
-
     if (btnLocalizacao) {
 
         btnLocalizacao.disabled =
@@ -750,10 +1126,6 @@ function obterLocalizacao() {
 
     }
 
-
-    // --------------------------------------------------------
-    // Obter localização
-    // --------------------------------------------------------
 
     navigator.geolocation.getCurrentPosition(
 
@@ -767,7 +1139,7 @@ function obterLocalizacao() {
 
 
             // ------------------------------------------------
-            // Centralizar mapa
+            // CENTRALIZAR MAPA
             // ------------------------------------------------
 
             mapaCorrida.setView(
@@ -775,12 +1147,16 @@ function obterLocalizacao() {
                     latitude,
                     longitude
                 ],
-                17
+                17,
+                {
+                    animate:
+                        true
+                }
             );
 
 
             // ------------------------------------------------
-            // Remover marcador anterior
+            // REMOVER MARCADOR ANTERIOR
             // ------------------------------------------------
 
             if (marcadorUsuario) {
@@ -793,7 +1169,39 @@ function obterLocalizacao() {
 
 
             // ------------------------------------------------
-            // Criar marcador
+            // ÍCONE
+            // ------------------------------------------------
+
+            const iconeUsuario =
+                L.divIcon(
+                    {
+
+                        className:
+                            "marcador-vaidtaxi",
+
+                        html: `
+                            <div class="marcador-vaidtaxi-pin">
+
+                                <i class="fa-solid fa-location-dot"></i>
+
+                            </div>
+                        `,
+
+                        iconSize:
+                            [42, 42],
+
+                        iconAnchor:
+                            [21, 42],
+
+                        popupAnchor:
+                            [0, -42]
+
+                    }
+                );
+
+
+            // ------------------------------------------------
+            // NOVO MARCADOR
             // ------------------------------------------------
 
             marcadorUsuario =
@@ -801,20 +1209,23 @@ function obterLocalizacao() {
                     [
                         latitude,
                         longitude
-                    ]
+                    ],
+                    {
+                        icon:
+                            iconeUsuario
+                    }
                 )
                 .addTo(
                     mapaCorrida
                 )
                 .bindPopup(
-                    "<strong>Você está aqui!</strong><br>" +
-                    "Local de partida"
+                    "<strong>Você está aqui!</strong>"
                 )
                 .openPopup();
 
 
             // ------------------------------------------------
-            // Preencher origem
+            // PREENCHER ORIGEM
             // ------------------------------------------------
 
             if (campoOrigem) {
@@ -828,7 +1239,7 @@ function obterLocalizacao() {
 
 
             // ------------------------------------------------
-            // Botão
+            // BOTÃO
             // ------------------------------------------------
 
             if (btnLocalizacao) {
@@ -842,10 +1253,6 @@ function obterLocalizacao() {
             }
 
 
-            // ------------------------------------------------
-            // Mensagem
-            // ------------------------------------------------
-
             mostrarMensagem(
                 "Sua localização foi encontrada.",
                 "sucesso"
@@ -853,10 +1260,6 @@ function obterLocalizacao() {
 
         },
 
-
-        // ----------------------------------------------------
-        // ERRO
-        // ----------------------------------------------------
 
         function (erro) {
 
@@ -870,21 +1273,27 @@ function obterLocalizacao() {
                 "Não foi possível obter sua localização.";
 
 
-            if (erro.code === 1) {
+            if (
+                erro.code === 1
+            ) {
 
                 texto =
                     "Permita o acesso à localização no navegador.";
 
             }
 
-            else if (erro.code === 2) {
+            else if (
+                erro.code === 2
+            ) {
 
                 texto =
                     "Sua localização não está disponível.";
 
             }
 
-            else if (erro.code === 3) {
+            else if (
+                erro.code === 3
+            ) {
 
                 texto =
                     "A localização demorou demais para responder.";
@@ -897,10 +1306,6 @@ function obterLocalizacao() {
                 "erro"
             );
 
-
-            // ------------------------------------------------
-            // Restaurar botão
-            // ------------------------------------------------
 
             if (btnLocalizacao) {
 
@@ -915,17 +1320,16 @@ function obterLocalizacao() {
         },
 
 
-        // ----------------------------------------------------
-        // CONFIGURAÇÕES
-        // ----------------------------------------------------
-
         {
 
-            enableHighAccuracy: true,
+            enableHighAccuracy:
+                true,
 
-            timeout: 10000,
+            timeout:
+                10000,
 
-            maximumAge: 0
+            maximumAge:
+                0
 
         }
 
@@ -951,7 +1355,7 @@ async function solicitarCorrida(
 
 
     // --------------------------------------------------------
-    // Verificar Supabase
+    // SUPABASE
     // --------------------------------------------------------
 
     if (!supabaseDisponivel()) {
@@ -967,7 +1371,7 @@ async function solicitarCorrida(
 
 
     // --------------------------------------------------------
-    // Verificar usuário
+    // USUÁRIO
     // --------------------------------------------------------
 
     const usuario =
@@ -999,7 +1403,7 @@ async function solicitarCorrida(
 
 
     // --------------------------------------------------------
-    // Verificar tipo de acesso
+    // TIPO DE ACESSO
     // --------------------------------------------------------
 
     const tipoAcesso =
@@ -1024,7 +1428,7 @@ async function solicitarCorrida(
 
 
     // --------------------------------------------------------
-    // Verificar motorista
+    // MOTORISTA
     // --------------------------------------------------------
 
     if (!motoristaSelecionado) {
@@ -1040,7 +1444,7 @@ async function solicitarCorrida(
 
 
     // --------------------------------------------------------
-    // Campos
+    // CAMPOS
     // --------------------------------------------------------
 
     const origem =
@@ -1059,7 +1463,7 @@ async function solicitarCorrida(
 
 
     // --------------------------------------------------------
-    // Validar origem
+    // VALIDAR ORIGEM
     // --------------------------------------------------------
 
     if (!origem) {
@@ -1077,7 +1481,7 @@ async function solicitarCorrida(
 
 
     // --------------------------------------------------------
-    // Validar destino
+    // VALIDAR DESTINO
     // --------------------------------------------------------
 
     if (!destino) {
@@ -1095,7 +1499,7 @@ async function solicitarCorrida(
 
 
     // --------------------------------------------------------
-    // Botão
+    // BOTÃO
     // --------------------------------------------------------
 
     if (btnSolicitar) {
@@ -1162,7 +1566,7 @@ async function solicitarCorrida(
 
 
         // ====================================================
-        // TRATAR ERRO
+        // ERRO
         // ====================================================
 
         if (error) {
@@ -1215,7 +1619,7 @@ async function solicitarCorrida(
 
 
         // ----------------------------------------------------
-        // Salvar corrida atual
+        // SALVAR CORRIDA ATUAL
         // ----------------------------------------------------
 
         if (data?.id) {
@@ -1229,7 +1633,7 @@ async function solicitarCorrida(
 
 
         // ----------------------------------------------------
-        // Mensagem
+        // MENSAGEM
         // ----------------------------------------------------
 
         mostrarMensagem(
@@ -1239,7 +1643,7 @@ async function solicitarCorrida(
 
 
         // ----------------------------------------------------
-        // Botão
+        // BOTÃO
         // ----------------------------------------------------
 
         if (btnSolicitar) {
@@ -1254,7 +1658,7 @@ async function solicitarCorrida(
 
 
         // ----------------------------------------------------
-        // Acompanhar
+        // ACOMPANHAR
         // ----------------------------------------------------
 
         if (data?.id) {
@@ -1312,7 +1716,9 @@ function mostrarMensagem(
         "block";
 
 
-    if (tipo === "sucesso") {
+    if (
+        tipo === "sucesso"
+    ) {
 
         mensagemCorrida.style.color =
             "#00cc66";
@@ -1370,7 +1776,7 @@ async function iniciarAcompanhamentoCorrida(
 
 
     // --------------------------------------------------------
-    // Remover canal anterior
+    // REMOVER CANAL ANTERIOR
     // --------------------------------------------------------
 
     if (canalCorrida) {
@@ -1387,13 +1793,14 @@ async function iniciarAcompanhamentoCorrida(
 
 
     // --------------------------------------------------------
-    // Criar canal
+    // CRIAR CANAL
     // --------------------------------------------------------
 
     canalCorrida =
         supabaseClient
             .channel(
-                "corrida-" + corridaId
+                "corrida-" +
+                corridaId
             )
             .on(
                 "postgres_changes",
