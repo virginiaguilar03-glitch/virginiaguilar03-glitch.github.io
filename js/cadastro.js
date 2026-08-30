@@ -66,7 +66,7 @@ function obterTipoCadastro() {
 
 
 // ============================================================
-// SUPABASE
+// VERIFICAR SUPABASE
 // ============================================================
 
 function supabaseDisponivel() {
@@ -89,8 +89,7 @@ function restaurarBotao(tipoCadastro) {
         return;
     }
 
-    botaoCadastrar.disabled =
-        false;
+    botaoCadastrar.disabled = false;
 
     botaoCadastrar.textContent =
         tipoCadastro === "parceiro"
@@ -101,7 +100,7 @@ function restaurarBotao(tipoCadastro) {
 
 
 // ============================================================
-// CADASTRO
+// EVENTO DO FORMULÁRIO
 // ============================================================
 
 if (formCadastro) {
@@ -112,13 +111,12 @@ if (formCadastro) {
 
             event.preventDefault();
 
-
             console.log("======================================");
             console.log("Iniciando processo de cadastro...");
 
 
             // ==================================================
-            // TIPO
+            // TIPO DE CADASTRO
             // ==================================================
 
             const tipoCadastro =
@@ -315,16 +313,28 @@ if (formCadastro) {
 
 
             // ==================================================
-            // VALIDAR PARCEIRO
+            // VARIÁVEIS DO PARCEIRO
             // ==================================================
 
             let anoNumero = null;
+
             let assentosNumero = null;
 
+            let placaFinal = null;
+
+
+            // ==================================================
+            // VALIDAR PARCEIRO
+            // ==================================================
 
             if (
                 tipoCadastro === "parceiro"
             ) {
+
+
+                // ------------------------------------------------
+                // CAMPOS OBRIGATÓRIOS
+                // ------------------------------------------------
 
                 if (
                     !marca ||
@@ -345,9 +355,9 @@ if (formCadastro) {
                 }
 
 
-                // ==============================================
+                // ------------------------------------------------
                 // ANO
-                // ==============================================
+                // ------------------------------------------------
 
                 anoNumero =
                     Number(anoVeiculo);
@@ -369,9 +379,9 @@ if (formCadastro) {
                 }
 
 
-                // ==============================================
+                // ------------------------------------------------
                 // ASSENTOS
-                // ==============================================
+                // ------------------------------------------------
 
                 assentosNumero =
                     Number(assentos);
@@ -393,19 +403,23 @@ if (formCadastro) {
                 }
 
 
-                // ==============================================
+                // ------------------------------------------------
                 // PLACA
-                // ==============================================
+                // ------------------------------------------------
 
-                const placaNumeros =
-                    placa.replace(
-                        /[^A-Z0-9]/gi,
-                        ""
-                    ).toUpperCase();
+                placaFinal =
+                    placa
+                        .replace(
+                            /[^A-Z0-9]/gi,
+                            ""
+                        )
+                        .toUpperCase();
 
 
                 /*
-                 * Aceita:
+                 * A placa brasileira possui 7 caracteres.
+                 *
+                 * Aceitamos:
                  *
                  * ABC-1234
                  * ABC1234
@@ -413,7 +427,7 @@ if (formCadastro) {
                  */
 
                 if (
-                    placaNumeros.length !== 7
+                    placaFinal.length !== 7
                 ) {
 
                     mostrarMensagem(
@@ -429,7 +443,7 @@ if (formCadastro) {
 
 
             // ==================================================
-            // VERIFICAR SUPABASE
+            // SUPABASE
             // ==================================================
 
             if (
@@ -456,8 +470,7 @@ if (formCadastro) {
 
             if (botaoCadastrar) {
 
-                botaoCadastrar.disabled =
-                    true;
+                botaoCadastrar.disabled = true;
 
                 botaoCadastrar.textContent =
                     tipoCadastro === "parceiro"
@@ -468,6 +481,7 @@ if (formCadastro) {
 
 
             try {
+
 
                 // ==================================================
                 // METADATA DO USUÁRIO
@@ -491,7 +505,7 @@ if (formCadastro) {
 
 
                 // ==================================================
-                // CRIAR CONTA AUTH
+                // CRIAR CONTA NO AUTH
                 // ==================================================
 
                 console.log(
@@ -658,16 +672,14 @@ if (formCadastro) {
                 ) {
 
                     /*
-                     * O cadastro do cliente deve ser criado
-                     * pelo trigger do Supabase.
+                     * O cliente é criado pelo TRIGGER
+                     * configurado no Supabase.
                      *
-                     * Não fazemos INSERT manual aqui.
-                     *
-                     * Isso evita duplicidade.
+                     * Não fazemos INSERT manual.
                      */
 
                     console.log(
-                        "Cadastro de cliente criado através do Auth/trigger."
+                        "Cliente será criado pelo trigger do Supabase."
                     );
 
 
@@ -720,22 +732,9 @@ if (formCadastro) {
                     );
 
 
-                    // ==============================================
-                    // NORMALIZAR PLACA
-                    // ==============================================
-
-                    const placaFinal =
-                        placa
-                            .replace(
-                                /[^A-Z0-9]/gi,
-                                ""
-                            )
-                            .toUpperCase();
-
-
-                    // ==============================================
+                    // =================================================
                     // DADOS DO MOTORISTA
-                    // ==============================================
+                    // =================================================
 
                     const dadosMotorista = {
 
@@ -784,9 +783,9 @@ if (formCadastro) {
                     );
 
 
-                    // ==============================================
+                    // =================================================
                     // INSERIR MOTORISTA
-                    // ==============================================
+                    // =================================================
 
                     const {
                         data: motoristaCriado,
@@ -801,9 +800,9 @@ if (formCadastro) {
                             .single();
 
 
-                    // ==============================================
+                    // =================================================
                     // ERRO MOTORISTA
-                    // ==============================================
+                    // =================================================
 
                     if (
                         erroMotorista
@@ -833,12 +832,6 @@ if (formCadastro) {
                         );
 
 
-                        /*
-                         * A conta Auth já foi criada.
-                         * Portanto não informamos que tudo
-                         * falhou.
-                         */
-
                         mostrarMensagem(
                             "A conta foi criada, mas não foi possível cadastrar o motorista. Verifique as permissões da tabela motoristas.",
                             "erro"
@@ -854,9 +847,9 @@ if (formCadastro) {
                     }
 
 
-                    // ==============================================
+                    // =================================================
                     // SUCESSO
-                    // ==============================================
+                    // =================================================
 
                     console.log(
                         "Motorista criado com sucesso:",
@@ -878,9 +871,9 @@ if (formCadastro) {
                     }
 
 
-                    // ==============================================
+                    // =================================================
                     // REDIRECIONAR
-                    // ==============================================
+                    // =================================================
 
                     setTimeout(
                         function () {
