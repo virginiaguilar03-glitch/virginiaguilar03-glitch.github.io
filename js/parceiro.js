@@ -97,7 +97,7 @@ function formatarMoeda(valor) {
 
 
 // ============================================================
-// FUNÇÃO PARA COLOCAR TEXTO EM UM ELEMENTO
+// FUNÇÃO PARA PREENCHER ELEMENTO
 // ============================================================
 
 function preencherElemento(id, valor) {
@@ -199,7 +199,7 @@ function carregarDadosParceiro() {
 
 
     // ========================================================
-    // VEÍCULO
+    // DADOS DO VEÍCULO
     // ========================================================
 
     preencherElemento(
@@ -265,7 +265,7 @@ async function carregarDadosMotorista(usuarioId) {
 
 
         // ----------------------------------------------------
-        // BUSCAR REGISTRO NA TABELA MOTORISTAS
+        // BUSCAR MOTORISTA
         // ----------------------------------------------------
 
         const {
@@ -280,7 +280,7 @@ async function carregarDadosMotorista(usuarioId) {
 
 
         // ----------------------------------------------------
-        // ERRO
+        // VERIFICAR ERRO
         // ----------------------------------------------------
 
         if (error) {
@@ -311,7 +311,7 @@ async function carregarDadosMotorista(usuarioId) {
 
 
         // ----------------------------------------------------
-        // MOSTRAR NO CONSOLE
+        // MOSTRAR MOTORISTA NO CONSOLE
         // ----------------------------------------------------
 
         console.log(
@@ -349,19 +349,12 @@ async function carregarDadosMotorista(usuarioId) {
             "Não informado";
 
 
-        // ----------------------------------------------------
-        // PASSAGEIROS
-        //
-        // Como ainda não vimos o nome exato dessa coluna,
-        // verificamos algumas possibilidades.
-        // ----------------------------------------------------
+        // ====================================================
+        // QUANTIDADE DE PASSAGEIROS
+        // ====================================================
 
         parceiro.passageiros =
-            motorista.passageiros ||
-            motorista.num_passageiros ||
-            motorista.numero_passageiros ||
-            motorista.capacidade ||
-            motorista.lugares ||
+            motorista.quantidade_assentos ||
             "Não informado";
 
 
