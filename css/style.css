@@ -1120,3 +1120,14 @@ table tr:hover{
     margin-right:8px;
 
 }
+/* ======================================================
+   CORREÇÃO - ESPAÇO DO HEADER NO PAINEL DO PARCEIRO
+====================================================== */
+
+@media (min-width: 769px) {
+
+    main {
+        padding-top: 85px;
+    }
+
+}
