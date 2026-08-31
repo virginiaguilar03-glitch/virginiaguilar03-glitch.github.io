@@ -1,6 +1,7 @@
 /* ============================================================
    ADMIN.CSS - VAIDTÁXI
    Painel Administrativo
+   Versão corrigida e completa
 ============================================================ */
 
 
@@ -19,8 +20,10 @@ html {
 body {
     margin: 0;
     padding: 0;
+
     background: #0f0f0f;
     color: #ffffff;
+
     font-family: "Poppins", sans-serif;
 }
 
@@ -30,8 +33,11 @@ body {
 ============================================================ */
 
 .admin-layout {
+    width: 100%;
     min-height: 100vh;
+
     display: flex;
+
     background: #0f0f0f;
 }
 
@@ -41,13 +47,13 @@ body {
 ============================================================ */
 
 .admin-sidebar {
-    width: 270px;
-    min-height: 100vh;
-
     position: fixed;
-    left: 0;
+
     top: 0;
-    bottom: 0;
+    left: 0;
+
+    width: 270px;
+    height: 100vh;
 
     display: flex;
     flex-direction: column;
@@ -56,7 +62,10 @@ body {
 
     border-right: 1px solid #292929;
 
-    z-index: 1000;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    z-index: 2000;
 }
 
 
@@ -73,9 +82,11 @@ body {
 .admin-logo a {
     display: flex;
     align-items: center;
+
     gap: 12px;
 
     text-decoration: none;
+
     color: #ffffff;
 }
 
@@ -91,10 +102,10 @@ body {
 .admin-logo h2 {
     margin: 0;
 
+    color: #ffffff;
+
     font-size: 25px;
     font-weight: 700;
-
-    color: #ffffff;
 }
 
 .admin-logo h2 span {
@@ -109,30 +120,23 @@ body {
 .admin-menu {
     flex: 1;
 
-    padding: 22px 14px;
-
     display: flex;
     flex-direction: column;
 
     gap: 6px;
 
-    overflow-y: auto;
+    padding: 22px 14px;
 }
-
-
-/* ============================================================
-   ITENS DO MENU
-============================================================ */
 
 .admin-menu-item {
     position: relative;
+
+    width: 100%;
 
     display: flex;
     align-items: center;
 
     gap: 13px;
-
-    width: 100%;
 
     padding: 13px 15px;
 
@@ -181,7 +185,7 @@ body {
 
 
 /* ============================================================
-   BADGES
+   BADGE DO MENU
 ============================================================ */
 
 .admin-menu-badge {
@@ -222,9 +226,9 @@ body {
 }
 
 .admin-menu-item.sair:hover {
-    background: rgba(255, 70, 70, 0.08);
-
     color: #ff4d4d;
+
+    background: rgba(255, 70, 70, 0.08);
 }
 
 
@@ -239,7 +243,7 @@ body {
 
     margin-left: 270px;
 
-    padding: 0 38px 60px;
+    padding: 145px 38px 60px;
 
     background:
         radial-gradient(
@@ -248,6 +252,8 @@ body {
             transparent 35%
         ),
         #0f0f0f;
+
+    overflow-x: hidden;
 }
 
 
@@ -256,6 +262,12 @@ body {
 ============================================================ */
 
 .admin-topo {
+    position: fixed;
+
+    top: 0;
+    left: 270px;
+    right: 0;
+
     min-height: 145px;
 
     display: flex;
@@ -264,9 +276,13 @@ body {
 
     gap: 30px;
 
-    padding: 30px 0;
+    padding: 30px 38px;
+
+    background: rgba(15, 15, 15, 0.97);
 
     border-bottom: 1px solid #262626;
+
+    z-index: 1500;
 }
 
 .admin-label {
@@ -287,10 +303,10 @@ body {
 .admin-topo h1 {
     margin: 0;
 
+    color: #ffffff;
+
     font-size: 32px;
     line-height: 1.2;
-
-    color: #ffffff;
 }
 
 .admin-topo h1 span {
@@ -366,6 +382,10 @@ body {
 ============================================================ */
 
 .admin-secao {
+    position: relative;
+
+    width: 100%;
+
     display: none;
 
     padding-top: 35px;
@@ -435,7 +455,7 @@ body {
 
 
 /* ============================================================
-   CARDS
+   CARDS DO DASHBOARD
 ============================================================ */
 
 .admin-cards {
@@ -680,9 +700,9 @@ body {
 .admin-tabela {
     width: 100%;
 
-    border-collapse: collapse;
-
     min-width: 700px;
+
+    border-collapse: collapse;
 }
 
 .admin-tabela th {
@@ -800,18 +820,398 @@ body {
 
 
 /* ============================================================
+   STATUS
+============================================================ */
+
+.status-badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 11px;
+
+    border-radius: 50px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.status-badge.status-pendente {
+    background: rgba(255, 212, 0, 0.12);
+
+    color: #ffd400;
+
+    border: 1px solid rgba(255, 212, 0, 0.25);
+}
+
+.status-badge.status-aprovado {
+    background: rgba(0, 204, 102, 0.12);
+
+    color: #00cc66;
+
+    border: 1px solid rgba(0, 204, 102, 0.25);
+}
+
+.status-badge.status-reprovado,
+.status-badge.status-recusado {
+    background: rgba(255, 68, 68, 0.12);
+
+    color: #ff5555;
+
+    border: 1px solid rgba(255, 68, 68, 0.25);
+}
+
+
+/* ============================================================
+   VALIDAÇÕES
+============================================================ */
+
+.admin-validacoes {
+    width: 100%;
+}
+
+
+/* ============================================================
+   CARD DE VALIDAÇÃO
+============================================================ */
+
+.admin-validacao-card {
+
+    width: 100%;
+
+    margin-bottom: 20px;
+
+    padding: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #1b1b1b,
+            #151515
+        );
+
+    border: 1px solid #303030;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.25);
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.admin-validacao-card:hover {
+
+    transform: translateY(-2px);
+
+    border-color: rgba(255, 212, 0, 0.35);
+
+    box-shadow:
+        0 14px 40px rgba(0, 0, 0, 0.35);
+}
+
+
+/* ============================================================
+   CABEÇALHO DA VALIDAÇÃO
+============================================================ */
+
+.admin-validacao-cabecalho {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding-bottom: 18px;
+
+    margin-bottom: 20px;
+
+    border-bottom: 1px solid #292929;
+}
+
+.admin-validacao-cabecalho span {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #ffd400;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
+}
+
+.admin-validacao-cabecalho h3 {
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 20px;
+
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   DADOS DA VALIDAÇÃO
+============================================================ */
+
+.admin-validacao-dados {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 15px;
+
+    margin-bottom: 22px;
+}
+
+.admin-validacao-dados > div {
+
+    min-height: 72px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    padding: 13px 15px;
+
+    background: #111111;
+
+    border: 1px solid #252525;
+
+    border-radius: 10px;
+}
+
+.admin-validacao-dados strong {
+
+    margin-bottom: 5px;
+
+    color: #777777;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+}
+
+.admin-validacao-dados span {
+
+    color: #dddddd;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    word-break: break-word;
+}
+
+
+/* ============================================================
+   AÇÕES DA VALIDAÇÃO
+============================================================ */
+
+.admin-validacao-acoes {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid #292929;
+}
+
+
+/* ============================================================
+   BOTÃO APROVAR
+============================================================ */
+
+.admin-btn-aprovar {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 11px 18px;
+
+    border: 1px solid #00a85a;
+
+    border-radius: 9px;
+
+    background: #00a85a;
+
+    color: #ffffff;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.admin-btn-aprovar:hover {
+
+    background: #00c96b;
+
+    border-color: #00c96b;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 18px rgba(0, 204, 102, 0.18);
+}
+
+
+/* ============================================================
+   BOTÃO REPROVAR
+============================================================ */
+
+.admin-btn-reprovar {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 11px 18px;
+
+    border: 1px solid #a83232;
+
+    border-radius: 9px;
+
+    background: rgba(255, 68, 68, 0.08);
+
+    color: #ff6666;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.admin-btn-reprovar:hover {
+
+    background: #d93636;
+
+    border-color: #d93636;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   RESUMO DE VALIDAÇÕES NO DASHBOARD
+============================================================ */
+
+.admin-validacoes-resumo {
+
+    min-height: 210px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 30px;
+
+    text-align: center;
+}
+
+.admin-validacoes-resumo > i {
+
+    margin-bottom: 13px;
+
+    color: #ffd400;
+
+    font-size: 34px;
+}
+
+.admin-validacoes-resumo h3 {
+
+    margin: 0 0 7px;
+
+    color: #ffffff;
+
+    font-size: 17px;
+}
+
+.admin-validacoes-resumo p {
+
+    max-width: 400px;
+
+    margin: 0 0 18px;
+
+    color: #777777;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+
+/* ============================================================
    CONFIGURAÇÕES
 ============================================================ */
 
 .admin-configuracao {
+
     padding: 8px 22px;
 }
 
 .admin-configuracao label {
+
     min-height: 58px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
     gap: 20px;
@@ -824,6 +1224,7 @@ body {
 }
 
 .admin-configuracao label:last-child {
+
     border-bottom: none;
 }
 
@@ -833,6 +1234,7 @@ body {
 ============================================================ */
 
 .admin-configuracao input[type="checkbox"] {
+
     width: 42px;
     height: 22px;
 
@@ -850,6 +1252,7 @@ body {
 }
 
 .admin-configuracao input[type="checkbox"]::after {
+
     content: "";
 
     position: absolute;
@@ -868,48 +1271,15 @@ body {
 }
 
 .admin-configuracao input[type="checkbox"]:checked {
+
     background: #ffd400;
 }
 
 .admin-configuracao input[type="checkbox"]:checked::after {
+
     left: 23px;
 
     background: #111111;
-}
-
-
-/* ============================================================
-   STATUS
-============================================================ */
-
-.admin-status {
-    display: inline-flex;
-    align-items: center;
-
-    padding: 5px 9px;
-
-    border-radius: 50px;
-
-    font-size: 10px;
-    font-weight: 600;
-}
-
-.admin-status.pendente {
-    background: rgba(255, 193, 7, 0.12);
-
-    color: #ffd400;
-}
-
-.admin-status.aprovado {
-    background: rgba(0, 204, 102, 0.12);
-
-    color: #00cc66;
-}
-
-.admin-status.bloqueado {
-    background: rgba(255, 68, 68, 0.12);
-
-    color: #ff5555;
 }
 
 
@@ -920,6 +1290,7 @@ body {
 .admin-sidebar::-webkit-scrollbar,
 .admin-menu::-webkit-scrollbar,
 .admin-tabela-container::-webkit-scrollbar {
+
     width: 6px;
     height: 6px;
 }
@@ -927,12 +1298,14 @@ body {
 .admin-sidebar::-webkit-scrollbar-track,
 .admin-menu::-webkit-scrollbar-track,
 .admin-tabela-container::-webkit-scrollbar-track {
+
     background: #111111;
 }
 
 .admin-sidebar::-webkit-scrollbar-thumb,
 .admin-menu::-webkit-scrollbar-thumb,
 .admin-tabela-container::-webkit-scrollbar-thumb {
+
     background: #3a3a3a;
 
     border-radius: 10px;
@@ -941,6 +1314,7 @@ body {
 .admin-sidebar::-webkit-scrollbar-thumb:hover,
 .admin-menu::-webkit-scrollbar-thumb:hover,
 .admin-tabela-container::-webkit-scrollbar-thumb:hover {
+
     background: #ffd400;
 }
 
@@ -952,15 +1326,28 @@ body {
 @media (max-width: 1200px) {
 
     .admin-cards {
+
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
     }
 
     .admin-conteudo {
+
         padding-left: 25px;
         padding-right: 25px;
     }
 
+    .admin-topo {
+
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+
+    .admin-validacao-dados {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
 }
 
 
@@ -971,25 +1358,39 @@ body {
 @media (max-width: 900px) {
 
     .admin-sidebar {
+
         width: 220px;
     }
 
     .admin-conteudo {
+
         width: calc(100% - 220px);
 
         margin-left: 220px;
     }
 
+    .admin-topo {
+
+        left: 220px;
+    }
+
     .admin-grid-2 {
+
         grid-template-columns: 1fr;
     }
 
     .admin-topo {
+
         align-items: flex-start;
 
         flex-direction: column;
     }
 
+    .admin-validacao-dados {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
 }
 
 
@@ -997,12 +1398,20 @@ body {
    CELULAR
 ============================================================ */
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
+
+    .admin-layout {
+
+        display: block;
+    }
 
     .admin-sidebar {
+
         position: relative;
 
         width: 100%;
+        height: auto;
+
         min-height: auto;
 
         border-right: none;
@@ -1010,492 +1419,19 @@ body {
         border-bottom: 1px solid #292929;
     }
 
-    .admin-layout {
-        display: block;
-    }
-
     .admin-conteudo {
+
         width: 100%;
 
         margin-left: 0;
 
-        padding: 0 15px 40px;
-    }
-
-    .admin-logo {
-        padding: 18px;
-    }
-
-    .admin-menu {
-        display: grid;
-
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
-        padding: 12px;
-
-        max-height: none;
-    }
-
-    .admin-menu-bottom {
-        display: grid;
-
-        grid-template-columns: 1fr 1fr;
-
-        gap: 6px;
-    }
-
-    .admin-menu-item {
-        font-size: 12px;
-    }
-
-    .admin-topo {
-        padding: 22px 0;
-    }
-
-    .admin-topo h1 {
-        font-size: 25px;
-    }
-
-    .admin-perfil-topo {
-        width: 100%;
-    }
-
-    .admin-secao {
-        padding-top: 25px;
-    }
-
-    .admin-secao-titulo {
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
-
-    .admin-secao-titulo h2 {
-        font-size: 22px;
-    }
-
-    .admin-cards {
-        grid-template-columns: 1fr;
-    }
-
-    .admin-card {
-        min-height: 120px;
-    }
-
-    .admin-painel-topo {
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
-
-    .admin-painel-topo input[type="search"],
-    .admin-painel-topo select,
-    .admin-acoes input[type="search"] {
-        width: 100%;
-
-        min-width: 0;
-    }
-
-}
-
-
-/* ============================================================
-   CELULAR PEQUENO
-============================================================ */
-
-@media (max-width: 480px) {
-
-    .admin-menu {
-        grid-template-columns: 1fr;
-    }
-
-    .admin-menu-bottom {
-        grid-template-columns: 1fr;
-    }
-
-    .admin-logo h2 {
-        font-size: 22px;
-    }
-
-    .admin-card h3 {
-        font-size: 22px;
-    }
-
-    .admin-painel-topo {
-        padding: 16px;
-    }
-
-}
-/* ============================================================
-   CORREÇÃO DE ROLAGEM DO PAINEL ADMINISTRATIVO
-   VaidTáxi
-============================================================ */
-
-
-/* ============================================================
-   LAYOUT PRINCIPAL
-============================================================ */
-
-.admin-layout {
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-}
-
-
-/* ============================================================
-   MENU LATERAL
-============================================================ */
-
-.admin-sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-
-    width: 270px;
-
-    height: 100vh;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    z-index: 1000;
-}
-
-
-/* ============================================================
-   CONTEÚDO PRINCIPAL
-============================================================ */
-
-.admin-conteudo {
-
-    margin-left: 270px;
-
-    width: calc(100% - 270px);
-
-    min-height: 100vh;
-
-    overflow: visible;
-
-    padding-top: 0;
-
-}
-
-
-/* ============================================================
-   CABEÇALHO DO ADMIN
-============================================================ */
-
-.admin-topo {
-
-    position: sticky;
-
-    top: 0;
-
-    z-index: 900;
-
-    width: 100%;
-
-}
-
-
-/* ============================================================
-   SEÇÕES
-============================================================ */
-
-.admin-secao {
-
-    width: 100%;
-
-    box-sizing: border-box;
-
-}
-
-
-/* ============================================================
-   DASHBOARD E DEMAIS CONTEÚDOS
-============================================================ */
-
-.admin-conteudo {
-    overflow-y: auto;
-}
-
-
-/* ============================================================
-   GARANTE ESPAÇO PARA O CABEÇALHO
-============================================================ */
-
-.admin-secao:first-of-type {
-
-    scroll-margin-top: 120px;
-
-}
-
-
-/* ============================================================
-   TABELAS
-============================================================ */
-
-.admin-tabela-container {
-
-    width: 100%;
-
-    overflow-x: auto;
-    overflow-y: visible;
-
-}
-
-
-/* ============================================================
-   RESPONSIVIDADE
-============================================================ */
-
-@media (max-width: 1100px) {
-
-    .admin-sidebar {
-
-        width: 230px;
-
-    }
-
-    .admin-conteudo {
-
-        margin-left: 230px;
-
-        width: calc(100% - 230px);
-
-    }
-
-}
-
-
-@media (max-width: 768px) {
-
-    .admin-sidebar {
-
-        position: relative;
-
-        width: 100%;
-
-        height: auto;
-
         min-height: auto;
 
+        padding:
+            25px
+            15px
+            40px;
     }
-
-
-    .admin-conteudo {
-
-        margin-left: 0;
-
-        width: 100%;
-
-        min-height: auto;
-
-        overflow: visible;
-
-    }
-
-
-    .admin-topo {
-
-        position: relative;
-
-    }
-
-}
-/* ============================================================
-   CORREÇÃO DEFINITIVA - CABEÇALHO NÃO PODE COBRIR O CONTEÚDO
-   VAIDTÁXI - PAINEL ADMINISTRATIVO
-============================================================ */
-
-
-/* ------------------------------------------------------------
-   LAYOUT
------------------------------------------------------------- */
-
-.admin-layout {
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-}
-
-
-/* ------------------------------------------------------------
-   MENU LATERAL
------------------------------------------------------------- */
-
-.admin-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-
-    width: 270px;
-    height: 100vh;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    z-index: 1000;
-}
-
-
-/* ------------------------------------------------------------
-   ÁREA PRINCIPAL
------------------------------------------------------------- */
-
-.admin-conteudo {
-
-    margin-left: 270px;
-
-    width: calc(100% - 270px);
-
-    min-height: 100vh;
-
-    box-sizing: border-box;
-
-    /*
-       IMPORTANTE:
-       espaço reservado para o cabeçalho
-    */
-    padding-top: 145px;
-
-    overflow-x: hidden;
-    overflow-y: auto;
-
-}
-
-
-/* ------------------------------------------------------------
-   CABEÇALHO
------------------------------------------------------------- */
-
-.admin-topo {
-
-    position: fixed;
-
-    top: 0;
-    left: 270px;
-    right: 0;
-
-    width: auto;
-
-    min-height: 145px;
-
-    box-sizing: border-box;
-
-    z-index: 900;
-
-}
-
-
-/* ------------------------------------------------------------
-   PRIMEIRA SEÇÃO
------------------------------------------------------------- */
-
-.admin-secao {
-
-    position: relative;
-
-    width: 100%;
-
-    box-sizing: border-box;
-
-}
-
-
-/* ------------------------------------------------------------
-   EVITA QUE O CONTEÚDO FIQUE ESCONDIDO
------------------------------------------------------------- */
-
-.admin-secao:first-of-type {
-    margin-top: 0;
-}
-
-
-/* ------------------------------------------------------------
-   TABELAS
------------------------------------------------------------- */
-
-.admin-tabela-container {
-
-    width: 100%;
-
-    overflow-x: auto;
-    overflow-y: visible;
-
-}
-
-
-/* ------------------------------------------------------------
-   TELAS MENORES
------------------------------------------------------------- */
-
-@media (max-width: 1100px) {
-
-    .admin-sidebar {
-        width: 230px;
-    }
-
-    .admin-conteudo {
-
-        margin-left: 230px;
-
-        width: calc(100% - 230px);
-
-        padding-top: 145px;
-
-    }
-
-    .admin-topo {
-
-        left: 230px;
-
-    }
-
-}
-
-
-/* ------------------------------------------------------------
-   CELULAR
------------------------------------------------------------- */
-
-@media (max-width: 768px) {
-
-    .admin-layout {
-        display: block;
-    }
-
-
-    .admin-sidebar {
-
-        position: relative;
-
-        width: 100%;
-
-        height: auto;
-
-        min-height: auto;
-
-    }
-
-
-    .admin-conteudo {
-
-        margin-left: 0;
-
-        width: 100%;
-
-        min-height: auto;
-
-        padding-top: 0;
-
-        overflow: visible;
-
-    }
-
 
     .admin-topo {
 
@@ -1509,141 +1445,168 @@ body {
 
         min-height: auto;
 
+        padding:
+            22px
+            0;
+
+        background: transparent;
     }
 
+    .admin-logo {
+
+        padding: 18px;
+    }
+
+    .admin-menu {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        padding: 12px;
+
+        max-height: none;
+    }
+
+    .admin-menu-bottom {
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 6px;
+    }
+
+    .admin-menu-item {
+
+        font-size: 12px;
+    }
+
+    .admin-topo h1 {
+
+        font-size: 25px;
+    }
+
+    .admin-perfil-topo {
+
+        width: 100%;
+    }
+
+    .admin-secao {
+
+        padding-top: 25px;
+    }
+
+    .admin-secao-titulo {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .admin-secao-titulo h2 {
+
+        font-size: 22px;
+    }
+
+    .admin-cards {
+
+        grid-template-columns: 1fr;
+    }
+
+    .admin-card {
+
+        min-height: 120px;
+    }
+
+    .admin-painel-topo {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .admin-painel-topo input[type="search"],
+    .admin-painel-topo select,
+    .admin-acoes input[type="search"] {
+
+        width: 100%;
+
+        min-width: 0;
+    }
+
+    .admin-validacao-dados {
+
+        grid-template-columns: 1fr;
+    }
+
+    .admin-validacao-cabecalho {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .admin-validacao-acoes {
+
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .admin-btn-aprovar,
+    .admin-btn-reprovar {
+
+        width: 100%;
+    }
 }
+
+
 /* ============================================================
-   CORREÇÃO DO MENU LATERAL
-   O CABEÇALHO NÃO DEVE COBRIR O MENU
+   CELULAR PEQUENO
 ============================================================ */
 
-.admin-sidebar {
-    position: fixed !important;
+@media (max-width: 480px) {
 
-    top: 0 !important;
-    left: 0 !important;
+    .admin-menu {
 
-    width: 270px !important;
-    height: 100vh !important;
+        grid-template-columns: 1fr;
+    }
 
-    z-index: 2000 !important;
+    .admin-menu-bottom {
 
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
+        grid-template-columns: 1fr;
+    }
+
+    .admin-logo h2 {
+
+        font-size: 22px;
+    }
+
+    .admin-card h3 {
+
+        font-size: 22px;
+    }
+
+    .admin-painel-topo {
+
+        padding: 16px;
+    }
+
+    .admin-validacao-card {
+
+        padding: 18px;
+    }
+
+    .admin-validacao-cabecalho h3 {
+
+        font-size: 18px;
+    }
 }
 
 
 /* ============================================================
-   CABEÇALHO FICA SOMENTE NA ÁREA DO CONTEÚDO
+   FIM DO ADMIN.CSS
 ============================================================ */
-
-.admin-topo {
-    position: fixed !important;
-
-    top: 0 !important;
-    left: 270px !important;
-    right: 0 !important;
-
-    width: auto !important;
-
-    z-index: 1500 !important;
-}
-
-
-/* ============================================================
-   CONTEÚDO PRINCIPAL
-============================================================ */
-
-.admin-conteudo {
-    margin-left: 270px !important;
-
-    width: calc(100% - 270px) !important;
-
-    min-height: 100vh;
-
-    padding-top: 145px !important;
-
-    box-sizing: border-box;
-
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-
-/* ============================================================
-   GARANTE QUE O PRIMEIRO ITEM DO MENU APAREÇA
-============================================================ */
-
-.admin-menu {
-    position: relative;
-
-    z-index: 2001;
-
-    padding-top: 20px;
-}
-
-
-/* ============================================================
-   ITENS DO MENU
-============================================================ */
-
-.admin-menu-item {
-    position: relative;
-
-    z-index: 2002;
-}
-
-
-/* ============================================================
-   TELAS MENORES
-============================================================ */
-
-@media (max-width: 1100px) {
-
-    .admin-sidebar {
-        width: 230px !important;
-    }
-
-    .admin-topo {
-        left: 230px !important;
-    }
-
-    .admin-conteudo {
-        margin-left: 230px !important;
-        width: calc(100% - 230px) !important;
-    }
-
-}
-
-
-@media (max-width: 768px) {
-
-    .admin-sidebar {
-        position: relative !important;
-
-        width: 100% !important;
-
-        height: auto !important;
-
-        z-index: auto !important;
-    }
-
-    .admin-topo {
-        position: relative !important;
-
-        left: 0 !important;
-
-        width: 100% !important;
-    }
-
-    .admin-conteudo {
-        margin-left: 0 !important;
-
-        width: 100% !important;
-
-        padding-top: 0 !important;
-
-        overflow: visible !important;
-    }
-
-}
