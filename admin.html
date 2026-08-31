@@ -4,29 +4,20 @@
 <head>
 
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Administração | VaidTáxi
-    </title>
+    <title>VaidTáxi | Administração</title>
 
 
     <!-- =====================================================
-         GOOGLE FONTS
+         FONTE
     ====================================================== -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet"
     >
 
@@ -37,18 +28,26 @@
 
     <link
         rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
 
     <!-- =====================================================
-         CSS DO ADMIN
+         CSS PADRÃO
     ====================================================== -->
 
-    <link
-        rel="stylesheet"
-        href="css/admin.css"
-    >
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <link rel="stylesheet" href="css/animations.css">
+
+
+    <!-- =====================================================
+         CSS ESPECÍFICO DO ADMINISTRADOR
+    ====================================================== -->
+
+    <link rel="stylesheet" href="css/admin.css">
 
 </head>
 
@@ -56,30 +55,24 @@
 <body>
 
 
-<!-- ============================================================
-     LAYOUT ADMINISTRATIVO
-============================================================ -->
-
 <div class="admin-layout">
 
 
-    <!-- ========================================================
+    <!-- =====================================================
          MENU LATERAL
-    ========================================================= -->
+    ====================================================== -->
 
     <aside class="admin-sidebar">
 
 
-        <!-- ====================================================
-             LOGO
-        ===================================================== -->
+        <!-- LOGO -->
 
         <div class="admin-logo">
 
             <a href="index.html">
 
                 <img
-                    src="img/logo.png"
+                    src="logo-vdb.png"
                     alt="VaidTáxi"
                 >
 
@@ -92,9 +85,7 @@
         </div>
 
 
-        <!-- ====================================================
-             MENU
-        ===================================================== -->
+        <!-- MENU PRINCIPAL -->
 
         <nav class="admin-menu">
 
@@ -102,9 +93,9 @@
             <!-- DASHBOARD -->
 
             <a
-                href="#dashboard"
+                href="#"
                 class="admin-menu-item ativo"
-                onclick="mostrarSecaoPorId('dashboard'); return false;"
+                onclick="mostrarSecao('dashboard', this)"
             >
 
                 <i class="fa-solid fa-chart-line"></i>
@@ -119,9 +110,9 @@
             <!-- CLIENTES -->
 
             <a
-                href="#clientes"
+                href="#"
                 class="admin-menu-item"
-                onclick="mostrarSecaoPorId('clientes'); return false;"
+                onclick="mostrarSecao('clientes', this)"
             >
 
                 <i class="fa-solid fa-users"></i>
@@ -136,9 +127,9 @@
             <!-- PARCEIROS -->
 
             <a
-                href="#parceiros"
+                href="#"
                 class="admin-menu-item"
-                onclick="mostrarSecaoPorId('parceiros'); return false;"
+                onclick="mostrarSecao('parceiros', this)"
             >
 
                 <i class="fa-solid fa-taxi"></i>
@@ -153,20 +144,20 @@
             <!-- VALIDAÇÃO -->
 
             <a
-                href="#validacao"
+                href="#"
                 class="admin-menu-item"
-                onclick="mostrarSecaoPorId('validacao'); return false;"
+                onclick="mostrarSecao('validacao', this)"
             >
 
                 <i class="fa-solid fa-user-check"></i>
 
                 <span>
-                    Validação
+                    Validação de Cadastro
                 </span>
 
                 <span
-                    id="badgeValidacao"
                     class="admin-menu-badge"
+                    id="badgeValidacao"
                 >
                     0
                 </span>
@@ -177,12 +168,12 @@
             <!-- CORRIDAS -->
 
             <a
-                href="#corridas"
+                href="#"
                 class="admin-menu-item"
-                onclick="mostrarSecaoPorId('corridas'); return false;"
+                onclick="mostrarSecao('corridas', this)"
             >
 
-                <i class="fa-solid fa-road"></i>
+                <i class="fa-solid fa-route"></i>
 
                 <span>
                     Corridas
@@ -194,9 +185,9 @@
             <!-- PAGAMENTOS -->
 
             <a
-                href="#pagamentos"
+                href="#"
                 class="admin-menu-item"
-                onclick="mostrarSecaoPorId('pagamentos'); return false;"
+                onclick="mostrarSecao('pagamentos', this)"
             >
 
                 <i class="fa-solid fa-credit-card"></i>
@@ -208,12 +199,44 @@
             </a>
 
 
+            <!-- SUPORTE -->
+
+            <a
+                href="#"
+                class="admin-menu-item"
+                onclick="mostrarSecao('suporte', this)"
+            >
+
+                <i class="fa-solid fa-headset"></i>
+
+                <span>
+                    Suporte
+                </span>
+
+                <span
+                    class="admin-menu-badge"
+                    id="badgeSuporte"
+                >
+                    0
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+        <!-- MENU INFERIOR -->
+
+        <div class="admin-menu-bottom">
+
+
             <!-- CONFIGURAÇÕES -->
 
             <a
-                href="#configuracoes"
+                href="#"
                 class="admin-menu-item"
-                onclick="mostrarSecaoPorId('configuracoes'); return false;"
+                onclick="mostrarSecao('configuracoes', this)"
             >
 
                 <i class="fa-solid fa-gear"></i>
@@ -224,33 +247,12 @@
 
             </a>
 
-        </nav>
 
-
-        <!-- ====================================================
-             MENU INFERIOR
-        ===================================================== -->
-
-        <div class="admin-menu-bottom">
+            <!-- SAIR -->
 
             <a
                 href="index.html"
-                class="admin-menu-item"
-            >
-
-                <i class="fa-solid fa-house"></i>
-
-                <span>
-                    Voltar ao site
-                </span>
-
-            </a>
-
-
-            <a
-                href="#"
                 class="admin-menu-item sair"
-                id="btnSairAdmin"
             >
 
                 <i class="fa-solid fa-right-from-bracket"></i>
@@ -261,6 +263,7 @@
 
             </a>
 
+
         </div>
 
 
@@ -268,31 +271,32 @@
 
 
 
-    <!-- ========================================================
+    <!-- =====================================================
          CONTEÚDO PRINCIPAL
-    ========================================================= -->
+    ====================================================== -->
 
     <main class="admin-conteudo">
 
 
-        <!-- ====================================================
+        <!-- =================================================
              TOPO
-        ===================================================== -->
+        ================================================== -->
 
         <header class="admin-topo">
+
 
             <div>
 
                 <span class="admin-label">
-                    Painel administrativo
+                    Painel Administrativo
                 </span>
 
                 <h1>
-                    Vaid<span>Táxi</span>
+                    Olá, <span>Administrador!</span>
                 </h1>
 
                 <p>
-                    Gerencie clientes, parceiros e operações da plataforma.
+                    Gerencie o sistema VaidTáxi.
                 </p>
 
             </div>
@@ -302,11 +306,13 @@
 
             <div class="admin-perfil-topo">
 
+
                 <div class="admin-avatar">
 
                     <i class="fa-solid fa-user-shield"></i>
 
                 </div>
+
 
                 <div>
 
@@ -315,20 +321,22 @@
                     </strong>
 
                     <small>
-                        Painel administrativo
+                        Acesso administrativo
                     </small>
 
                 </div>
 
+
             </div>
+
 
         </header>
 
 
 
-        <!-- ====================================================
+        <!-- =================================================
              DASHBOARD
-        ===================================================== -->
+        ================================================== -->
 
         <section
             id="dashboard"
@@ -350,16 +358,13 @@
 
                 </div>
 
-
-                <div class="admin-data">
+                <span class="admin-data">
 
                     <i class="fa-regular fa-calendar"></i>
 
-                    <span id="dataAtual">
-                        Hoje
-                    </span>
+                    <span id="dataAtual"></span>
 
-                </div>
+                </span>
 
             </div>
 
@@ -382,7 +387,7 @@
                     <div>
 
                         <span>
-                            Total de clientes
+                            Clientes
                         </span>
 
                         <h3 id="totalClientes">
@@ -411,7 +416,7 @@
                     <div>
 
                         <span>
-                            Total de parceiros
+                            Parceiros
                         </span>
 
                         <h3 id="totalParceiros">
@@ -419,7 +424,7 @@
                         </h3>
 
                         <p>
-                            Motoristas cadastrados
+                            Taxistas cadastrados
                         </p>
 
                     </div>
@@ -433,7 +438,7 @@
 
                     <div class="admin-card-icone">
 
-                        <i class="fa-solid fa-road"></i>
+                        <i class="fa-solid fa-route"></i>
 
                     </div>
 
@@ -448,7 +453,7 @@
                         </h3>
 
                         <p>
-                            Corridas realizadas hoje
+                            Corridas realizadas
                         </p>
 
                     </div>
@@ -477,20 +482,19 @@
                         </h3>
 
                         <p>
-                            Faturamento atual
+                            Total registrado
                         </p>
 
                     </div>
 
                 </div>
 
+
             </div>
 
 
 
-            <!-- =================================================
-                 PAINÉIS DO DASHBOARD
-            ================================================== -->
+            <!-- PAINÉIS -->
 
             <div class="admin-grid-2">
 
@@ -498,6 +502,7 @@
                 <!-- VALIDAÇÕES -->
 
                 <div class="admin-painel">
+
 
                     <div class="admin-painel-topo">
 
@@ -513,78 +518,93 @@
 
                         </div>
 
+
                         <button
                             type="button"
                             class="admin-btn-link"
                             onclick="mostrarSecaoPorId('validacao')"
                         >
-                            Ver validações
+                            Ver todos
                         </button>
 
                     </div>
 
 
                     <div
+                        class="admin-vazio"
                         id="listaValidacoesDashboard"
-                        class="admin-validacoes"
                     >
 
-                        <div class="admin-validacoes-resumo">
+                        <i class="fa-solid fa-user-check"></i>
 
-                            <i class="fa-solid fa-spinner"></i>
+                        <h3>
+                            Nenhuma validação pendente
+                        </h3>
 
-                            <h3>
-                                Carregando...
-                            </h3>
-
-                            <p>
-                                Verificando cadastros pendentes.
-                            </p>
-
-                        </div>
+                        <p>
+                            Novos cadastros de parceiros
+                            aparecerão aqui.
+                        </p>
 
                     </div>
+
 
                 </div>
 
 
-                <!-- RESUMO -->
+
+                <!-- SUPORTE -->
 
                 <div class="admin-painel">
+
 
                     <div class="admin-painel-topo">
 
                         <div>
 
                             <span>
-                                Sistema
+                                Atendimento
                             </span>
 
                             <h2>
-                                Informações rápidas
+                                Chamados recentes
                             </h2>
 
                         </div>
 
+
+                        <button
+                            type="button"
+                            class="admin-btn-link"
+                            onclick="mostrarSecaoPorId('suporte')"
+                        >
+                            Ver todos
+                        </button>
+
                     </div>
 
 
-                    <div class="admin-vazio">
+                    <div
+                        class="admin-vazio"
+                        id="listaSuporteDashboard"
+                    >
 
-                        <i class="fa-solid fa-gauge-high"></i>
+                        <i class="fa-solid fa-headset"></i>
 
                         <h3>
-                            Painel administrativo
+                            Nenhum chamado aberto
                         </h3>
 
                         <p>
-                            Utilize o menu lateral para
-                            gerenciar as áreas do VaidTáxi.
+                            Os chamados de clientes e parceiros
+                            aparecerão aqui.
                         </p>
 
                     </div>
 
+
                 </div>
+
 
             </div>
 
@@ -593,9 +613,9 @@
 
 
 
-        <!-- ====================================================
+        <!-- =================================================
              CLIENTES
-        ===================================================== -->
+        ================================================== -->
 
         <section
             id="clientes"
@@ -612,7 +632,7 @@
                     </span>
 
                     <h2>
-                        Clientes
+                        Gerenciamento de Clientes
                     </h2>
 
                 </div>
@@ -628,11 +648,11 @@
                     <div>
 
                         <span>
-                            Cadastro
+                            Clientes cadastrados
                         </span>
 
                         <h2>
-                            Clientes cadastrados
+                            Clientes
                         </h2>
 
                     </div>
@@ -642,8 +662,9 @@
 
                         <input
                             type="search"
-                            id="buscaClientes"
+                            id="buscarCliente"
                             placeholder="Buscar cliente..."
+                            oninput="buscarTabela('tabelaClientes', this.value)"
                         >
 
                     </div>
@@ -663,7 +684,7 @@
                             <tr>
 
                                 <th>
-                                    Nome
+                                    Cliente
                                 </th>
 
                                 <th>
@@ -683,7 +704,7 @@
                                 </th>
 
                                 <th>
-                                    Ação
+                                    Ações
                                 </th>
 
                             </tr>
@@ -699,10 +720,11 @@
 
                                     <div class="admin-tabela-vazia">
 
-                                        <i class="fa-solid fa-spinner"></i>
+                                        <i class="fa-solid fa-users"></i>
 
                                         <p>
-                                            Carregando clientes...
+                                            Nenhum cliente cadastrado
+                                            para exibir.
                                         </p>
 
                                     </div>
@@ -717,6 +739,7 @@
 
                 </div>
 
+
             </div>
 
 
@@ -724,9 +747,9 @@
 
 
 
-        <!-- ====================================================
+        <!-- =================================================
              PARCEIROS
-        ===================================================== -->
+        ================================================== -->
 
         <section
             id="parceiros"
@@ -743,7 +766,7 @@
                     </span>
 
                     <h2>
-                        Parceiros
+                        Gerenciamento de Parceiros
                     </h2>
 
                 </div>
@@ -759,25 +782,22 @@
                     <div>
 
                         <span>
-                            Cadastro
+                            Taxistas cadastrados
                         </span>
 
                         <h2>
-                            Parceiros cadastrados
+                            Parceiros
                         </h2>
 
                     </div>
 
 
-                    <div class="admin-acoes">
-
-                        <input
-                            type="search"
-                            id="buscaParceiros"
-                            placeholder="Buscar parceiro..."
-                        >
-
-                    </div>
+                    <input
+                        type="search"
+                        id="buscarParceiro"
+                        placeholder="Buscar parceiro..."
+                        oninput="buscarTabela('tabelaParceiros', this.value)"
+                    >
 
                 </div>
 
@@ -814,7 +834,7 @@
                                 </th>
 
                                 <th>
-                                    Ação
+                                    Ações
                                 </th>
 
                             </tr>
@@ -830,10 +850,11 @@
 
                                     <div class="admin-tabela-vazia">
 
-                                        <i class="fa-solid fa-spinner"></i>
+                                        <i class="fa-solid fa-taxi"></i>
 
                                         <p>
-                                            Carregando parceiros...
+                                            Nenhum parceiro cadastrado
+                                            para exibir.
                                         </p>
 
                                     </div>
@@ -848,6 +869,7 @@
 
                 </div>
 
+
             </div>
 
 
@@ -855,9 +877,9 @@
 
 
 
-        <!-- ====================================================
-             VALIDAÇÃO
-        ===================================================== -->
+        <!-- =================================================
+             VALIDAÇÃO DE CADASTRO
+        ================================================== -->
 
         <section
             id="validacao"
@@ -870,11 +892,11 @@
                 <div>
 
                     <span>
-                        Aprovação de parceiros
+                        Segurança
                     </span>
 
                     <h2>
-                        Validação de cadastros
+                        Validação de Cadastro
                     </h2>
 
                 </div>
@@ -882,24 +904,44 @@
             </div>
 
 
-            <div
-                id="listaValidacoes"
-                class="admin-validacoes"
-            >
+            <div class="admin-painel">
 
-                <div class="admin-validacoes-resumo">
 
-                    <i class="fa-solid fa-spinner"></i>
+                <div class="admin-painel-topo">
+
+                    <div>
+
+                        <span>
+                            Aprovação de parceiros
+                        </span>
+
+                        <h2>
+                            Cadastros pendentes
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="admin-vazio"
+                    id="listaValidacoes"
+                >
+
+                    <i class="fa-solid fa-user-check"></i>
 
                     <h3>
-                        Carregando validações...
+                        Nenhum cadastro aguardando validação
                     </h3>
 
                     <p>
-                        Verificando parceiros aguardando aprovação.
+                        Quando um parceiro realizar seu cadastro,
+                        ele aparecerá nesta área para análise.
                     </p>
 
                 </div>
+
 
             </div>
 
@@ -908,9 +950,9 @@
 
 
 
-        <!-- ====================================================
+        <!-- =================================================
              CORRIDAS
-        ===================================================== -->
+        ================================================== -->
 
         <section
             id="corridas"
@@ -923,11 +965,11 @@
                 <div>
 
                     <span>
-                        Operações
+                        Operação
                     </span>
 
                     <h2>
-                        Corridas
+                        Gerenciamento de Corridas
                     </h2>
 
                 </div>
@@ -937,37 +979,117 @@
 
             <div class="admin-painel">
 
+
                 <div class="admin-painel-topo">
 
                     <div>
 
                         <span>
-                            Sistema
+                            Corridas do sistema
                         </span>
 
                         <h2>
-                            Gerenciamento de corridas
+                            Todas as corridas
                         </h2>
 
                     </div>
 
+
+                    <select id="filtroCorrida">
+
+                        <option value="todas">
+                            Todas
+                        </option>
+
+                        <option value="pendente">
+                            Pendentes
+                        </option>
+
+                        <option value="andamento">
+                            Em andamento
+                        </option>
+
+                        <option value="concluida">
+                            Concluídas
+                        </option>
+
+                        <option value="cancelada">
+                            Canceladas
+                        </option>
+
+                    </select>
+
                 </div>
 
 
-                <div class="admin-vazio">
+                <div class="admin-tabela-container">
 
-                    <i class="fa-solid fa-road"></i>
+                    <table class="admin-tabela">
 
-                    <h3>
-                        Área de corridas
-                    </h3>
+                        <thead>
 
-                    <p>
-                        O gerenciamento detalhado das corridas
-                        será conectado ao banco de dados.
-                    </p>
+                            <tr>
+
+                                <th>
+                                    Código
+                                </th>
+
+                                <th>
+                                    Cliente
+                                </th>
+
+                                <th>
+                                    Parceiro
+                                </th>
+
+                                <th>
+                                    Origem
+                                </th>
+
+                                <th>
+                                    Destino
+                                </th>
+
+                                <th>
+                                    Valor
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+
+                                <td colspan="7">
+
+                                    <div class="admin-tabela-vazia">
+
+                                        <i class="fa-solid fa-route"></i>
+
+                                        <p>
+                                            Nenhuma corrida registrada
+                                            para exibir.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
 
                 </div>
+
 
             </div>
 
@@ -976,9 +1098,9 @@
 
 
 
-        <!-- ====================================================
+        <!-- =================================================
              PAGAMENTOS
-        ===================================================== -->
+        ================================================== -->
 
         <section
             id="pagamentos"
@@ -995,7 +1117,7 @@
                     </span>
 
                     <h2>
-                        Pagamentos
+                        Gerenciamento de Pagamentos
                     </h2>
 
                 </div>
@@ -1003,18 +1125,133 @@
             </div>
 
 
+            <div class="admin-cards">
+
+
+                <div class="admin-card">
+
+                    <div class="admin-card-icone">
+
+                        <i class="fa-solid fa-money-bill-wave"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total recebido
+                        </span>
+
+                        <h3>
+                            R$ 0,00
+                        </h3>
+
+                        <p>
+                            Pagamentos registrados
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-card">
+
+                    <div class="admin-card-icone">
+
+                        <i class="fa-brands fa-pix"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Pix
+                        </span>
+
+                        <h3>
+                            R$ 0,00
+                        </h3>
+
+                        <p>
+                            Pagamentos via Pix
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-card">
+
+                    <div class="admin-card-icone">
+
+                        <i class="fa-solid fa-credit-card"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Cartão
+                        </span>
+
+                        <h3>
+                            R$ 0,00
+                        </h3>
+
+                        <p>
+                            Pagamentos via cartão
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-card">
+
+                    <div class="admin-card-icone">
+
+                        <i class="fa-solid fa-money-bill-1-wave"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Dinheiro
+                        </span>
+
+                        <h3>
+                            R$ 0,00
+                        </h3>
+
+                        <p>
+                            Pagamentos em dinheiro
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
             <div class="admin-painel">
+
 
                 <div class="admin-painel-topo">
 
                     <div>
 
                         <span>
-                            Financeiro
+                            Histórico
                         </span>
 
                         <h2>
-                            Pagamentos da plataforma
+                            Pagamentos
                         </h2>
 
                     </div>
@@ -1027,15 +1264,15 @@
                     <i class="fa-solid fa-credit-card"></i>
 
                     <h3>
-                        Área financeira
+                        Nenhum pagamento registrado
                     </h3>
 
                     <p>
-                        O gerenciamento dos pagamentos será
-                        conectado à estrutura financeira do VaidTáxi.
+                        Os pagamentos das corridas aparecerão aqui.
                     </p>
 
                 </div>
+
 
             </div>
 
@@ -1044,9 +1281,103 @@
 
 
 
-        <!-- ====================================================
+        <!-- =================================================
+             SUPORTE
+        ================================================== -->
+
+        <section
+            id="suporte"
+            class="admin-secao"
+        >
+
+
+            <div class="admin-secao-titulo">
+
+                <div>
+
+                    <span>
+                        Atendimento
+                    </span>
+
+                    <h2>
+                        Gerenciamento de Suporte
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-painel">
+
+
+                <div class="admin-painel-topo">
+
+                    <div>
+
+                        <span>
+                            Atendimento
+                        </span>
+
+                        <h2>
+                            Chamados
+                        </h2>
+
+                    </div>
+
+
+                    <select id="filtroSuporte">
+
+                        <option value="todos">
+                            Todos
+                        </option>
+
+                        <option value="aberto">
+                            Abertos
+                        </option>
+
+                        <option value="andamento">
+                            Em atendimento
+                        </option>
+
+                        <option value="resolvido">
+                            Resolvidos
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    class="admin-vazio"
+                    id="listaSuporte"
+                >
+
+                    <i class="fa-solid fa-headset"></i>
+
+                    <h3>
+                        Nenhum chamado aberto
+                    </h3>
+
+                    <p>
+                        Solicitações de clientes e parceiros
+                        aparecerão nesta área.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
              CONFIGURAÇÕES
-        ===================================================== -->
+        ================================================== -->
 
         <section
             id="configuracoes"
@@ -1071,72 +1402,137 @@
             </div>
 
 
-            <div class="admin-painel">
+            <div class="admin-grid-2">
 
 
-                <div class="admin-painel-topo">
+                <div class="admin-painel">
 
-                    <div>
 
-                        <span>
-                            Preferências
-                        </span>
+                    <div class="admin-painel-topo">
 
-                        <h2>
-                            Configurações administrativas
-                        </h2>
+                        <div>
+
+                            <span>
+                                Sistema
+                            </span>
+
+                            <h2>
+                                Configurações gerais
+                            </h2>
+
+                        </div>
 
                     </div>
 
+
+                    <div class="admin-configuracao">
+
+
+                        <label>
+
+                            <span>
+                                Sistema ativo
+                            </span>
+
+                            <input
+                                type="checkbox"
+                                checked
+                            >
+
+                        </label>
+
+
+                        <label>
+
+                            <span>
+                                Receber novos cadastros
+                            </span>
+
+                            <input
+                                type="checkbox"
+                                checked
+                            >
+
+                        </label>
+
+
+                        <label>
+
+                            <span>
+                                Permitir novas corridas
+                            </span>
+
+                            <input
+                                type="checkbox"
+                                checked
+                            >
+
+                        </label>
+
+
+                    </div>
+
+
                 </div>
 
 
-                <div class="admin-configuracao">
+
+                <div class="admin-painel">
 
 
-                    <label>
+                    <div class="admin-painel-topo">
 
-                        <span>
-                            Receber notificações de novos parceiros
-                        </span>
+                        <div>
 
-                        <input
-                            type="checkbox"
-                            checked
-                        >
+                            <span>
+                                Segurança
+                            </span>
 
-                    </label>
+                            <h2>
+                                Controle de acesso
+                            </h2>
 
+                        </div>
 
-                    <label>
-
-                        <span>
-                            Mostrar alertas de validação
-                        </span>
-
-                        <input
-                            type="checkbox"
-                            checked
-                        >
-
-                    </label>
+                    </div>
 
 
-                    <label>
+                    <div class="admin-configuracao">
 
-                        <span>
-                            Sistema ativo
-                        </span>
 
-                        <input
-                            type="checkbox"
-                            checked
-                        >
+                        <label>
 
-                    </label>
+                            <span>
+                                Autenticação obrigatória
+                            </span>
+
+                            <input
+                                type="checkbox"
+                                checked
+                            >
+
+                        </label>
+
+
+                        <label>
+
+                            <span>
+                                Aprovação de parceiros
+                            </span>
+
+                            <input
+                                type="checkbox"
+                                checked
+                            >
+
+                        </label>
+
+
+                    </div>
 
 
                 </div>
+
 
             </div>
 
@@ -1146,198 +1542,183 @@
 
     </main>
 
+
 </div>
 
 
 
-<!-- ============================================================
+<!-- =========================================================
+     JAVASCRIPT
+========================================================== -->
+
+
+<!-- =========================================================
      SUPABASE
-============================================================ -->
+========================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<!-- =========================================================
+     CONFIGURAÇÃO DO SUPABASE
+========================================================== -->
 
 <script src="js/supabase.js"></script>
 
 
-<!-- ============================================================
-     AUTENTICAÇÃO
-============================================================ -->
+<!-- =========================================================
+     AUTENTICAÇÃO GLOBAL
+========================================================== -->
 
 <script src="js/auth.js"></script>
 
 
-<!-- ============================================================
-     ADMIN JS
-============================================================ -->
+<!-- =========================================================
+     PAINEL ADMINISTRATIVO
+========================================================== -->
 
 <script src="js/admin.js"></script>
 
 
 
-<!-- ============================================================
-     NAVEGAÇÃO DO PAINEL
-============================================================ -->
-
 <script>
 
-function mostrarSecaoPorId(id) {
+    /* =====================================================
+       DATA ATUAL
+    ====================================================== */
 
-    const secoes =
-        document.querySelectorAll(
-            ".admin-secao"
-        );
-
-    const itensMenu =
-        document.querySelectorAll(
-            ".admin-menu-item"
-        );
+    const dataAtual =
+        document.getElementById("dataAtual");
 
 
-    secoes.forEach(
-        function(secao) {
+    if (dataAtual) {
 
-            secao.classList.remove(
-                "ativa"
+        const hoje = new Date();
+
+        dataAtual.textContent =
+            hoje.toLocaleDateString(
+                "pt-BR",
+                {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric"
+                }
             );
-
-        }
-    );
-
-
-    const secaoSelecionada =
-        document.getElementById(id);
-
-
-    if (secaoSelecionada) {
-
-        secaoSelecionada.classList.add(
-            "ativa"
-        );
 
     }
 
 
-    itensMenu.forEach(
-        function(item) {
 
-            item.classList.remove(
-                "ativo"
-            );
+    /* =====================================================
+       TROCA DE SEÇÕES
+    ====================================================== */
 
+    function mostrarSecao(id, elemento) {
 
-            const href =
-                item.getAttribute("href");
-
-
-            if (
-                href === "#" + id
-            ) {
-
-                item.classList.add(
-                    "ativo"
-                );
-
-            }
-
-        }
-    );
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
-
-
-/* ==========================================================
-   DATA ATUAL
-========================================================== */
-
-function atualizarDataAdmin() {
-
-    const elemento =
-        document.getElementById(
-            "dataAtual"
-        );
-
-
-    if (!elemento) {
-        return;
-    }
-
-
-    const hoje =
-        new Date();
-
-
-    elemento.textContent =
-        hoje.toLocaleDateString(
-            "pt-BR",
-            {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            }
-        );
-
-}
-
-
-atualizarDataAdmin();
-
-
-
-/* ==========================================================
-   BOTÃO SAIR
-========================================================== */
-
-const btnSairAdmin =
-    document.getElementById(
-        "btnSairAdmin"
-    );
-
-
-if (btnSairAdmin) {
-
-    btnSairAdmin.addEventListener(
-        "click",
-        async function(event) {
+        if (event) {
 
             event.preventDefault();
 
+        }
 
-            if (
-                typeof supabaseClient !==
-                "undefined" &&
-                supabaseClient
-            ) {
 
-                try {
+        mostrarSecaoPorId(id);
 
-                    await supabaseClient.auth.signOut();
 
-                }
+        const itens =
+            document.querySelectorAll(
+                ".admin-menu-item"
+            );
 
-                catch (erro) {
 
-                    console.error(
-                        "Erro ao sair:",
-                        erro
-                    );
+        itens.forEach(function(item) {
 
-                }
+            item.classList.remove("ativo");
+
+        });
+
+
+        if (elemento) {
+
+            elemento.classList.add("ativo");
+
+        }
+
+    }
+
+
+
+    function mostrarSecaoPorId(id) {
+
+        const secoes =
+            document.querySelectorAll(
+                ".admin-secao"
+            );
+
+
+        secoes.forEach(function(secao) {
+
+            secao.classList.remove("ativa");
+
+        });
+
+
+        const secao =
+            document.getElementById(id);
+
+
+        if (secao) {
+
+            secao.classList.add("ativa");
+
+        }
+
+    }
+
+
+
+    /* =====================================================
+       BUSCA NAS TABELAS
+    ====================================================== */
+
+    function buscarTabela(idTabela, termo) {
+
+        const tabela =
+            document.getElementById(idTabela);
+
+
+        if (!tabela) return;
+
+
+        const linhas =
+            tabela.querySelectorAll(
+                "tbody tr"
+            );
+
+
+        termo =
+            termo.toLowerCase();
+
+
+        linhas.forEach(function(linha) {
+
+            const texto =
+                linha.textContent.toLowerCase();
+
+
+            if (texto.includes(termo)) {
+
+                linha.style.display = "";
+
+            } else {
+
+                linha.style.display = "none";
 
             }
 
+        });
 
-            window.location.href =
-                "login.html";
-
-        }
-    );
-
-}
-
+    }
 
 </script>
 
