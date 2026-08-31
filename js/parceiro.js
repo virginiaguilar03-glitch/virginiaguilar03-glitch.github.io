@@ -5,22 +5,35 @@
 
 
 // ============================================================
-// ELEMENTOS
+// ELEMENTOS DO PARCEIRO
 // ============================================================
 
-const nomeParceiro = document.getElementById("nomeParceiro");
+const nomeParceiro =
+    document.getElementById("nomeParceiro");
 
-const perfilNome = document.getElementById("perfilNome");
-const perfilEmail = document.getElementById("perfilEmail");
-const perfilTelefone = document.getElementById("perfilTelefone");
+const perfilNome =
+    document.getElementById("perfilNome");
 
-const corridasHoje = document.getElementById("corridasHoje");
-const corridasMes = document.getElementById("corridasMes");
+const perfilEmail =
+    document.getElementById("perfilEmail");
 
-const ganhosHoje = document.getElementById("ganhosHoje");
-const ganhosMes = document.getElementById("ganhosMes");
+const perfilTelefone =
+    document.getElementById("perfilTelefone");
 
-const notaMotorista = document.getElementById("notaMotorista");
+const corridasHoje =
+    document.getElementById("corridasHoje");
+
+const corridasMes =
+    document.getElementById("corridasMes");
+
+const ganhosHoje =
+    document.getElementById("ganhosHoje");
+
+const ganhosMes =
+    document.getElementById("ganhosMes");
+
+const notaMotorista =
+    document.getElementById("notaMotorista");
 
 
 // ============================================================
@@ -45,7 +58,23 @@ let parceiro = {
 
     ganhosMes: 0,
 
-    avaliacao: 0
+    avaliacao: 0,
+
+    // --------------------------------------------------------
+    // VEÍCULO
+    // --------------------------------------------------------
+
+    marca: "Não informado",
+
+    modelo: "Não informado",
+
+    cor: "Não informado",
+
+    ano: "Não informado",
+
+    placa: "Não informado",
+
+    passageiros: "Não informado"
 
 };
 
@@ -68,83 +97,289 @@ function formatarMoeda(valor) {
 
 
 // ============================================================
-// MOSTRAR DADOS NO PAINEL
+// FUNÇÃO PARA COLOCAR TEXTO EM UM ELEMENTO
+// ============================================================
+
+function preencherElemento(id, valor) {
+
+    const elemento =
+        document.getElementById(id);
+
+    if (elemento) {
+
+        elemento.textContent =
+            valor || "Não informado";
+
+    }
+
+}
+
+
+// ============================================================
+// MOSTRAR DADOS DO PARCEIRO
 // ============================================================
 
 function carregarDadosParceiro() {
 
-    if (nomeParceiro) {
 
-        nomeParceiro.textContent =
-            parceiro.nome;
+    // ========================================================
+    // DADOS PESSOAIS
+    // ========================================================
 
-    }
-
-
-    if (perfilNome) {
-
-        perfilNome.textContent =
-            parceiro.nome;
-
-    }
+    preencherElemento(
+        "nomeParceiro",
+        parceiro.nome
+    );
 
 
-    if (perfilEmail) {
-
-        perfilEmail.textContent =
-            parceiro.email;
-
-    }
+    preencherElemento(
+        "perfilNome",
+        parceiro.nome
+    );
 
 
-    if (perfilTelefone) {
-
-        perfilTelefone.textContent =
-            parceiro.telefone;
-
-    }
+    preencherElemento(
+        "perfilEmail",
+        parceiro.email
+    );
 
 
-    if (corridasHoje) {
-
-        corridasHoje.textContent =
-            parceiro.corridasHoje;
-
-    }
+    preencherElemento(
+        "perfilTelefone",
+        parceiro.telefone
+    );
 
 
-    if (corridasMes) {
+    // ========================================================
+    // CORRIDAS
+    // ========================================================
 
-        corridasMes.textContent =
-            parceiro.corridasMes;
+    preencherElemento(
+        "corridasHoje",
+        parceiro.corridasHoje
+    );
 
-    }
+
+    preencherElemento(
+        "corridasMes",
+        parceiro.corridasMes
+    );
 
 
-    if (ganhosHoje) {
+    // ========================================================
+    // GANHOS
+    // ========================================================
 
-        ganhosHoje.textContent =
-            formatarMoeda(
-                parceiro.ganhosHoje
+    preencherElemento(
+        "ganhosHoje",
+        formatarMoeda(
+            parceiro.ganhosHoje
+        )
+    );
+
+
+    preencherElemento(
+        "ganhosMes",
+        formatarMoeda(
+            parceiro.ganhosMes
+        )
+    );
+
+
+    // ========================================================
+    // AVALIAÇÃO
+    // ========================================================
+
+    preencherElemento(
+        "notaMotorista",
+        Number(
+            parceiro.avaliacao || 0
+        ).toFixed(1)
+    );
+
+
+    // ========================================================
+    // VEÍCULO
+    // ========================================================
+
+    preencherElemento(
+        "veiculoMarca",
+        parceiro.marca
+    );
+
+
+    preencherElemento(
+        "veiculoModelo",
+        parceiro.modelo
+    );
+
+
+    preencherElemento(
+        "veiculoCor",
+        parceiro.cor
+    );
+
+
+    preencherElemento(
+        "veiculoAno",
+        parceiro.ano
+    );
+
+
+    preencherElemento(
+        "veiculoPlaca",
+        parceiro.placa
+    );
+
+
+    preencherElemento(
+        "veiculoPassageiros",
+        parceiro.passageiros
+    );
+
+
+    // ========================================================
+    // CONSOLE
+    // ========================================================
+
+    console.log(
+        "Dados completos do parceiro:",
+        parceiro
+    );
+
+}
+
+
+// ============================================================
+// BUSCAR DADOS DO MOTORISTA NO SUPABASE
+// ============================================================
+
+async function carregarDadosMotorista(usuarioId) {
+
+    try {
+
+        console.log(
+            "Buscando motorista no Supabase:",
+            usuarioId
+        );
+
+
+        // ----------------------------------------------------
+        // BUSCAR REGISTRO NA TABELA MOTORISTAS
+        // ----------------------------------------------------
+
+        const {
+            data: motorista,
+            error
+        } =
+            await supabaseClient
+                .from("motoristas")
+                .select("*")
+                .eq("id", usuarioId)
+                .maybeSingle();
+
+
+        // ----------------------------------------------------
+        // ERRO
+        // ----------------------------------------------------
+
+        if (error) {
+
+            console.error(
+                "Erro ao buscar dados do motorista:",
+                error
             );
 
-    }
+            return;
+
+        }
 
 
-    if (ganhosMes) {
+        // ----------------------------------------------------
+        // MOTORISTA NÃO ENCONTRADO
+        // ----------------------------------------------------
 
-        ganhosMes.textContent =
-            formatarMoeda(
-                parceiro.ganhosMes
+        if (!motorista) {
+
+            console.warn(
+                "Nenhum registro encontrado na tabela motoristas para este usuário."
             );
 
+            return;
+
+        }
+
+
+        // ----------------------------------------------------
+        // MOSTRAR NO CONSOLE
+        // ----------------------------------------------------
+
+        console.log(
+            "Motorista encontrado:",
+            motorista
+        );
+
+
+        // ====================================================
+        // DADOS DO VEÍCULO
+        // ====================================================
+
+        parceiro.marca =
+            motorista.marca ||
+            "Não informado";
+
+
+        parceiro.modelo =
+            motorista.modelo ||
+            "Não informado";
+
+
+        parceiro.cor =
+            motorista.cor ||
+            "Não informado";
+
+
+        parceiro.ano =
+            motorista.ano ||
+            "Não informado";
+
+
+        parceiro.placa =
+            motorista.placa ||
+            "Não informado";
+
+
+        // ----------------------------------------------------
+        // PASSAGEIROS
+        //
+        // Como ainda não vimos o nome exato dessa coluna,
+        // verificamos algumas possibilidades.
+        // ----------------------------------------------------
+
+        parceiro.passageiros =
+            motorista.passageiros ||
+            motorista.num_passageiros ||
+            motorista.numero_passageiros ||
+            motorista.capacidade ||
+            motorista.lugares ||
+            "Não informado";
+
+
+        // ====================================================
+        // ATUALIZAR PAINEL
+        // ====================================================
+
+        carregarDadosParceiro();
+
+
     }
 
+    catch (erro) {
 
-    if (notaMotorista) {
-
-        notaMotorista.textContent =
-            Number(parceiro.avaliacao || 0).toFixed(1);
+        console.error(
+            "Erro inesperado ao carregar motorista:",
+            erro
+        );
 
     }
 
@@ -157,9 +392,10 @@ function carregarDadosParceiro() {
 
 async function verificarSessaoParceiro() {
 
-    // --------------------------------------------------------
-    // Verificar Supabase
-    // --------------------------------------------------------
+
+    // ========================================================
+    // VERIFICAR SUPABASE
+    // ========================================================
 
     if (
         typeof supabaseClient === "undefined" ||
@@ -177,9 +413,10 @@ async function verificarSessaoParceiro() {
 
     try {
 
-        // ----------------------------------------------------
-        // PEGAR USUÁRIO LOGADO
-        // ----------------------------------------------------
+
+        // ====================================================
+        // PEGAR SESSÃO
+        // ====================================================
 
         const {
             data,
@@ -204,9 +441,9 @@ async function verificarSessaoParceiro() {
             data.session;
 
 
-        // ----------------------------------------------------
+        // ====================================================
         // SEM LOGIN
-        // ----------------------------------------------------
+        // ====================================================
 
         if (!sessao) {
 
@@ -222,9 +459,9 @@ async function verificarSessaoParceiro() {
         }
 
 
-        // ----------------------------------------------------
-        // USUÁRIO
-        // ----------------------------------------------------
+        // ====================================================
+        // USUÁRIO LOGADO
+        // ====================================================
 
         const usuario =
             sessao.user;
@@ -234,9 +471,15 @@ async function verificarSessaoParceiro() {
             usuario.id;
 
 
-        // ----------------------------------------------------
+        console.log(
+            "ID do usuário logado:",
+            usuario.id
+        );
+
+
+        // ====================================================
         // METADADOS DO AUTH
-        // ----------------------------------------------------
+        // ====================================================
 
         const metadata =
             usuario.user_metadata || {};
@@ -257,9 +500,9 @@ async function verificarSessaoParceiro() {
             "E-mail não informado";
 
 
-        // ----------------------------------------------------
+        // ====================================================
         // VERIFICAR TIPO DE ACESSO
-        // ----------------------------------------------------
+        // ====================================================
 
         const tipoAcesso =
             localStorage.getItem(
@@ -284,17 +527,27 @@ async function verificarSessaoParceiro() {
         }
 
 
-        // ----------------------------------------------------
-        // MOSTRAR DADOS
-        // ----------------------------------------------------
+        // ====================================================
+        // MOSTRAR DADOS BÁSICOS
+        // ====================================================
 
         carregarDadosParceiro();
 
 
+        // ====================================================
+        // BUSCAR DADOS DO VEÍCULO
+        // ====================================================
+
+        await carregarDadosMotorista(
+            usuario.id
+        );
+
+
         console.log(
-            "Parceiro carregado:",
+            "Parceiro carregado completamente:",
             parceiro
         );
+
 
     }
 
@@ -316,12 +569,18 @@ async function verificarSessaoParceiro() {
 
 async function sairParceiro() {
 
+
     if (
         typeof supabaseClient === "undefined"
     ) {
 
-        localStorage.removeItem("usuarioId");
-        localStorage.removeItem("tipoAcesso");
+        localStorage.removeItem(
+            "usuarioId"
+        );
+
+        localStorage.removeItem(
+            "tipoAcesso"
+        );
 
         window.location.href =
             "login.html";
@@ -332,6 +591,7 @@ async function sairParceiro() {
 
 
     try {
+
 
         const {
             error
@@ -370,6 +630,7 @@ async function sairParceiro() {
 
         window.location.href =
             "login.html";
+
 
     }
 
