@@ -1,277 +1,335 @@
 // ============================================================
-// AUTENTICAÇÃO GLOBAL - VAIDTÁXI
+// AUTH.JS - VAIDTÁXI
+// Controle global de autenticação e navegação
 // ============================================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    async function () {
+document.addEventListener("DOMContentLoaded", async () => {
+
+    console.log("Auth global iniciado.");
+
+    // ------------------------------------------------------------
+    // VERIFICA SUPABASE
+    // ------------------------------------------------------------
+
+    if (typeof supabaseClient === "undefined") {
+        console.error("supabaseClient não encontrado.");
+        return;
+    }
+
+    // ------------------------------------------------------------
+    // ELEMENTOS
+    // ------------------------------------------------------------
+
+    const headerButtons =
+        document.querySelector(".header-buttons");
+
+    if (!headerButtons) {
+        console.log("Nenhum .header-buttons encontrado.");
+        return;
+    }
+
+    // ------------------------------------------------------------
+    // VERIFICA SESSÃO
+    // ------------------------------------------------------------
+
+    const {
+        data: { session },
+        error
+    } = await supabaseClient.auth.getSession();
+
+    if (error) {
+        console.error(
+            "Erro ao verificar sessão:",
+            error
+        );
+
+        mostrarDeslogado();
+        return;
+    }
+
+    if (session && session.user) {
 
         console.log(
-            "Auth global iniciado."
+            "Usuário logado:",
+            session.user.email
         );
 
+        mostrarLogado(session.user);
 
-        // ====================================================
-        // ELEMENTOS
-        // ====================================================
+    } else {
 
-        const headerButtons =
-            document.querySelector(
-                ".header-buttons"
-            );
+        console.log("Nenhum usuário logado.");
 
+        mostrarDeslogado();
+    }
 
-        if (!headerButtons) {
+    // ------------------------------------------------------------
+    // ACOMPANHA ALTERAÇÕES DE LOGIN
+    // ------------------------------------------------------------
+
+    supabaseClient.auth.onAuthStateChange(
+        (event, sessionAtual) => {
 
             console.log(
-                "Área de usuário não encontrada."
+                "Estado da autenticação:",
+                event
             );
 
-            return;
-
-        }
-
-
-        // ====================================================
-        // VERIFICAR CLIENTE SUPABASE
-        // ====================================================
-
-        if (
-            typeof supabaseClient ===
-            "undefined"
-        ) {
-
-            console.error(
-                "supabaseClient não encontrado."
-            );
-
-            return;
-
-        }
-
-
-        // ====================================================
-        // BUSCAR SESSÃO
-        // ====================================================
-
-        try {
-
-            const {
-                data,
-                error
-            } =
-                await supabaseClient.auth.getSession();
-
-
-            if (error) {
-
-                console.error(
-                    "Erro ao verificar sessão:",
-                    error
-                );
-
-                mostrarDeslogado();
-
-                return;
-
-            }
-
-
-            const session =
-                data.session;
-
-
-            // =================================================
-            // USUÁRIO LOGADO
-            // =================================================
-
-            if (session) {
-
-                console.log(
-                    "Usuário logado:",
-                    session.user.email
-                );
-
-                mostrarLogado(
-                    session.user
-                );
-
-            }
-
-            // =================================================
-            // USUÁRIO NÃO LOGADO
-            // =================================================
-
-            else {
-
-                console.log(
-                    "Nenhum usuário logado."
-                );
-
-                mostrarDeslogado();
-
-            }
-
-
-        } catch (erro) {
-
-            console.error(
-                "Erro inesperado:",
-                erro
-            );
-
-            mostrarDeslogado();
-
-        }
-
-
-        // ====================================================
-        // ESCUTAR LOGIN / LOGOUT
-        // ====================================================
-
-        supabaseClient.auth.onAuthStateChange(
-            function (
-                event,
-                session
+            if (
+                sessionAtual &&
+                sessionAtual.user
             ) {
 
-                console.log(
-                    "Estado da autenticação:",
-                    event
+                mostrarLogado(
+                    sessionAtual.user
                 );
 
+            } else {
 
-                if (session) {
+                mostrarDeslogado();
+            }
+        }
+    );
 
-                    mostrarLogado(
-                        session.user
+    // ============================================================
+    // MOSTRAR USUÁRIO LOGADO
+    // ============================================================
+
+    function mostrarLogado(usuario) {
+
+        const tipo =
+            localStorage.getItem("tipoAcesso");
+
+        let nome =
+            usuario.user_metadata?.nome ||
+            usuario.user_metadata?.name ||
+            usuario.email?.split("@")[0] ||
+            "Usuário";
+
+        // --------------------------------------------------------
+        // CABEÇALHO
+        // --------------------------------------------------------
+
+        headerButtons.innerHTML = `
+            <span
+                class="usuario-logado"
+                id="usuarioLogado"
+            >
+                Olá, ${nome}
+            </span>
+
+            <button
+                type="button"
+                class="btn-outline"
+                id="btnSairAuth"
+            >
+                Sair
+            </button>
+        `;
+
+        // --------------------------------------------------------
+        // BOTÃO SAIR
+        // --------------------------------------------------------
+
+        const btnSair =
+            document.getElementById("btnSairAuth");
+
+        if (btnSair) {
+
+            btnSair.addEventListener(
+                "click",
+                async () => {
+
+                    btnSair.disabled = true;
+
+                    const {
+                        error
+                    } =
+                        await supabaseClient.auth.signOut();
+
+                    if (error) {
+
+                        console.error(
+                            "Erro ao sair:",
+                            error
+                        );
+
+                        alert(
+                            "Não foi possível sair. Tente novamente."
+                        );
+
+                        btnSair.disabled = false;
+
+                        return;
+                    }
+
+                    // Limpa informações locais
+                    localStorage.removeItem(
+                        "usuarioId"
                     );
 
-                } else {
+                    localStorage.removeItem(
+                        "tipoAcesso"
+                    );
 
-                    mostrarDeslogado();
-
+                    // Volta para login
+                    window.location.href =
+                        "login.html";
                 }
-
-            }
-        );
-
-
-        // ====================================================
-        // MOSTRAR USUÁRIO LOGADO
-        // ====================================================
-
-        function mostrarLogado(
-            usuario
-        ) {
-
-            const nome =
-                usuario.user_metadata?.nome ||
-                usuario.user_metadata?.name ||
-                usuario.email?.split("@")[0] ||
-                "Cliente";
-
-
-            headerButtons.innerHTML = `
-
-                <span class="usuario-header">
-                    Olá, ${nome}
-                </span>
-
-                <button
-                    type="button"
-                    id="btnSair"
-                    class="btn-outline"
-                >
-                    Sair
-                </button>
-
-            `;
-
-
-            const btnSair =
-                document.getElementById(
-                    "btnSair"
-                );
-
-
-            if (btnSair) {
-
-                btnSair.addEventListener(
-                    "click",
-                    async function () {
-
-                        btnSair.disabled =
-                            true;
-
-                        btnSair.textContent =
-                            "Saindo...";
-
-
-                        const {
-                            error
-                        } =
-                            await supabaseClient.auth.signOut();
-
-
-                        if (error) {
-
-                            console.error(
-                                "Erro ao sair:",
-                                error
-                            );
-
-                            btnSair.disabled =
-                                false;
-
-                            btnSair.textContent =
-                                "Sair";
-
-                            alert(
-                                "Não foi possível sair."
-                            );
-
-                            return;
-
-                        }
-
-
-                        window.location.href =
-                            "index.html";
-
-                    }
-                );
-
-            }
-
+            );
         }
 
+        // --------------------------------------------------------
+        // ATUALIZA NAVEGAÇÃO
+        // --------------------------------------------------------
 
-        // ====================================================
-        // MOSTRAR USUÁRIO DESLOGADO
-        // ====================================================
-
-        function mostrarDeslogado() {
-
-            headerButtons.innerHTML = `
-
-                <a
-                    href="login.html"
-                    class="btn-outline"
-                >
-                    Entrar
-                </a>
-
-                <a
-                    href="cadastro.html"
-                    class="btn"
-                >
-                    Cadastre-se
-                </a>
-
-            `;
-
-        }
-
+        atualizarNavegacao(tipo);
     }
-);
+
+    // ============================================================
+    // USUÁRIO DESLOGADO
+    // ============================================================
+
+    function mostrarDeslogado() {
+
+        headerButtons.innerHTML = `
+            <a
+                href="login.html"
+                class="btn-outline"
+            >
+                Entrar
+            </a>
+
+            <a
+                href="cadastro.html"
+                class="btn-primary"
+            >
+                Cadastre-se
+            </a>
+        `;
+
+        atualizarNavegacao(null);
+    }
+
+    // ============================================================
+    // NAVEGAÇÃO
+    // ============================================================
+
+    function atualizarNavegacao(tipo) {
+
+        const nav =
+            document.querySelector("nav");
+
+        if (!nav) {
+            return;
+        }
+
+        // --------------------------------------------------------
+        // USUÁRIO LOGADO COMO CLIENTE
+        // --------------------------------------------------------
+
+        if (tipo === "cliente") {
+
+            nav.innerHTML = `
+
+                <a href="cliente.html">
+                    Área do Cliente
+                </a>
+
+                <a href="motoristas.html">
+                    Motoristas
+                </a>
+
+                <a href="corrida.html">
+                    Solicitar Corrida
+                </a>
+
+                <a href="pagamentos.html">
+                    Pagamentos
+                </a>
+
+                <a href="contato.html">
+                    Suporte
+                </a>
+
+            `;
+
+            return;
+        }
+
+        // --------------------------------------------------------
+        // USUÁRIO LOGADO COMO PARCEIRO
+        // --------------------------------------------------------
+
+        if (tipo === "parceiro") {
+
+            nav.innerHTML = `
+
+                <a href="parceiro.html">
+                    Área do Parceiro
+                </a>
+
+                <a href="motoristas.html">
+                    Motoristas
+                </a>
+
+                <a href="contato.html">
+                    Suporte
+                </a>
+
+            `;
+
+            return;
+        }
+
+        // --------------------------------------------------------
+        // USUÁRIO LOGADO COMO ADMINISTRADOR
+        // --------------------------------------------------------
+
+        if (tipo === "admin") {
+
+            nav.innerHTML = `
+
+                <a href="admin.html">
+                    Administração
+                </a>
+
+                <a href="contato.html">
+                    Suporte
+                </a>
+
+            `;
+
+            return;
+        }
+
+        // --------------------------------------------------------
+        // USUÁRIO NÃO LOGADO
+        // --------------------------------------------------------
+
+        nav.innerHTML = `
+
+            <a href="index.html">
+                Início
+            </a>
+
+            <a href="motoristas.html">
+                Motoristas
+            </a>
+
+            <a href="corrida.html">
+                Corridas
+            </a>
+
+            <a href="pagamentos.html">
+                Pagamentos
+            </a>
+
+            <a href="contato.html">
+                Contato
+            </a>
+
+        `;
+    }
+
+});
