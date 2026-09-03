@@ -1,8 +1,12 @@
 // ============================================================
-// AUTH.JS - AUTENTICAÇÃO GLOBAL | VAIDTÁXI
-// Controle de usuário e navegação por tipo de acesso
+// AUTH.JS - VAIDTÁXI
+// Autenticação global do sistema
 // ============================================================
 
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -10,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     // ========================================================
-    // VERIFICA SUPABASE
+    // VERIFICA SE O SUPABASE EXISTE
     // ========================================================
 
     if (typeof supabaseClient === "undefined") {
@@ -24,7 +28,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     // ========================================================
-    // VERIFICA SESSÃO
+    // PROCURA O CABEÇALHO
+    // ========================================================
+
+    const headerButtons =
+        document.querySelector(".header-buttons");
+
+
+    if (!headerButtons) {
+
+        console.log(
+            "Nenhum .header-buttons encontrado nesta página."
+        );
+
+    }
+
+
+    // ========================================================
+    // VERIFICA A SESSÃO
     // ========================================================
 
     const {
@@ -36,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (error) {
 
         console.error(
-            "Erro ao verificar autenticação:",
+            "Erro ao verificar sessão:",
             error
         );
 
@@ -60,34 +81,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
 
 
-        const tipoAcesso =
-            localStorage.getItem("tipoAcesso");
-
-
-        console.log(
-            "Tipo de acesso:",
-            tipoAcesso
-        );
-
-
-        // ----------------------------------------------------
-        // ATUALIZA CABEÇALHO
-        // ----------------------------------------------------
-
         mostrarLogado(
             session.user
         );
 
-
-        // ----------------------------------------------------
-        // ATUALIZA MENU
-        // ----------------------------------------------------
-
-        atualizarNavegacao(
-            tipoAcesso
-        );
-
     }
+
+    // ========================================================
+    // NENHUM USUÁRIO LOGADO
+    // ========================================================
 
     else {
 
@@ -98,11 +100,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         mostrarDeslogado();
 
-
-        atualizarNavegacao(
-            null
-        );
-
     }
 
 
@@ -111,7 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ========================================================
 
     supabaseClient.auth.onAuthStateChange(
-        async (event, sessionAtual) => {
+        (event, sessionAtual) => {
 
             console.log(
                 "Estado da autenticação:",
@@ -124,19 +121,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 sessionAtual.user
             ) {
 
-                const tipoAcesso =
-                    localStorage.getItem(
-                        "tipoAcesso"
-                    );
-
-
                 mostrarLogado(
                     sessionAtual.user
-                );
-
-
-                atualizarNavegacao(
-                    tipoAcesso
                 );
 
             }
@@ -144,11 +130,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             else {
 
                 mostrarDeslogado();
-
-
-                atualizarNavegacao(
-                    null
-                );
 
             }
 
@@ -166,31 +147,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 function mostrarLogado(usuario) {
 
     const areaBotoes =
-        document.querySelector(
-            ".header-buttons"
-        );
+        document.querySelector(".header-buttons");
 
 
     // --------------------------------------------------------
-    // ALGUMAS PÁGINAS PODEM NÃO TER BOTÕES
+    // SE A PÁGINA NÃO POSSUI BOTÕES
     // --------------------------------------------------------
 
     if (!areaBotoes) {
-
-        console.log(
-            "Página sem .header-buttons."
-        );
 
         return;
     }
 
 
-    // --------------------------------------------------------
-    // DEFINE NOME
-    // --------------------------------------------------------
+    // ========================================================
+    // DEFINE O NOME
+    // ========================================================
 
     let nome =
-        "Usuário";
+        "Cliente";
 
 
     if (
@@ -223,18 +198,18 @@ function mostrarLogado(usuario) {
     }
 
 
-    // --------------------------------------------------------
-    // PRIMEIRA LETRA MAIÚSCULA
-    // --------------------------------------------------------
+    // ========================================================
+    // FORMATA O NOME
+    // ========================================================
 
     nome =
         nome.charAt(0).toUpperCase() +
         nome.slice(1);
 
 
-    // --------------------------------------------------------
-    // CRIA CABEÇALHO DO USUÁRIO
-    // --------------------------------------------------------
+    // ========================================================
+    // MOSTRA USUÁRIO + SAIR
+    // ========================================================
 
     areaBotoes.innerHTML = `
 
@@ -253,9 +228,9 @@ function mostrarLogado(usuario) {
     `;
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // BOTÃO SAIR
-    // --------------------------------------------------------
+    // ========================================================
 
     const btnSair =
         document.getElementById(
@@ -269,7 +244,7 @@ function mostrarLogado(usuario) {
             "click",
             async () => {
 
-                await sair();
+                await sairDaConta();
 
             }
         );
@@ -287,9 +262,7 @@ function mostrarLogado(usuario) {
 function mostrarDeslogado() {
 
     const areaBotoes =
-        document.querySelector(
-            ".header-buttons"
-        );
+        document.querySelector(".header-buttons");
 
 
     if (!areaBotoes) {
@@ -297,6 +270,10 @@ function mostrarDeslogado() {
         return;
     }
 
+
+    // ========================================================
+    // BOTÕES PARA USUÁRIO NÃO LOGADO
+    // ========================================================
 
     areaBotoes.innerHTML = `
 
@@ -321,209 +298,21 @@ function mostrarDeslogado() {
 
 
 // ============================================================
-// ATUALIZAR NAVEGAÇÃO
-// ============================================================
-
-function atualizarNavegacao(tipoAcesso) {
-
-    const menu =
-        document.getElementById(
-            "menuPrincipal"
-        );
-
-
-    // --------------------------------------------------------
-    // SE NÃO EXISTIR MENU NA PÁGINA
-    // --------------------------------------------------------
-
-    if (!menu) {
-
-        console.log(
-            "Menu principal não encontrado nesta página."
-        );
-
-        return;
-    }
-
-
-    // ========================================================
-    // CLIENTE
-    // ========================================================
-
-    if (tipoAcesso === "cliente") {
-
-        menu.innerHTML = `
-
-            <a href="index.html">
-                <i class="fa-solid fa-house"></i>
-                Início
-            </a>
-
-            <a
-                href="cliente.html"
-                class="active"
-            >
-                <i class="fa-solid fa-user"></i>
-                Área do Cliente
-            </a>
-
-            <a href="motoristas.html">
-                <i class="fa-solid fa-users"></i>
-                Motoristas
-            </a>
-
-            <a href="corrida.html">
-                <i class="fa-solid fa-taxi"></i>
-                Solicitar Corrida
-            </a>
-
-            <a href="pagamentos.html">
-                <i class="fa-solid fa-wallet"></i>
-                Pagamentos
-            </a>
-
-            <a href="contato.html">
-                <i class="fa-solid fa-headset"></i>
-                Suporte
-            </a>
-
-        `;
-
-        return;
-    }
-
-
-
-    // ========================================================
-    // PARCEIRO / TAXISTA
-    // ========================================================
-
-    if (tipoAcesso === "parceiro") {
-
-        menu.innerHTML = `
-
-            <a href="index.html">
-                <i class="fa-solid fa-house"></i>
-                Início
-            </a>
-
-            <a
-                href="parceiro.html"
-                class="active"
-            >
-                <i class="fa-solid fa-car"></i>
-                Área do Parceiro
-            </a>
-
-            <a href="corridas-parceiro.html">
-                <i class="fa-solid fa-taxi"></i>
-                Corridas
-            </a>
-
-            <a href="motoristas.html">
-                <i class="fa-solid fa-users"></i>
-                Motoristas
-            </a>
-
-            <a href="contato.html">
-                <i class="fa-solid fa-headset"></i>
-                Suporte
-            </a>
-
-        `;
-
-        return;
-    }
-
-
-
-    // ========================================================
-    // ADMINISTRADOR
-    // ========================================================
-
-    if (tipoAcesso === "admin") {
-
-        menu.innerHTML = `
-
-            <a href="index.html">
-                <i class="fa-solid fa-house"></i>
-                Início
-            </a>
-
-            <a
-                href="admin.html"
-                class="active"
-            >
-                <i class="fa-solid fa-shield-halved"></i>
-                Administração
-            </a>
-
-            <a href="motoristas.html">
-                <i class="fa-solid fa-users"></i>
-                Motoristas
-            </a>
-
-            <a href="contato.html">
-                <i class="fa-solid fa-headset"></i>
-                Suporte
-            </a>
-
-        `;
-
-        return;
-    }
-
-
-
-    // ========================================================
-    // USUÁRIO NÃO LOGADO
-    // ========================================================
-
-    menu.innerHTML = `
-
-        <a href="index.html">
-            <i class="fa-solid fa-house"></i>
-            Início
-        </a>
-
-        <a href="motoristas.html">
-            <i class="fa-solid fa-users"></i>
-            Motoristas
-        </a>
-
-        <a href="corrida.html">
-            <i class="fa-solid fa-taxi"></i>
-            Corridas
-        </a>
-
-        <a href="pagamentos.html">
-            <i class="fa-solid fa-wallet"></i>
-            Pagamentos
-        </a>
-
-        <a href="contato.html">
-            <i class="fa-solid fa-headset"></i>
-            Contato
-        </a>
-
-    `;
-
-}
-
-
-
-// ============================================================
 // SAIR DA CONTA
 // ============================================================
 
-async function sair() {
+async function sairDaConta() {
 
     try {
 
         console.log(
-            "Saindo da conta..."
+            "Encerrando sessão..."
         );
 
+
+        // ====================================================
+        // FAZ LOGOUT NO SUPABASE
+        // ====================================================
 
         const {
             error
@@ -537,17 +326,18 @@ async function sair() {
                 error
             );
 
+
             alert(
-                "Não foi possível sair da conta."
+                "Não foi possível encerrar a sessão. Tente novamente."
             );
 
             return;
         }
 
 
-        // ----------------------------------------------------
-        // LIMPA DADOS DO LOGIN
-        // ----------------------------------------------------
+        // ====================================================
+        // LIMPA DADOS LOCAIS
+        // ====================================================
 
         localStorage.removeItem(
             "usuarioId"
@@ -558,17 +348,9 @@ async function sair() {
         );
 
 
-        sessionStorage.clear();
-
-
-        console.log(
-            "Usuário saiu com sucesso."
-        );
-
-
-        // ----------------------------------------------------
-        // VOLTA PARA O INÍCIO
-        // ----------------------------------------------------
+        // ====================================================
+        // REDIRECIONA PARA O INÍCIO
+        // ====================================================
 
         window.location.href =
             "index.html";
@@ -579,6 +361,11 @@ async function sair() {
         console.error(
             "Erro inesperado ao sair:",
             erro
+        );
+
+
+        alert(
+            "Ocorreu um erro ao encerrar a sessão."
         );
 
     }
