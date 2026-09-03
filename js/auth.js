@@ -16,9 +16,19 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Se a página não tiver o cabeçalho, não faz nada
     if (!headerButtons) {
+
         console.log("Área de usuário não encontrada.");
+
         return;
+
     }
+
+
+    // ========================================================
+    // CORRIGIR DUPLICAÇÃO DA ÁREA DO CLIENTE
+    // ========================================================
+
+    limparAreaClienteDuplicada();
 
 
     // ========================================================
@@ -32,6 +42,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         );
 
         return;
+
     }
 
 
@@ -59,6 +70,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             mostrarDeslogado();
 
             return;
+
         }
 
 
@@ -75,6 +87,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         mostrarDeslogado();
 
         return;
+
     }
 
 
@@ -89,7 +102,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             session.user.email
         );
 
-        mostrarLogado(session.user);
+        mostrarLogado(
+            session.user
+        );
 
     } else {
 
@@ -98,6 +113,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         );
 
         mostrarDeslogado();
+
     }
 
 
@@ -204,6 +220,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         );
 
                         return;
+
                     }
 
 
@@ -246,3 +263,88 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
 });
+
+
+// ============================================================
+// REMOVER "ÁREA DO CLIENTE" DUPLICADA
+// ============================================================
+
+function limparAreaClienteDuplicada() {
+
+    const menu =
+        document.querySelector("nav");
+
+
+    // Se não existir menu, não faz nada
+    if (!menu) {
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // PROCURA OS LINKS DA ÁREA DO CLIENTE
+    // ========================================================
+
+    const linksCliente =
+        Array.from(
+            menu.querySelectorAll(
+                'a[href="cliente.html"]'
+            )
+        );
+
+
+    // Se existe apenas um, está tudo certo
+    if (linksCliente.length <= 1) {
+
+        return;
+
+    }
+
+
+    console.warn(
+        "Links duplicados da Área do Cliente encontrados. Corrigindo..."
+    );
+
+
+    // ========================================================
+    // ESCOLHE QUAL LINK DEVE PERMANECER
+    // ========================================================
+
+    let linkParaManter =
+        linksCliente.find(
+            link =>
+                link.classList.contains("active")
+        );
+
+
+    // Se nenhum estiver ativo, mantém o primeiro
+    if (!linkParaManter) {
+
+        linkParaManter =
+            linksCliente[0];
+
+    }
+
+
+    // ========================================================
+    // REMOVE OS OUTROS
+    // ========================================================
+
+    linksCliente.forEach(link => {
+
+        if (link !== linkParaManter) {
+
+            link.remove();
+
+        }
+
+    });
+
+
+    console.log(
+        "Duplicação da Área do Cliente corrigida."
+    );
+
+}
