@@ -1,130 +1,250 @@
 // ============================================================
 // AUTH.JS - VAIDTÁXI
-// Autenticação global
+// AUTENTICAÇÃO GLOBAL
+//
+// IMPORTANTE:
+// Este arquivo NÃO recria o menu.
+// Ele apenas:
+// 1. Mostra o usuário logado no cabeçalho
+// 2. Adiciona "Área do Cliente" quando necessário
 // ============================================================
 
-document.addEventListener("DOMContentLoaded", async () => {
 
-    console.log("Auth global iniciado.");
+document.addEventListener(
+    "DOMContentLoaded",
+    async function () {
 
-
-    // ========================================================
-    // VERIFICA SUPABASE
-    // ========================================================
-
-    if (typeof supabaseClient === "undefined") {
-
-        console.error(
-            "supabaseClient não encontrado."
-        );
-
-        return;
-    }
+        console.log("Auth global iniciado.");
 
 
-    // ========================================================
-    // VERIFICA SESSÃO
-    // ========================================================
+        // ====================================================
+        // VERIFICAR SUPABASE
+        // ====================================================
 
-    const {
-        data,
-        error
-    } = await supabaseClient.auth.getSession();
+        if (
+            typeof supabaseClient === "undefined"
+        ) {
+
+            console.error(
+                "supabaseClient não encontrado."
+            );
+
+            return;
+        }
 
 
-    if (error) {
+        // ====================================================
+        // VERIFICAR SESSÃO
+        // ====================================================
 
-        console.error(
-            "Erro ao verificar autenticação:",
+        const {
+            data,
             error
-        );
-
-        return;
-    }
+        } =
+            await supabaseClient.auth.getSession();
 
 
-    const session = data?.session;
+        if (error) {
+
+            console.error(
+                "Erro ao verificar sessão:",
+                error
+            );
+
+            return;
+        }
 
 
-    // ========================================================
-    // USUÁRIO LOGADO
-    // ========================================================
+        const session =
+            data?.session;
 
-    if (session && session.user) {
 
-        console.log(
-            "Usuário logado:",
-            session.user.email
-        );
+        // ====================================================
+        // USUÁRIO LOGADO
+        // ====================================================
 
-        mostrarLogado(
+        if (
+            session &&
             session.user
-        );
-
-        adicionarAreaCliente();
-
-    }
-
-    // ========================================================
-    // USUÁRIO NÃO LOGADO
-    // ========================================================
-
-    else {
-
-        console.log(
-            "Nenhum usuário logado."
-        );
-
-        mostrarDeslogado();
-
-    }
-
-
-    // ========================================================
-    // OBSERVA ALTERAÇÕES DE AUTENTICAÇÃO
-    // ========================================================
-
-    supabaseClient.auth.onAuthStateChange(
-        (event, novaSessao) => {
+        ) {
 
             console.log(
-                "Estado da autenticação:",
-                event
+                "Usuário logado:",
+                session.user.email
             );
 
 
-            if (
-                novaSessao &&
-                novaSessao.user
-            ) {
+            // ------------------------------------------------
+            // RECUPERAR TIPO DE ACESSO
+            // ------------------------------------------------
 
-                mostrarLogado(
-                    novaSessao.user
+            let tipoAcesso =
+                localStorage.getItem(
+                    "tipoAcesso"
                 );
 
-                adicionarAreaCliente();
+
+            // ------------------------------------------------
+            // SE NÃO ENCONTRAR NO LOCALSTORAGE,
+            // TENTA PEGAR DO METADATA DO SUPABASE
+            // ------------------------------------------------
+
+            if (
+                !tipoAcesso &&
+                session.user.user_metadata
+            ) {
+
+                tipoAcesso =
+                    session.user.user_metadata.tipo;
 
             }
 
-            else {
 
-                mostrarDeslogado();
+            console.log(
+                "Tipo de acesso identificado:",
+                tipoAcesso
+            );
 
-                removerAreaCliente();
+
+            // ------------------------------------------------
+            // GARANTE QUE O TIPO FIQUE SALVO
+            // ------------------------------------------------
+
+            if (tipoAcesso) {
+
+                localStorage.setItem(
+                    "tipoAcesso",
+                    tipoAcesso
+                );
+
+            }
+
+
+            // ------------------------------------------------
+            // MOSTRA USUÁRIO
+            // ------------------------------------------------
+
+            mostrarLogado(
+                session.user
+            );
+
+
+            // ------------------------------------------------
+            // SE FOR CLIENTE,
+            // ADICIONA APENAS O BOTÃO
+            // ------------------------------------------------
+
+            if (
+                tipoAcesso === "cliente"
+            ) {
+
+                adicionarBotaoAreaCliente();
 
             }
 
         }
-    );
 
-});
+        else {
+
+            console.log(
+                "Nenhum usuário logado."
+            );
+
+            mostrarDeslogado();
+
+            removerBotaoAreaCliente();
+
+        }
+
+
+        // ====================================================
+        // OBSERVAR ALTERAÇÕES DE AUTENTICAÇÃO
+        // ====================================================
+
+        supabaseClient.auth.onAuthStateChange(
+            function (
+                event,
+                novaSessao
+            ) {
+
+                console.log(
+                    "Estado da autenticação:",
+                    event
+                );
+
+
+                if (
+                    novaSessao &&
+                    novaSessao.user
+                ) {
+
+                    let tipoAcesso =
+                        localStorage.getItem(
+                            "tipoAcesso"
+                        );
+
+
+                    if (
+                        !tipoAcesso &&
+                        novaSessao.user.user_metadata
+                    ) {
+
+                        tipoAcesso =
+                            novaSessao
+                                .user
+                                .user_metadata
+                                .tipo;
+
+                    }
+
+
+                    if (tipoAcesso) {
+
+                        localStorage.setItem(
+                            "tipoAcesso",
+                            tipoAcesso
+                        );
+
+                    }
+
+
+                    mostrarLogado(
+                        novaSessao.user
+                    );
+
+
+                    if (
+                        tipoAcesso === "cliente"
+                    ) {
+
+                        adicionarBotaoAreaCliente();
+
+                    }
+
+                }
+
+                else {
+
+                    mostrarDeslogado();
+
+                    removerBotaoAreaCliente();
+
+                }
+
+            }
+        );
+
+    }
+);
 
 
 // ============================================================
 // MOSTRAR USUÁRIO LOGADO
 // ============================================================
 
-function mostrarLogado(usuario) {
+function mostrarLogado(
+    usuario
+) {
 
     const areaBotoes =
         document.querySelector(
@@ -135,14 +255,16 @@ function mostrarLogado(usuario) {
     if (!areaBotoes) {
 
         return;
+
     }
 
 
     // ========================================================
-    // DEFINE NOME
+    // NOME DO USUÁRIO
     // ========================================================
 
-    let nome = "Cliente";
+    let nome =
+        "Cliente";
 
 
     if (
@@ -165,7 +287,9 @@ function mostrarLogado(usuario) {
 
     }
 
-    else if (usuario.email) {
+    else if (
+        usuario.email
+    ) {
 
         nome =
             usuario.email.split("@")[0];
@@ -183,8 +307,9 @@ function mostrarLogado(usuario) {
 
 
     // ========================================================
-    // NÃO MEXE NO MENU
-    // SOMENTE NOS BOTÕES DO USUÁRIO
+    // SOMENTE A ÁREA DOS BOTÕES
+    //
+    // NÃO MEXEMOS NO <nav>
     // ========================================================
 
     areaBotoes.innerHTML = `
@@ -227,7 +352,7 @@ function mostrarLogado(usuario) {
 
 
 // ============================================================
-// MOSTRAR USUÁRIO DESLOGADO
+// USUÁRIO DESLOGADO
 // ============================================================
 
 function mostrarDeslogado() {
@@ -241,6 +366,7 @@ function mostrarDeslogado() {
     if (!areaBotoes) {
 
         return;
+
     }
 
 
@@ -266,80 +392,93 @@ function mostrarDeslogado() {
 
 
 // ============================================================
-// ADICIONAR "ÁREA DO CLIENTE"
+// ADICIONAR BOTÃO "ÁREA DO CLIENTE"
+// ============================================================
+//
+// ATENÇÃO:
+//
+// Não substituímos o menu.
+// Não usamos menu.innerHTML.
+// Criamos SOMENTE um novo <a>.
 // ============================================================
 
-function adicionarAreaCliente() {
-
-    const tipoAcesso =
-        localStorage.getItem(
-            "tipoAcesso"
-        );
-
-
-    // --------------------------------------------------------
-    // SÓ ADICIONA PARA CLIENTE
-    // --------------------------------------------------------
-
-    if (tipoAcesso !== "cliente") {
-
-        return;
-    }
-
+function adicionarBotaoAreaCliente() {
 
     const menu =
-        document.getElementById(
-            "menuPrincipal"
+        document.querySelector(
+            "nav"
         );
 
 
     if (!menu) {
 
+        console.log(
+            "Menu não encontrado."
+        );
+
         return;
+
     }
 
 
-    // --------------------------------------------------------
-    // EVITA DUPLICAR O BOTÃO
-    // --------------------------------------------------------
+    // ========================================================
+    // VERIFICA SE JÁ EXISTE
+    // ========================================================
 
-    if (
+    const jaExiste =
         menu.querySelector(
-            'a[href="cliente.html"]'
-        )
-    ) {
+            'a[data-area-cliente="true"]'
+        );
+
+
+    if (jaExiste) {
 
         return;
+
     }
 
 
-    // --------------------------------------------------------
-    // CRIA SOMENTE O NOVO LINK
-    // --------------------------------------------------------
+    // ========================================================
+    // CRIAR NOVO LINK
+    // ========================================================
 
     const link =
-        document.createElement("a");
+        document.createElement(
+            "a"
+        );
 
 
     link.href =
         "cliente.html";
 
 
+    link.setAttribute(
+        "data-area-cliente",
+        "true"
+    );
+
+
     link.innerHTML = `
+
         <i class="fa-solid fa-user"></i>
         Área do Cliente
+
     `;
 
 
-    // --------------------------------------------------------
-    // COLOCA DEPOIS DO "INÍCIO"
-    // --------------------------------------------------------
+    // ========================================================
+    // LOCALIZAR "INÍCIO"
+    // ========================================================
 
     const inicio =
         menu.querySelector(
             'a[href="index.html"]'
         );
 
+
+    // ========================================================
+    // COLOCAR LOGO DEPOIS DE "INÍCIO"
+    // ========================================================
 
     if (inicio) {
 
@@ -352,7 +491,35 @@ function adicionarAreaCliente() {
 
     else {
 
-        menu.prepend(link);
+        menu.prepend(
+            link
+        );
+
+    }
+
+
+    console.log(
+        "Botão Área do Cliente adicionado."
+    );
+
+}
+
+
+// ============================================================
+// REMOVER BOTÃO ÁREA DO CLIENTE
+// ============================================================
+
+function removerBotaoAreaCliente() {
+
+    const link =
+        document.querySelector(
+            'a[data-area-cliente="true"]'
+        );
+
+
+    if (link) {
+
+        link.remove();
 
     }
 
@@ -360,40 +527,7 @@ function adicionarAreaCliente() {
 
 
 // ============================================================
-// REMOVER "ÁREA DO CLIENTE"
-// ============================================================
-
-function removerAreaCliente() {
-
-    const menu =
-        document.getElementById(
-            "menuPrincipal"
-        );
-
-
-    if (!menu) {
-
-        return;
-    }
-
-
-    const areaCliente =
-        menu.querySelector(
-            'a[href="cliente.html"]'
-        );
-
-
-    if (areaCliente) {
-
-        areaCliente.remove();
-
-    }
-
-}
-
-
-// ============================================================
-// SAIR DA CONTA
+// SAIR
 // ============================================================
 
 async function sairDaConta() {
@@ -409,7 +543,7 @@ async function sairDaConta() {
         if (error) {
 
             console.error(
-                "Erro ao sair da conta:",
+                "Erro ao sair:",
                 error
             );
 
@@ -418,11 +552,12 @@ async function sairDaConta() {
             );
 
             return;
+
         }
 
 
         // ====================================================
-        // LIMPA DADOS DO USUÁRIO
+        // LIMPAR DADOS
         // ====================================================
 
         localStorage.removeItem(
@@ -435,7 +570,7 @@ async function sairDaConta() {
 
 
         // ====================================================
-        // VOLTA PARA O INÍCIO
+        // IR PARA INÍCIO
         // ====================================================
 
         window.location.href =
