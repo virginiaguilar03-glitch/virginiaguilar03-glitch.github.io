@@ -1,23 +1,258 @@
 // ============================================================
-// AUTENTICAÇÃO GLOBAL - VAIDTÁXI
+// AUTH.JS - VAIDTÁXI
+// AUTENTICAÇÃO GLOBAL
+//
+// IMPORTANTE:
+// Este arquivo NÃO recria o menu.
+// Ele apenas:
+// 1. Mostra o usuário logado no cabeçalho
+// 2. Adiciona "Área do Cliente" quando necessário
 // ============================================================
 
-document.addEventListener("DOMContentLoaded", async function () {
 
-    console.log("Auth global iniciado.");
+document.addEventListener(
+    "DOMContentLoaded",
+    async function () {
 
-    // ========================================================
-    // ELEMENTOS DO CABEÇALHO
-    // ========================================================
-
-    const headerButtons =
-        document.querySelector(".header-buttons");
+        console.log("Auth global iniciado.");
 
 
-    // Se a página não tiver o cabeçalho, não faz nada
-    if (!headerButtons) {
+        // ====================================================
+        // VERIFICAR SUPABASE
+        // ====================================================
 
-        console.log("Área de usuário não encontrada.");
+        if (
+            typeof supabaseClient === "undefined"
+        ) {
+
+            console.error(
+                "supabaseClient não encontrado."
+            );
+
+            return;
+        }
+
+
+        // ====================================================
+        // VERIFICAR SESSÃO
+        // ====================================================
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth.getSession();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao verificar sessão:",
+                error
+            );
+
+            return;
+        }
+
+
+        const session =
+            data?.session;
+
+
+        // ====================================================
+        // USUÁRIO LOGADO
+        // ====================================================
+
+        if (
+            session &&
+            session.user
+        ) {
+
+            console.log(
+                "Usuário logado:",
+                session.user.email
+            );
+
+
+            // ------------------------------------------------
+            // RECUPERAR TIPO DE ACESSO
+            // ------------------------------------------------
+
+            let tipoAcesso =
+                localStorage.getItem(
+                    "tipoAcesso"
+                );
+
+
+            // ------------------------------------------------
+            // SE NÃO ENCONTRAR NO LOCALSTORAGE,
+            // TENTA PEGAR DO METADATA DO SUPABASE
+            // ------------------------------------------------
+
+            if (
+                !tipoAcesso &&
+                session.user.user_metadata
+            ) {
+
+                tipoAcesso =
+                    session.user.user_metadata.tipo;
+
+            }
+
+
+            console.log(
+                "Tipo de acesso identificado:",
+                tipoAcesso
+            );
+
+
+            // ------------------------------------------------
+            // GARANTE QUE O TIPO FIQUE SALVO
+            // ------------------------------------------------
+
+            if (tipoAcesso) {
+
+                localStorage.setItem(
+                    "tipoAcesso",
+                    tipoAcesso
+                );
+
+            }
+
+
+            // ------------------------------------------------
+            // MOSTRA USUÁRIO
+            // ------------------------------------------------
+
+            mostrarLogado(
+                session.user
+            );
+
+
+            // ------------------------------------------------
+            // SE FOR CLIENTE,
+            // ADICIONA APENAS O BOTÃO
+            // ------------------------------------------------
+
+            if (
+                tipoAcesso === "cliente"
+            ) {
+
+                adicionarBotaoAreaCliente();
+
+            }
+
+        }
+
+        else {
+
+            console.log(
+                "Nenhum usuário logado."
+            );
+
+            mostrarDeslogado();
+
+            removerBotaoAreaCliente();
+
+        }
+
+
+        // ====================================================
+        // OBSERVAR ALTERAÇÕES DE AUTENTICAÇÃO
+        // ====================================================
+
+        supabaseClient.auth.onAuthStateChange(
+            function (
+                event,
+                novaSessao
+            ) {
+
+                console.log(
+                    "Estado da autenticação:",
+                    event
+                );
+
+
+                if (
+                    novaSessao &&
+                    novaSessao.user
+                ) {
+
+                    let tipoAcesso =
+                        localStorage.getItem(
+                            "tipoAcesso"
+                        );
+
+
+                    if (
+                        !tipoAcesso &&
+                        novaSessao.user.user_metadata
+                    ) {
+
+                        tipoAcesso =
+                            novaSessao
+                                .user
+                                .user_metadata
+                                .tipo;
+
+                    }
+
+
+                    if (tipoAcesso) {
+
+                        localStorage.setItem(
+                            "tipoAcesso",
+                            tipoAcesso
+                        );
+
+                    }
+
+
+                    mostrarLogado(
+                        novaSessao.user
+                    );
+
+
+                    if (
+                        tipoAcesso === "cliente"
+                    ) {
+
+                        adicionarBotaoAreaCliente();
+
+                    }
+
+                }
+
+                else {
+
+                    mostrarDeslogado();
+
+                    removerBotaoAreaCliente();
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+// ============================================================
+// MOSTRAR USUÁRIO LOGADO
+// ============================================================
+
+function mostrarLogado(
+    usuario
+) {
+
+    const areaBotoes =
+        document.querySelector(
+            ".header-buttons"
+        );
+
+
+    if (!areaBotoes) {
 
         return;
 
@@ -25,20 +260,160 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
     // ========================================================
-    // CORRIGIR DUPLICAÇÃO DA ÁREA DO CLIENTE
+    // NOME DO USUÁRIO
     // ========================================================
 
-    limparAreaClienteDuplicada();
+    let nome =
+        "Cliente";
+
+
+    if (
+        usuario.user_metadata &&
+        usuario.user_metadata.nome
+    ) {
+
+        nome =
+            usuario.user_metadata.nome;
+
+    }
+
+    else if (
+        usuario.user_metadata &&
+        usuario.user_metadata.name
+    ) {
+
+        nome =
+            usuario.user_metadata.name;
+
+    }
+
+    else if (
+        usuario.email
+    ) {
+
+        nome =
+            usuario.email.split("@")[0];
+
+    }
 
 
     // ========================================================
-    // VERIFICAR SUPABASE
+    // PRIMEIRA LETRA MAIÚSCULA
     // ========================================================
 
-    if (typeof supabase === "undefined") {
+    nome =
+        nome.charAt(0).toUpperCase() +
+        nome.slice(1);
 
-        console.error(
-            "Supabase não foi carregado antes do auth.js."
+
+    // ========================================================
+    // SOMENTE A ÁREA DOS BOTÕES
+    //
+    // NÃO MEXEMOS NO <nav>
+    // ========================================================
+
+    areaBotoes.innerHTML = `
+
+        <span class="usuario-logado">
+            Olá, ${nome}
+        </span>
+
+        <button
+            type="button"
+            class="btn-outline"
+            id="btnSairAuth"
+        >
+            Sair
+        </button>
+
+    `;
+
+
+    // ========================================================
+    // BOTÃO SAIR
+    // ========================================================
+
+    const btnSair =
+        document.getElementById(
+            "btnSairAuth"
+        );
+
+
+    if (btnSair) {
+
+        btnSair.addEventListener(
+            "click",
+            sairDaConta
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// USUÁRIO DESLOGADO
+// ============================================================
+
+function mostrarDeslogado() {
+
+    const areaBotoes =
+        document.querySelector(
+            ".header-buttons"
+        );
+
+
+    if (!areaBotoes) {
+
+        return;
+
+    }
+
+
+    areaBotoes.innerHTML = `
+
+        <a
+            href="login.html"
+            class="btn-outline"
+        >
+            Entrar
+        </a>
+
+        <a
+            href="cadastro.html"
+            class="btn"
+        >
+            Cadastre-se
+        </a>
+
+    `;
+
+}
+
+
+// ============================================================
+// ADICIONAR BOTÃO "ÁREA DO CLIENTE"
+// ============================================================
+//
+// ATENÇÃO:
+//
+// Não substituímos o menu.
+// Não usamos menu.innerHTML.
+// Criamos SOMENTE um novo <a>.
+// ============================================================
+
+function adicionarBotaoAreaCliente() {
+
+    const menu =
+        document.querySelector(
+            "nav"
+        );
+
+
+    if (!menu) {
+
+        console.log(
+            "Menu não encontrado."
         );
 
         return;
@@ -47,304 +422,173 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
     // ========================================================
-    // BUSCAR SESSÃO
+    // VERIFICA SE JÁ EXISTE
     // ========================================================
 
-    let session = null;
+    const jaExiste =
+        menu.querySelector(
+            'a[data-area-cliente="true"]'
+        );
+
+
+    if (jaExiste) {
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // CRIAR NOVO LINK
+    // ========================================================
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        "cliente.html";
+
+
+    link.setAttribute(
+        "data-area-cliente",
+        "true"
+    );
+
+
+    link.innerHTML = `
+
+        <i class="fa-solid fa-user"></i>
+        Área do Cliente
+
+    `;
+
+
+    // ========================================================
+    // LOCALIZAR "INÍCIO"
+    // ========================================================
+
+    const inicio =
+        menu.querySelector(
+            'a[href="index.html"]'
+        );
+
+
+    // ========================================================
+    // COLOCAR LOGO DEPOIS DE "INÍCIO"
+    // ========================================================
+
+    if (inicio) {
+
+        inicio.insertAdjacentElement(
+            "afterend",
+            link
+        );
+
+    }
+
+    else {
+
+        menu.prepend(
+            link
+        );
+
+    }
+
+
+    console.log(
+        "Botão Área do Cliente adicionado."
+    );
+
+}
+
+
+// ============================================================
+// REMOVER BOTÃO ÁREA DO CLIENTE
+// ============================================================
+
+function removerBotaoAreaCliente() {
+
+    const link =
+        document.querySelector(
+            'a[data-area-cliente="true"]'
+        );
+
+
+    if (link) {
+
+        link.remove();
+
+    }
+
+}
+
+
+// ============================================================
+// SAIR
+// ============================================================
+
+async function sairDaConta() {
 
     try {
 
         const {
-            data,
             error
-        } = await supabase.auth.getSession();
+        } =
+            await supabaseClient.auth.signOut();
 
 
         if (error) {
 
             console.error(
-                "Erro ao recuperar sessão:",
+                "Erro ao sair:",
                 error
             );
 
-            mostrarDeslogado();
+            alert(
+                "Não foi possível sair da conta."
+            );
 
             return;
 
         }
 
 
-        session = data.session;
+        // ====================================================
+        // LIMPAR DADOS
+        // ====================================================
+
+        localStorage.removeItem(
+            "usuarioId"
+        );
+
+        localStorage.removeItem(
+            "tipoAcesso"
+        );
 
 
-    } catch (erro) {
+        // ====================================================
+        // IR PARA INÍCIO
+        // ====================================================
+
+        window.location.href =
+            "index.html";
+
+    }
+
+    catch (erro) {
 
         console.error(
-            "Erro inesperado ao recuperar sessão:",
+            "Erro inesperado ao sair:",
             erro
         );
 
-        mostrarDeslogado();
-
-        return;
-
-    }
-
-
-    // ========================================================
-    // ATUALIZAR CABEÇALHO
-    // ========================================================
-
-    if (session) {
-
-        console.log(
-            "Usuário autenticado:",
-            session.user.email
+        alert(
+            "Ocorreu um erro ao sair da conta."
         );
 
-        mostrarLogado(
-            session.user
-        );
-
-    } else {
-
-        console.log(
-            "Nenhum usuário autenticado."
-        );
-
-        mostrarDeslogado();
-
     }
-
-
-    // ========================================================
-    // ESCUTAR ALTERAÇÕES DE LOGIN/LOGOUT
-    // ========================================================
-
-    supabase.auth.onAuthStateChange(
-        function (event, sessionAtual) {
-
-            console.log(
-                "Alteração de autenticação:",
-                event
-            );
-
-
-            if (sessionAtual) {
-
-                mostrarLogado(
-                    sessionAtual.user
-                );
-
-            } else {
-
-                mostrarDeslogado();
-
-            }
-
-        }
-    );
-
-
-    // ========================================================
-    // USUÁRIO LOGADO
-    // ========================================================
-
-    function mostrarLogado(usuario) {
-
-        const nome =
-            usuario.user_metadata?.nome ||
-            usuario.user_metadata?.name ||
-            usuario.email?.split("@")[0] ||
-            "Cliente";
-
-
-        headerButtons.innerHTML = `
-
-            <span class="usuario-header">
-                Olá, ${nome}
-            </span>
-
-            <button
-                type="button"
-                id="btnSair"
-                class="btn-outline"
-            >
-                Sair
-            </button>
-
-        `;
-
-
-        // ====================================================
-        // BOTÃO SAIR
-        // ====================================================
-
-        const btnSair =
-            document.getElementById("btnSair");
-
-
-        if (btnSair) {
-
-            btnSair.addEventListener(
-                "click",
-                async function () {
-
-                    btnSair.disabled = true;
-
-                    btnSair.textContent =
-                        "Saindo...";
-
-
-                    const {
-                        error
-                    } =
-                        await supabase.auth.signOut();
-
-
-                    if (error) {
-
-                        console.error(
-                            "Erro ao sair:",
-                            error
-                        );
-
-                        btnSair.disabled =
-                            false;
-
-                        btnSair.textContent =
-                            "Sair";
-
-                        alert(
-                            "Não foi possível sair."
-                        );
-
-                        return;
-
-                    }
-
-
-                    // Volta para a página inicial
-                    window.location.href =
-                        "index.html";
-
-                }
-            );
-
-        }
-
-    }
-
-
-    // ========================================================
-    // USUÁRIO NÃO LOGADO
-    // ========================================================
-
-    function mostrarDeslogado() {
-
-        headerButtons.innerHTML = `
-
-            <a
-                href="login.html"
-                class="btn-outline"
-            >
-                Entrar
-            </a>
-
-            <a
-                href="cadastro.html"
-                class="btn"
-            >
-                Cadastre-se
-            </a>
-
-        `;
-
-    }
-
-});
-
-
-// ============================================================
-// REMOVER "ÁREA DO CLIENTE" DUPLICADA
-// ============================================================
-
-function limparAreaClienteDuplicada() {
-
-    const menu =
-        document.querySelector("nav");
-
-
-    // Se não existir menu, não faz nada
-    if (!menu) {
-
-        return;
-
-    }
-
-
-    // ========================================================
-    // PROCURA OS LINKS DA ÁREA DO CLIENTE
-    // ========================================================
-
-    const linksCliente =
-        Array.from(
-            menu.querySelectorAll(
-                'a[href="cliente.html"]'
-            )
-        );
-
-
-    // Se existe apenas um, está tudo certo
-    if (linksCliente.length <= 1) {
-
-        return;
-
-    }
-
-
-    console.warn(
-        "Links duplicados da Área do Cliente encontrados. Corrigindo..."
-    );
-
-
-    // ========================================================
-    // ESCOLHE QUAL LINK DEVE PERMANECER
-    // ========================================================
-
-    let linkParaManter =
-        linksCliente.find(
-            link =>
-                link.classList.contains("active")
-        );
-
-
-    // Se nenhum estiver ativo, mantém o primeiro
-    if (!linkParaManter) {
-
-        linkParaManter =
-            linksCliente[0];
-
-    }
-
-
-    // ========================================================
-    // REMOVE OS OUTROS
-    // ========================================================
-
-    linksCliente.forEach(link => {
-
-        if (link !== linkParaManter) {
-
-            link.remove();
-
-        }
-
-    });
-
-
-    console.log(
-        "Duplicação da Área do Cliente corrigida."
-    );
 
 }
