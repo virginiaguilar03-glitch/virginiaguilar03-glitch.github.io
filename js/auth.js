@@ -1,29 +1,30 @@
 // ============================================================
 // AUTH.JS - VAIDTÁXI
-// Controle global de autenticação e navegação
+// Autenticação global
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("Auth global iniciado.");
 
-    // --------------------------------------------------------
-    // VERIFICA SE O SUPABASE ESTÁ DISPONÍVEL
-    // --------------------------------------------------------
+
+    // ========================================================
+    // VERIFICA SUPABASE
+    // ========================================================
 
     if (typeof supabaseClient === "undefined") {
 
         console.error(
-            "supabaseClient não foi encontrado."
+            "supabaseClient não encontrado."
         );
 
         return;
     }
 
 
-    // --------------------------------------------------------
-    // OBTÉM A SESSÃO ATUAL
-    // --------------------------------------------------------
+    // ========================================================
+    // VERIFICA SESSÃO
+    // ========================================================
 
     const {
         data,
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (error) {
 
         console.error(
-            "Erro ao verificar sessão:",
+            "Erro ao verificar autenticação:",
             error
         );
 
@@ -45,9 +46,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const session = data?.session;
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // USUÁRIO LOGADO
-    // --------------------------------------------------------
+    // ========================================================
 
     if (session && session.user) {
 
@@ -56,13 +57,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             session.user.email
         );
 
-        atualizarAreaUsuario(session.user);
+        mostrarLogado(
+            session.user
+        );
+
+        adicionarAreaCliente();
 
     }
 
-    // --------------------------------------------------------
-    // NENHUM USUÁRIO LOGADO
-    // --------------------------------------------------------
+    // ========================================================
+    // USUÁRIO NÃO LOGADO
+    // ========================================================
 
     else {
 
@@ -70,13 +75,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             "Nenhum usuário logado."
         );
 
-        mostrarUsuarioDeslogado();
+        mostrarDeslogado();
+
     }
 
 
-    // --------------------------------------------------------
-    // OBSERVA ALTERAÇÕES DE LOGIN / LOGOUT
-    // --------------------------------------------------------
+    // ========================================================
+    // OBSERVA ALTERAÇÕES DE AUTENTICAÇÃO
+    // ========================================================
 
     supabaseClient.auth.onAuthStateChange(
         (event, novaSessao) => {
@@ -92,15 +98,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                 novaSessao.user
             ) {
 
-                atualizarAreaUsuario(
+                mostrarLogado(
                     novaSessao.user
                 );
+
+                adicionarAreaCliente();
 
             }
 
             else {
 
-                mostrarUsuarioDeslogado();
+                mostrarDeslogado();
+
+                removerAreaCliente();
 
             }
 
@@ -111,76 +121,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 // ============================================================
-// ATUALIZA A ÁREA DO USUÁRIO
+// MOSTRAR USUÁRIO LOGADO
 // ============================================================
 
-function atualizarAreaUsuario(usuario) {
+function mostrarLogado(usuario) {
 
-    // --------------------------------------------------------
-    // RECUPERA O TIPO DE ACESSO
-    // --------------------------------------------------------
-
-    const tipoAcesso =
-        localStorage.getItem("tipoAcesso");
-
-
-    console.log(
-        "Tipo de acesso:",
-        tipoAcesso
-    );
-
-
-    // --------------------------------------------------------
-    // ATUALIZA CABEÇALHO
-    // --------------------------------------------------------
-
-    atualizarCabecalho(
-        usuario,
-        tipoAcesso
-    );
-
-
-    // --------------------------------------------------------
-    // ATUALIZA MENU
-    // --------------------------------------------------------
-
-    atualizarMenu(
-        tipoAcesso
-    );
-
-}
-
-
-// ============================================================
-// ATUALIZA O CABEÇALHO
-// ============================================================
-
-function atualizarCabecalho(
-    usuario,
-    tipoAcesso
-) {
-
-    const headerButtons =
+    const areaBotoes =
         document.querySelector(
             ".header-buttons"
         );
 
 
-    if (!headerButtons) {
-
-        console.log(
-            "Área de botões do cabeçalho não encontrada."
-        );
+    if (!areaBotoes) {
 
         return;
     }
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // DEFINE NOME
-    // --------------------------------------------------------
+    // ========================================================
 
-    let nome = "Usuário";
+    let nome = "Cliente";
 
 
     if (
@@ -211,20 +173,21 @@ function atualizarCabecalho(
     }
 
 
-    // --------------------------------------------------------
-    // CAPITALIZA PRIMEIRA LETRA
-    // --------------------------------------------------------
+    // ========================================================
+    // PRIMEIRA LETRA MAIÚSCULA
+    // ========================================================
 
     nome =
         nome.charAt(0).toUpperCase() +
         nome.slice(1);
 
 
-    // --------------------------------------------------------
-    // CABEÇALHO DO USUÁRIO LOGADO
-    // --------------------------------------------------------
+    // ========================================================
+    // NÃO MEXE NO MENU
+    // SOMENTE NOS BOTÕES DO USUÁRIO
+    // ========================================================
 
-    headerButtons.innerHTML = `
+    areaBotoes.innerHTML = `
 
         <span class="usuario-logado">
             Olá, ${nome}
@@ -241,9 +204,9 @@ function atualizarCabecalho(
     `;
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // BOTÃO SAIR
-    // --------------------------------------------------------
+    // ========================================================
 
     const btnSair =
         document.getElementById(
@@ -264,179 +227,24 @@ function atualizarCabecalho(
 
 
 // ============================================================
-// MENU DO USUÁRIO
+// MOSTRAR USUÁRIO DESLOGADO
 // ============================================================
 
-function atualizarMenu(tipoAcesso) {
+function mostrarDeslogado() {
 
-    const menu =
-        document.getElementById(
-            "menuPrincipal"
-        );
-
-
-    if (!menu) {
-
-        console.log(
-            "Menu principal não encontrado."
-        );
-
-        return;
-    }
-
-
-    // --------------------------------------------------------
-    // CLIENTE
-    // --------------------------------------------------------
-
-    if (tipoAcesso === "cliente") {
-
-        menu.innerHTML = `
-
-            <a href="index.html">
-                <i class="fa-solid fa-house"></i>
-                Início
-            </a>
-
-            <a href="cliente.html">
-                <i class="fa-solid fa-user"></i>
-                Área do Cliente
-            </a>
-
-            <a href="motoristas.html">
-                <i class="fa-solid fa-users"></i>
-                Motoristas
-            </a>
-
-            <a href="corrida.html">
-                <i class="fa-solid fa-taxi"></i>
-                Solicitar Corrida
-            </a>
-
-            <a href="pagamentos.html">
-                <i class="fa-solid fa-wallet"></i>
-                Pagamentos
-            </a>
-
-            <a href="contato.html">
-                <i class="fa-solid fa-headset"></i>
-                Suporte
-            </a>
-
-        `;
-
-        return;
-    }
-
-
-    // --------------------------------------------------------
-    // PARCEIRO / TAXISTA
-    // --------------------------------------------------------
-
-    if (tipoAcesso === "parceiro") {
-
-        menu.innerHTML = `
-
-            <a href="index.html">
-                <i class="fa-solid fa-house"></i>
-                Início
-            </a>
-
-            <a href="parceiro.html">
-                <i class="fa-solid fa-id-card"></i>
-                Área do Parceiro
-            </a>
-
-            <a href="corrida.html">
-                <i class="fa-solid fa-taxi"></i>
-                Corridas
-            </a>
-
-            <a href="motoristas.html">
-                <i class="fa-solid fa-users"></i>
-                Motoristas
-            </a>
-
-            <a href="contato.html">
-                <i class="fa-solid fa-headset"></i>
-                Suporte
-            </a>
-
-        `;
-
-        return;
-    }
-
-
-    // --------------------------------------------------------
-    // ADMINISTRADOR
-    // --------------------------------------------------------
-
-    if (tipoAcesso === "admin") {
-
-        menu.innerHTML = `
-
-            <a href="index.html">
-                <i class="fa-solid fa-house"></i>
-                Início
-            </a>
-
-            <a href="admin.html">
-                <i class="fa-solid fa-shield-halved"></i>
-                Administração
-            </a>
-
-            <a href="corrida.html">
-                <i class="fa-solid fa-taxi"></i>
-                Corridas
-            </a>
-
-            <a href="motoristas.html">
-                <i class="fa-solid fa-users"></i>
-                Motoristas
-            </a>
-
-            <a href="contato.html">
-                <i class="fa-solid fa-headset"></i>
-                Suporte
-            </a>
-
-        `;
-
-        return;
-    }
-
-
-    // --------------------------------------------------------
-    // SEM TIPO DE ACESSO
-    // --------------------------------------------------------
-
-    console.log(
-        "Nenhum tipo de acesso definido. Mantendo menu da página."
-    );
-
-}
-
-
-// ============================================================
-// USUÁRIO DESLOGADO
-// ============================================================
-
-function mostrarUsuarioDeslogado() {
-
-    const headerButtons =
+    const areaBotoes =
         document.querySelector(
             ".header-buttons"
         );
 
 
-    if (!headerButtons) {
+    if (!areaBotoes) {
 
         return;
     }
 
 
-    headerButtons.innerHTML = `
+    areaBotoes.innerHTML = `
 
         <a
             href="login.html"
@@ -458,6 +266,133 @@ function mostrarUsuarioDeslogado() {
 
 
 // ============================================================
+// ADICIONAR "ÁREA DO CLIENTE"
+// ============================================================
+
+function adicionarAreaCliente() {
+
+    const tipoAcesso =
+        localStorage.getItem(
+            "tipoAcesso"
+        );
+
+
+    // --------------------------------------------------------
+    // SÓ ADICIONA PARA CLIENTE
+    // --------------------------------------------------------
+
+    if (tipoAcesso !== "cliente") {
+
+        return;
+    }
+
+
+    const menu =
+        document.getElementById(
+            "menuPrincipal"
+        );
+
+
+    if (!menu) {
+
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // EVITA DUPLICAR O BOTÃO
+    // --------------------------------------------------------
+
+    if (
+        menu.querySelector(
+            'a[href="cliente.html"]'
+        )
+    ) {
+
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // CRIA SOMENTE O NOVO LINK
+    // --------------------------------------------------------
+
+    const link =
+        document.createElement("a");
+
+
+    link.href =
+        "cliente.html";
+
+
+    link.innerHTML = `
+        <i class="fa-solid fa-user"></i>
+        Área do Cliente
+    `;
+
+
+    // --------------------------------------------------------
+    // COLOCA DEPOIS DO "INÍCIO"
+    // --------------------------------------------------------
+
+    const inicio =
+        menu.querySelector(
+            'a[href="index.html"]'
+        );
+
+
+    if (inicio) {
+
+        inicio.insertAdjacentElement(
+            "afterend",
+            link
+        );
+
+    }
+
+    else {
+
+        menu.prepend(link);
+
+    }
+
+}
+
+
+// ============================================================
+// REMOVER "ÁREA DO CLIENTE"
+// ============================================================
+
+function removerAreaCliente() {
+
+    const menu =
+        document.getElementById(
+            "menuPrincipal"
+        );
+
+
+    if (!menu) {
+
+        return;
+    }
+
+
+    const areaCliente =
+        menu.querySelector(
+            'a[href="cliente.html"]'
+        );
+
+
+    if (areaCliente) {
+
+        areaCliente.remove();
+
+    }
+
+}
+
+
+// ============================================================
 // SAIR DA CONTA
 // ============================================================
 
@@ -474,7 +409,7 @@ async function sairDaConta() {
         if (error) {
 
             console.error(
-                "Erro ao sair:",
+                "Erro ao sair da conta:",
                 error
             );
 
@@ -486,9 +421,9 @@ async function sairDaConta() {
         }
 
 
-        // ----------------------------------------------------
-        // LIMPA DADOS LOCAIS
-        // ----------------------------------------------------
+        // ====================================================
+        // LIMPA DADOS DO USUÁRIO
+        // ====================================================
 
         localStorage.removeItem(
             "usuarioId"
@@ -499,12 +434,9 @@ async function sairDaConta() {
         );
 
 
-        sessionStorage.clear();
-
-
-        // ----------------------------------------------------
+        // ====================================================
         // VOLTA PARA O INÍCIO
-        // ----------------------------------------------------
+        // ====================================================
 
         window.location.href =
             "index.html";
