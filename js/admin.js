@@ -13,6 +13,165 @@ console.log("======================================");
 console.log("ADMIN VaidTáxi iniciado.");
 console.log("======================================");
 
+// ============================================================
+// PROTEÇÃO DO PAINEL ADMINISTRATIVO
+// ============================================================
+
+async function verificarAcessoAdmin() {
+
+    console.log(
+        "Verificando acesso administrativo..."
+    );
+
+
+    // ========================================================
+    // VERIFICAR SUPABASE
+    // ========================================================
+
+    if (
+        typeof supabaseClient === "undefined" ||
+        !supabaseClient
+    ) {
+
+        console.error(
+            "supabaseClient não está disponível."
+        );
+
+        window.location.replace(
+            "login.html"
+        );
+
+        return false;
+    }
+
+
+    try {
+
+        // ====================================================
+        // VERIFICAR SESSÃO
+        // ====================================================
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth.getSession();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao verificar sessão:",
+                error
+            );
+
+            window.location.replace(
+                "login.html"
+            );
+
+            return false;
+        }
+
+
+        const session =
+            data?.session;
+
+
+        // ====================================================
+        // SEM LOGIN
+        // ====================================================
+
+        if (!session) {
+
+            console.warn(
+                "Usuário não está logado."
+            );
+
+            window.location.replace(
+                "login.html"
+            );
+
+            return false;
+        }
+
+
+        // ====================================================
+        // USUÁRIO LOGADO
+        // ====================================================
+
+        const usuario =
+            session.user;
+
+
+        const tipo =
+            usuario.user_metadata?.tipo || "";
+
+
+        console.log(
+            "Usuário autenticado:",
+            usuario.email
+        );
+
+        console.log(
+            "Tipo identificado:",
+            tipo
+        );
+
+
+        // ====================================================
+        // VERIFICAR ADMIN
+        // ====================================================
+
+        if (
+            tipo !== "admin"
+        ) {
+
+            console.warn(
+                "Acesso negado ao painel administrativo."
+            );
+
+            alert(
+                "Acesso restrito ao administrador."
+            );
+
+            window.location.replace(
+                "index.html"
+            );
+
+            return false;
+        }
+
+
+        // ====================================================
+        // ACESSO LIBERADO
+        // ====================================================
+
+        console.log(
+            "Acesso administrativo autorizado."
+        );
+
+
+        return true;
+
+    }
+
+
+    catch (erro) {
+
+        console.error(
+            "Erro ao verificar acesso:",
+            erro
+        );
+
+        window.location.replace(
+            "login.html"
+        );
+
+        return false;
+    }
+
+}
+
 
 // ============================================================
 // VERIFICAR SUPABASE
