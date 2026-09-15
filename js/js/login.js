@@ -4,20 +4,32 @@
 
 async function login() {
 
-    const campoEmail = document.getElementById("email");
-    const campoSenha = document.getElementById("senha");
+    const campoEmail =
+        document.getElementById("email");
+
+    const campoSenha =
+        document.getElementById("senha");
+
 
     if (!campoEmail || !campoSenha) {
 
-        console.error("Campos de login não encontrados.");
-        alert("Erro: campos de login não encontrados.");
+        console.error(
+            "Campos de login não encontrados."
+        );
+
+        alert(
+            "Erro: campos de login não encontrados."
+        );
 
         return;
     }
 
 
-    const email = campoEmail.value.trim();
-    const senha = campoSenha.value;
+    const email =
+        campoEmail.value.trim();
+
+    const senha =
+        campoSenha.value;
 
 
     // ========================================================
@@ -26,7 +38,9 @@ async function login() {
 
     if (!email || !senha) {
 
-        alert("Preencha todos os campos.");
+        alert(
+            "Preencha todos os campos."
+        );
 
         return;
     }
@@ -36,7 +50,9 @@ async function login() {
     // VERIFICAR SUPABASE
     // ========================================================
 
-    if (typeof supabaseClient === "undefined") {
+    if (
+        typeof supabaseClient === "undefined"
+    ) {
 
         console.error(
             "supabaseClient não foi encontrado."
@@ -55,12 +71,17 @@ async function login() {
     // ========================================================
 
     const botao =
-        document.querySelector(".form-login .btn");
+        document.querySelector(
+            ".form-login .btn"
+        );
+
 
     if (botao) {
 
         botao.disabled = true;
-        botao.textContent = "Entrando...";
+
+        botao.textContent =
+            "Entrando...";
 
     }
 
@@ -71,14 +92,18 @@ async function login() {
         // LOGIN NO SUPABASE
         // ====================================================
 
-        const { data, error } =
-            await supabaseClient.auth.signInWithPassword({
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth
+                .signInWithPassword({
 
-                email: email,
+                    email: email,
 
-                password: senha
+                    password: senha
 
-            });
+                });
 
 
         // ====================================================
@@ -96,10 +121,13 @@ async function login() {
                 "E-mail ou senha incorretos."
             );
 
+
             if (botao) {
 
                 botao.disabled = false;
-                botao.textContent = "Entrar";
+
+                botao.textContent =
+                    "Entrar";
 
             }
 
@@ -108,14 +136,62 @@ async function login() {
 
 
         // ====================================================
-        // LOGIN REALIZADO
+        // VERIFICAR USUÁRIO
         // ====================================================
+
+        if (
+            !data ||
+            !data.user
+        ) {
+
+            console.error(
+                "Usuário não retornado pelo Supabase."
+            );
+
+            alert(
+                "Não foi possível identificar o usuário."
+            );
+
+
+            if (botao) {
+
+                botao.disabled = false;
+
+                botao.textContent =
+                    "Entrar";
+
+            }
+
+            return;
+        }
+
+
+        const usuario =
+            data.user;
+
+
+        // ====================================================
+        // IDENTIFICAR TIPO
+        // ====================================================
+
+        const tipo =
+            usuario.user_metadata?.tipo || "";
+
 
         console.log(
             "Login realizado:",
-            data.user
+            usuario
         );
 
+        console.log(
+            "Tipo do usuário:",
+            tipo
+        );
+
+
+        // ====================================================
+        // LOGIN REALIZADO
+        // ====================================================
 
         alert(
             "Login realizado com sucesso!"
@@ -123,13 +199,29 @@ async function login() {
 
 
         // ====================================================
-        // REDIRECIONAR
+        // REDIRECIONAMENTO
+        // ====================================================
+
+        if (
+            tipo === "admin"
+        ) {
+
+            window.location.href =
+                "admin.html";
+
+            return;
+        }
+
+
+        // ====================================================
+        // OUTROS USUÁRIOS
         // ====================================================
 
         window.location.href =
             "index.html";
 
     }
+
 
     catch (erro) {
 
@@ -146,7 +238,9 @@ async function login() {
         if (botao) {
 
             botao.disabled = false;
-            botao.textContent = "Entrar";
+
+            botao.textContent =
+                "Entrar";
 
         }
 
