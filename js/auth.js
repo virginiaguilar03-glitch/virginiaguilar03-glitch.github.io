@@ -12,7 +12,7 @@ document.addEventListener(
 
 
         // ====================================================
-        // ELEMENTOS
+        // ELEMENTOS DO CABEÇALHO
         // ====================================================
 
         const headerButtons =
@@ -21,24 +21,13 @@ document.addEventListener(
             );
 
         const menuPrincipal =
-            document.getElementById(
-                "menuPrincipal"
+            document.querySelector(
+                "header nav"
             );
-
-
-        if (!headerButtons) {
-
-            console.log(
-                "Área de usuário não encontrada."
-            );
-
-            return;
-
-        }
 
 
         // ====================================================
-        // VERIFICAR CLIENTE SUPABASE
+        // VERIFICAR SUPABASE
         // ====================================================
 
         if (
@@ -164,19 +153,12 @@ document.addEventListener(
 
 
         // ====================================================
-        // MOSTRAR USUÁRIO LOGADO
+        // USUÁRIO LOGADO
         // ====================================================
 
         function mostrarLogado(
             usuario
         ) {
-
-            const nome =
-                usuario.user_metadata?.nome ||
-                usuario.user_metadata?.name ||
-                usuario.email?.split("@")[0] ||
-                "Cliente";
-
 
             const tipo =
                 usuario.user_metadata?.tipo ||
@@ -190,133 +172,99 @@ document.addEventListener(
 
 
             // =================================================
-            // CABEÇALHO DO CLIENTE
+            // SOMENTE CLIENTE
             // =================================================
 
             if (
-                tipo === "cliente" &&
-                menuPrincipal
+                tipo === "cliente"
             ) {
 
-                menuPrincipal.innerHTML = `
-
-                    <a href="index.html">
-                        <i class="fa-solid fa-house"></i>
-                        Início
-                    </a>
-
-                    <a href="cliente.html">
-                        <i class="fa-solid fa-user"></i>
-                        Área do Cliente
-                    </a>
-
-                    <a href="motoristas.html">
-                        <i class="fa-solid fa-users"></i>
-                        Motoristas
-                    </a>
-
-                    <a href="corrida.html">
-                        <i class="fa-solid fa-taxi"></i>
-                        Solicitar Corrida
-                    </a>
-
-                    <a href="pagamentos.html">
-                        <i class="fa-solid fa-wallet"></i>
-                        Pagamentos
-                    </a>
-
-                    <a href="contato.html">
-                        <i class="fa-solid fa-headset"></i>
-                        Suporte
-                    </a>
-
-                `;
+                montarMenuCliente();
 
             }
 
 
             // =================================================
-            // BOTÃO DO USUÁRIO
+            // BOTÃO SAIR DO CLIENTE
             // =================================================
 
-            headerButtons.innerHTML = `
+            if (
+                tipo === "cliente" &&
+                headerButtons
+            ) {
 
-                <span class="usuario-header">
-                    Olá, ${nome}
-                </span>
+                headerButtons.innerHTML = `
 
-                <button
-                    type="button"
-                    id="btnSair"
-                    class="btn-outline"
-                >
-                    Sair
-                </button>
+                    <button
+                        type="button"
+                        id="btnSair"
+                        class="btn-outline"
+                    >
+                        Sair
+                    </button>
 
-            `;
-
-
-            // =================================================
-            // BOTÃO SAIR
-            // =================================================
-
-            const btnSair =
-                document.getElementById(
-                    "btnSair"
-                );
+                `;
 
 
-            if (btnSair) {
-
-                btnSair.addEventListener(
-                    "click",
-                    async function () {
-
-                        btnSair.disabled =
-                            true;
-
-                        btnSair.textContent =
-                            "Saindo...";
+                const btnSair =
+                    document.getElementById(
+                        "btnSair"
+                    );
 
 
-                        const {
-                            error
-                        } =
-                            await supabaseClient.auth.signOut();
+                if (btnSair) {
 
-
-                        if (error) {
-
-                            console.error(
-                                "Erro ao sair:",
-                                error
-                            );
+                    btnSair.addEventListener(
+                        "click",
+                        async function () {
 
                             btnSair.disabled =
-                                false;
+                                true;
 
                             btnSair.textContent =
-                                "Sair";
+                                "Saindo...";
 
-                            alert(
-                                "Não foi possível sair."
+
+                            const {
+                                error
+                            } =
+                                await supabaseClient.auth.signOut();
+
+
+                            if (error) {
+
+                                console.error(
+                                    "Erro ao sair:",
+                                    error
+                                );
+
+                                btnSair.disabled =
+                                    false;
+
+                                btnSair.textContent =
+                                    "Sair";
+
+                                alert(
+                                    "Não foi possível sair."
+                                );
+
+                                return;
+
+                            }
+
+
+                            console.log(
+                                "Sessão encerrada."
                             );
 
-                            return;
+
+                            window.location.href =
+                                "index.html";
 
                         }
+                    );
 
-
-                        console.log(
-                            "Sessão encerrada."
-                        );
-
-
-                        window.location.href =
-                            "index.html";
-
-                    }
-                );
+                }
 
             }
 
@@ -324,10 +272,96 @@ document.addEventListener(
 
 
         // ====================================================
-        // MOSTRAR USUÁRIO DESLOGADO
+        // MONTAR CABEÇALHO DO CLIENTE
+        // ====================================================
+
+        function montarMenuCliente() {
+
+            if (!menuPrincipal) {
+
+                console.log(
+                    "Menu principal não encontrado."
+                );
+
+                return;
+
+            }
+
+
+            const paginaAtual =
+                window.location.pathname
+                    .split("/")
+                    .pop()
+                    .toLowerCase();
+
+
+            menuPrincipal.innerHTML = `
+
+                <a
+                    href="index.html"
+                    class="${paginaAtual === "index.html" ? "active" : ""}"
+                >
+                    <i class="fa-solid fa-house"></i>
+                    Início
+                </a>
+
+                <a
+                    href="cliente.html"
+                    class="${paginaAtual === "cliente.html" ? "active" : ""}"
+                >
+                    <i class="fa-solid fa-user"></i>
+                    Área do Cliente
+                </a>
+
+                <a
+                    href="motoristas.html"
+                    class="${paginaAtual === "motoristas.html" ? "active" : ""}"
+                >
+                    <i class="fa-solid fa-users"></i>
+                    Motoristas
+                </a>
+
+                <a
+                    href="corrida.html"
+                    class="${paginaAtual === "corrida.html" ? "active" : ""}"
+                >
+                    <i class="fa-solid fa-taxi"></i>
+                    Solicitar Corrida
+                </a>
+
+                <a
+                    href="pagamentos.html"
+                    class="${paginaAtual === "pagamentos.html" ? "active" : ""}"
+                >
+                    <i class="fa-solid fa-wallet"></i>
+                    Pagamentos
+                </a>
+
+                <a
+                    href="contato.html"
+                    class="${paginaAtual === "contato.html" ? "active" : ""}"
+                >
+                    <i class="fa-solid fa-headset"></i>
+                    Suporte
+                </a>
+
+            `;
+
+        }
+
+
+        // ====================================================
+        // USUÁRIO DESLOGADO
         // ====================================================
 
         function mostrarDeslogado() {
+
+            if (!headerButtons) {
+
+                return;
+
+            }
+
 
             headerButtons.innerHTML = `
 
