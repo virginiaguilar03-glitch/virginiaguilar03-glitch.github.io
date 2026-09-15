@@ -69,7 +69,7 @@
 
         <div class="admin-logo">
 
-            <a href="index.html">
+            <a href="#">
 
                 <img
                     src="logo-vdb.png"
@@ -250,12 +250,11 @@
 
             <!-- SAIR -->
 
-          <a
-    href="#"
-    id="btnSairAdmin"
-    class="admin-menu-item sair"
->
->
+            <a
+                href="#"
+                id="btnSairAdmin"
+                class="admin-menu-item sair"
+            >
 
                 <i class="fa-solid fa-right-from-bracket"></i>
 
@@ -1569,17 +1568,214 @@
 
 
 <!-- =========================================================
-     AUTENTICAÇÃO GLOBAL
+     CONTROLE DE ACESSO DO ADMINISTRADOR
 ========================================================== -->
 
-<script src="js/auth.js"></script>
+<script>
+
+(async function () {
+
+    console.log("Verificando acesso administrativo...");
 
 
-<!-- =========================================================
-     PAINEL ADMINISTRATIVO
-========================================================== -->
+    if (
+        typeof supabaseClient === "undefined" ||
+        !supabaseClient
+    ) {
 
-<script src="js/admin.js?v=2"></script>
+        console.error(
+            "supabaseClient não encontrado."
+        );
+
+        window.location.replace("login.html");
+
+        return;
+    }
+
+
+    try {
+
+        const { data, error } =
+            await supabaseClient.auth.getSession();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao verificar sessão:",
+                error
+            );
+
+            window.location.replace("login.html");
+
+            return;
+        }
+
+
+        const session =
+            data?.session;
+
+
+        if (!session) {
+
+            console.warn(
+                "Nenhum usuário logado."
+            );
+
+            window.location.replace("login.html");
+
+            return;
+        }
+
+
+        const usuario =
+            session.user;
+
+
+        const tipo =
+            usuario.user_metadata?.tipo || "";
+
+
+        console.log(
+            "Usuário:",
+            usuario.email
+        );
+
+
+        console.log(
+            "Tipo:",
+            tipo
+        );
+
+
+        if (tipo !== "admin") {
+
+            alert(
+                "Acesso restrito ao administrador."
+            );
+
+            window.location.replace(
+                "login.html"
+            );
+
+            return;
+        }
+
+
+        console.log(
+            "Acesso administrativo autorizado."
+        );
+
+
+        /* =================================================
+           BOTÃO SAIR
+        ================================================== */
+
+        const btnSairAdmin =
+            document.getElementById(
+                "btnSairAdmin"
+            );
+
+
+        if (btnSairAdmin) {
+
+            btnSairAdmin.addEventListener(
+                "click",
+                async function (event) {
+
+                    event.preventDefault();
+
+
+                    btnSairAdmin.style.pointerEvents =
+                        "none";
+
+
+                    btnSairAdmin.innerHTML = `
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <span>Saindo...</span>
+                    `;
+
+
+                    const { error } =
+                        await supabaseClient.auth.signOut();
+
+
+                    if (error) {
+
+                        console.error(
+                            "Erro ao sair:",
+                            error
+                        );
+
+
+                        alert(
+                            "Não foi possível encerrar a sessão."
+                        );
+
+
+                        btnSairAdmin.style.pointerEvents =
+                            "";
+
+
+                        btnSairAdmin.innerHTML = `
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Sair</span>
+                        `;
+
+
+                        return;
+                    }
+
+
+                    console.log(
+                        "Sessão encerrada com sucesso."
+                    );
+
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           CARREGA O PAINEL ADMINISTRATIVO
+        ================================================== */
+
+        const scriptAdmin =
+            document.createElement("script");
+
+
+        scriptAdmin.src =
+            "js/admin.js?v=3";
+
+
+        document.body.appendChild(
+            scriptAdmin
+        );
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao verificar acesso:",
+            erro
+        );
+
+
+        window.location.replace(
+            "login.html"
+        );
+
+    }
+
+})();
+
+</script>
 
 
 
