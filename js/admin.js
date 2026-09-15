@@ -681,8 +681,8 @@ async function carregarParceiros() {
             await supabaseClient
                 .from("motoristas")
                 .select(
-                    "id,nome,marca,modelo,cor,ano,placa,assentos,telefone,email,status,created_at"
-                )
+    "id,nome,marca,modelo,cor,ano,placa,quantidade_assentos,telefone,email,status,created_at"
+)
                 .order(
                     "created_at",
                     {
@@ -920,8 +920,8 @@ async function carregarValidacoes() {
             await supabaseClient
                 .from("motoristas")
                 .select(
-                    "id,nome,cpf,telefone,email,marca,modelo,cor,ano,placa,assentos,status,created_at"
-                )
+    "id,nome,cpf,telefone,email,marca,modelo,cor,ano,placa,quantidade_assentos,status,created_at"
+)
                 .eq(
                     "status",
                     "pendente"
@@ -1279,11 +1279,10 @@ function criarCardValidacao(motorista) {
                     </strong>
 
                     <span>
-                        ${escaparHTML(
-                            motorista.assentos || "-"
-                        )}
-                    </span>
-
+    ${escaparHTML(
+        motorista.quantidade_assentos || "-"
+    )}
+</span>
                 </div>
 
 
