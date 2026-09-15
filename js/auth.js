@@ -20,6 +20,11 @@ document.addEventListener(
                 ".header-buttons"
             );
 
+        const menuPrincipal =
+            document.getElementById(
+                "menuPrincipal"
+            );
+
 
         if (!headerButtons) {
 
@@ -98,6 +103,7 @@ document.addEventListener(
 
             }
 
+
             // =================================================
             // USUÁRIO NÃO LOGADO
             // =================================================
@@ -172,6 +178,67 @@ document.addEventListener(
                 "Cliente";
 
 
+            const tipo =
+                usuario.user_metadata?.tipo ||
+                "";
+
+
+            console.log(
+                "Tipo de usuário:",
+                tipo
+            );
+
+
+            // =================================================
+            // CABEÇALHO DO CLIENTE
+            // =================================================
+
+            if (
+                tipo === "cliente" &&
+                menuPrincipal
+            ) {
+
+                menuPrincipal.innerHTML = `
+
+                    <a href="index.html">
+                        <i class="fa-solid fa-house"></i>
+                        Início
+                    </a>
+
+                    <a href="cliente.html">
+                        <i class="fa-solid fa-user"></i>
+                        Área do Cliente
+                    </a>
+
+                    <a href="motoristas.html">
+                        <i class="fa-solid fa-users"></i>
+                        Motoristas
+                    </a>
+
+                    <a href="corrida.html">
+                        <i class="fa-solid fa-taxi"></i>
+                        Solicitar Corrida
+                    </a>
+
+                    <a href="pagamentos.html">
+                        <i class="fa-solid fa-wallet"></i>
+                        Pagamentos
+                    </a>
+
+                    <a href="contato.html">
+                        <i class="fa-solid fa-headset"></i>
+                        Suporte
+                    </a>
+
+                `;
+
+            }
+
+
+            // =================================================
+            // BOTÃO DO USUÁRIO
+            // =================================================
+
             headerButtons.innerHTML = `
 
                 <span class="usuario-header">
@@ -188,6 +255,10 @@ document.addEventListener(
 
             `;
 
+
+            // =================================================
+            // BOTÃO SAIR
+            // =================================================
 
             const btnSair =
                 document.getElementById(
@@ -234,6 +305,11 @@ document.addEventListener(
                             return;
 
                         }
+
+
+                        console.log(
+                            "Sessão encerrada."
+                        );
 
 
                         window.location.href =
