@@ -322,14 +322,10 @@ async function carregarDashboard() {
         // CLIENTES
         // =====================================================
 
-        const resultadoClientes =
-            await supabaseClient
-                .from("clientes")
-                .select("id", {
-                    count: "exact",
-                    head: true
-                });
-
+       const resultadoClientes =
+    await supabaseClient
+        .from("clientes")
+        .select("id");
 
         if (
             resultadoClientes.error
@@ -344,23 +340,20 @@ async function carregarDashboard() {
 
         else if (totalClientes) {
 
-            totalClientes.textContent =
-                resultadoClientes.count || 0;
+    totalClientes.textContent =
+        resultadoClientes.data?.length || 0;
 
-        }
+}
 
 
         // =====================================================
         // MOTORISTAS
         // =====================================================
 
-        const resultadoMotoristas =
-            await supabaseClient
-                .from("motoristas")
-                .select("id", {
-                    count: "exact",
-                    head: true
-                });
+       const resultadoMotoristas =
+    await supabaseClient
+        .from("motoristas")
+        .select("id");
 
 
         if (
@@ -374,13 +367,12 @@ async function carregarDashboard() {
 
         }
 
-        else if (totalParceiros) {
+       else if (totalParceiros) {
 
-            totalParceiros.textContent =
-                resultadoMotoristas.count || 0;
+    totalParceiros.textContent =
+        resultadoMotoristas.data?.length || 0;
 
-        }
-
+}
 
         // =====================================================
         // CORRIDAS
