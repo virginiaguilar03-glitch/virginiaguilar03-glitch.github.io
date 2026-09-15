@@ -562,82 +562,66 @@ async function verificarSessaoParceiro() {
 
 async function sairParceiro() {
 
+    console.log("Iniciando logout do parceiro...");
+
+
+    // ========================================================
+    // LIMPAR DADOS LOCAIS PRIMEIRO
+    // ========================================================
+
+    localStorage.removeItem("usuarioId");
+    localStorage.removeItem("tipoAcesso");
+
+
+    // ========================================================
+    // FAZER LOGOUT NO SUPABASE
+    // ========================================================
 
     if (
-        typeof supabaseClient === "undefined"
+        typeof supabaseClient !== "undefined" &&
+        supabaseClient
     ) {
 
-        localStorage.removeItem(
-            "usuarioId"
-        );
+        try {
 
-        localStorage.removeItem(
-            "tipoAcesso"
-        );
-
-        window.location.href =
-            "login.html";
-
-        return;
-
-    }
-
-
-    try {
-
-
-        const {
-            error
-        } =
-            await supabaseClient.auth.signOut();
-
-
-        if (error) {
-
-            console.error(
-                "Erro ao sair:",
+            const {
                 error
-            );
+            } = await supabaseClient.auth.signOut();
 
-            return;
+            if (error) {
+
+                console.error(
+                    "Erro ao sair do Supabase:",
+                    error
+                );
+
+            }
 
         }
 
+        catch (erro) {
 
-        // ----------------------------------------------------
-        // LIMPAR DADOS LOCAIS
-        // ----------------------------------------------------
+            console.error(
+                "Erro inesperado durante logout:",
+                erro
+            );
 
-        localStorage.removeItem(
-            "usuarioId"
-        );
-
-        localStorage.removeItem(
-            "tipoAcesso"
-        );
-
-
-        // ----------------------------------------------------
-        // VOLTAR PARA LOGIN
-        // ----------------------------------------------------
-
-        window.location.href =
-            "login.html";
-
+        }
 
     }
 
-    catch (erro) {
 
-        console.error(
-            "Erro ao fazer logout:",
-            erro
-        );
+    // ========================================================
+    // REDIRECIONAR PARA LOGIN
+    // ========================================================
 
-    }
+    console.log(
+        "Logout concluído. Redirecionando para login..."
+    );
+
+    window.location.replace("login.html");
 
 }
-
 
 // ============================================================
 // INICIAR PAINEL
