@@ -1,4 +1,4 @@
-// ============================================================
+  // ============================================================
 // AUTENTICAÇÃO GLOBAL - VAIDTÁXI
 // ============================================================
 
@@ -12,7 +12,7 @@ document.addEventListener(
 
 
         // ====================================================
-        // ELEMENTOS DO CABEÇALHO
+        // ELEMENTOS
         // ====================================================
 
         const headerButtons =
@@ -20,14 +20,20 @@ document.addEventListener(
                 ".header-buttons"
             );
 
-        const menuPrincipal =
-            document.querySelector(
-                "header nav"
+
+        if (!headerButtons) {
+
+            console.log(
+                "Área de usuário não encontrada."
             );
+
+            return;
+
+        }
 
 
         // ====================================================
-        // VERIFICAR SUPABASE
+        // VERIFICAR CLIENTE SUPABASE
         // ====================================================
 
         if (
@@ -92,7 +98,6 @@ document.addEventListener(
 
             }
 
-
             // =================================================
             // USUÁRIO NÃO LOGADO
             // =================================================
@@ -153,215 +158,100 @@ document.addEventListener(
 
 
         // ====================================================
-        // USUÁRIO LOGADO
+        // MOSTRAR USUÁRIO LOGADO
         // ====================================================
 
         function mostrarLogado(
             usuario
         ) {
 
-            const tipo =
-                usuario.user_metadata?.tipo ||
-                "";
+            const nome =
+                usuario.user_metadata?.nome ||
+                usuario.user_metadata?.name ||
+                usuario.email?.split("@")[0] ||
+                "Cliente";
 
 
-            console.log(
-                "Tipo de usuário:",
-                tipo
-            );
+            headerButtons.innerHTML = `
 
+                <span class="usuario-header">
+                    Olá, ${nome}
+                </span>
 
-            // =================================================
-            // SOMENTE CLIENTE
-            // =================================================
-
-            if (
-                tipo === "cliente"
-            ) {
-
-                montarMenuCliente();
-
-            }
-
-
-            // =================================================
-            // BOTÃO SAIR DO CLIENTE
-            // =================================================
-
-            if (
-                tipo === "cliente" &&
-                headerButtons
-            ) {
-
-                headerButtons.innerHTML = `
-
-                    <button
-                        type="button"
-                        id="btnSair"
-                        class="btn-outline"
-                    >
-                        Sair
-                    </button>
-
-                `;
-
-
-                const btnSair =
-                    document.getElementById(
-                        "btnSair"
-                    );
-
-
-                if (btnSair) {
-
-                    btnSair.addEventListener(
-                        "click",
-                        async function () {
-
-                            btnSair.disabled =
-                                true;
-
-                            btnSair.textContent =
-                                "Saindo...";
-
-
-                            const {
-                                error
-                            } =
-                                await supabaseClient.auth.signOut();
-
-
-                            if (error) {
-
-                                console.error(
-                                    "Erro ao sair:",
-                                    error
-                                );
-
-                                btnSair.disabled =
-                                    false;
-
-                                btnSair.textContent =
-                                    "Sair";
-
-                                alert(
-                                    "Não foi possível sair."
-                                );
-
-                                return;
-
-                            }
-
-
-                            console.log(
-                                "Sessão encerrada."
-                            );
-
-
-                            window.location.href =
-                                "index.html";
-
-                        }
-                    );
-
-                }
-
-            }
-
-        }
-
-
-        // ====================================================
-        // MONTAR CABEÇALHO DO CLIENTE
-        // ====================================================
-
-        function montarMenuCliente() {
-
-            if (!menuPrincipal) {
-
-                console.log(
-                    "Menu principal não encontrado."
-                );
-
-                return;
-
-            }
-
-
-            const paginaAtual =
-                window.location.pathname
-                    .split("/")
-                    .pop()
-                    .toLowerCase();
-
-
-            menuPrincipal.innerHTML = `
-
-                <a
-                    href="index.html"
-                    class="${paginaAtual === "index.html" ? "active" : ""}"
+                <button
+                    type="button"
+                    id="btnSair"
+                    class="btn-outline"
                 >
-                    <i class="fa-solid fa-house"></i>
-                    Início
-                </a>
-
-                <a
-                    href="cliente.html"
-                    class="${paginaAtual === "cliente.html" ? "active" : ""}"
-                >
-                    <i class="fa-solid fa-user"></i>
-                    Área do Cliente
-                </a>
-
-                <a
-                    href="motoristas.html"
-                    class="${paginaAtual === "motoristas.html" ? "active" : ""}"
-                >
-                    <i class="fa-solid fa-users"></i>
-                    Motoristas
-                </a>
-
-                <a
-                    href="corrida.html"
-                    class="${paginaAtual === "corrida.html" ? "active" : ""}"
-                >
-                    <i class="fa-solid fa-taxi"></i>
-                    Solicitar Corrida
-                </a>
-
-                <a
-                    href="pagamentos.html"
-                    class="${paginaAtual === "pagamentos.html" ? "active" : ""}"
-                >
-                    <i class="fa-solid fa-wallet"></i>
-                    Pagamentos
-                </a>
-
-                <a
-                    href="contato.html"
-                    class="${paginaAtual === "contato.html" ? "active" : ""}"
-                >
-                    <i class="fa-solid fa-headset"></i>
-                    Suporte
-                </a>
+                    Sair
+                </button>
 
             `;
 
+
+            const btnSair =
+                document.getElementById(
+                    "btnSair"
+                );
+
+
+            if (btnSair) {
+
+                btnSair.addEventListener(
+                    "click",
+                    async function () {
+
+                        btnSair.disabled =
+                            true;
+
+                        btnSair.textContent =
+                            "Saindo...";
+
+
+                        const {
+                            error
+                        } =
+                            await supabaseClient.auth.signOut();
+
+
+                        if (error) {
+
+                            console.error(
+                                "Erro ao sair:",
+                                error
+                            );
+
+                            btnSair.disabled =
+                                false;
+
+                            btnSair.textContent =
+                                "Sair";
+
+                            alert(
+                                "Não foi possível sair."
+                            );
+
+                            return;
+
+                        }
+
+
+                        window.location.href =
+                            "index.html";
+
+                    }
+                );
+
+            }
+
         }
 
 
         // ====================================================
-        // USUÁRIO DESLOGADO
+        // MOSTRAR USUÁRIO DESLOGADO
         // ====================================================
 
         function mostrarDeslogado() {
-
-            if (!headerButtons) {
-
-                return;
-
-            }
-
 
             headerButtons.innerHTML = `
 
