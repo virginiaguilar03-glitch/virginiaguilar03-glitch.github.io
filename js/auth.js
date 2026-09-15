@@ -7,6 +7,7 @@
 // Ele apenas:
 // 1. Mostra o usuário logado no cabeçalho
 // 2. Adiciona "Área do Cliente" quando necessário
+// 3. Adiciona "Área do Parceiro" quando necessário
 // ============================================================
 
 
@@ -142,6 +143,20 @@ document.addEventListener(
 
             }
 
+
+            // ⭐ ------------------------------------------------
+            // ⭐ SE FOR PARCEIRO,
+            // ⭐ ADICIONA APENAS O BOTÃO
+            // ⭐ ------------------------------------------------
+
+            if (
+                tipoAcesso === "parceiro"
+            ) {
+
+                adicionarBotaoAreaParceiro();
+
+            }
+
         }
 
         else {
@@ -153,6 +168,9 @@ document.addEventListener(
             mostrarDeslogado();
 
             removerBotaoAreaCliente();
+
+            // ⭐ PARCEIRO
+            removerBotaoAreaParceiro();
 
         }
 
@@ -221,6 +239,19 @@ document.addEventListener(
 
                     }
 
+
+                    // ⭐ ------------------------------------------------
+                    // ⭐ PARCEIRO
+                    // ⭐ ------------------------------------------------
+
+                    if (
+                        tipoAcesso === "parceiro"
+                    ) {
+
+                        adicionarBotaoAreaParceiro();
+
+                    }
+
                 }
 
                 else {
@@ -228,6 +259,9 @@ document.addEventListener(
                     mostrarDeslogado();
 
                     removerBotaoAreaCliente();
+
+                    // ⭐ PARCEIRO
+                    removerBotaoAreaParceiro();
 
                 }
 
@@ -506,6 +540,118 @@ function adicionarBotaoAreaCliente() {
 
 
 // ============================================================
+// ⭐ ADICIONAR BOTÃO "ÁREA DO PARCEIRO"
+// ============================================================
+//
+// Não substituímos o menu.
+// Não usamos menu.innerHTML.
+// Criamos SOMENTE um novo <a>.
+// ============================================================
+
+function adicionarBotaoAreaParceiro() {
+
+    const menu =
+        document.querySelector(
+            "nav"
+        );
+
+
+    if (!menu) {
+
+        console.log(
+            "Menu não encontrado."
+        );
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // VERIFICA SE JÁ EXISTE
+    // ========================================================
+
+    const jaExiste =
+        menu.querySelector(
+            'a[data-area-parceiro="true"]'
+        );
+
+
+    if (jaExiste) {
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // CRIAR NOVO LINK
+    // ========================================================
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        "parceiro.html";
+
+
+    link.setAttribute(
+        "data-area-parceiro",
+        "true"
+    );
+
+
+    link.innerHTML = `
+
+        <i class="fa-solid fa-id-card"></i>
+        Área do Parceiro
+
+    `;
+
+
+    // ========================================================
+    // LOCALIZAR "INÍCIO"
+    // ========================================================
+
+    const inicio =
+        menu.querySelector(
+            'a[href="index.html"]'
+        );
+
+
+    // ========================================================
+    // COLOCAR LOGO DEPOIS DE "INÍCIO"
+    // ========================================================
+
+    if (inicio) {
+
+        inicio.insertAdjacentElement(
+            "afterend",
+            link
+        );
+
+    }
+
+    else {
+
+        menu.prepend(
+            link
+        );
+
+    }
+
+
+    console.log(
+        "Botão Área do Parceiro adicionado."
+    );
+
+}
+
+
+// ============================================================
 // REMOVER BOTÃO ÁREA DO CLIENTE
 // ============================================================
 
@@ -514,6 +660,27 @@ function removerBotaoAreaCliente() {
     const link =
         document.querySelector(
             'a[data-area-cliente="true"]'
+        );
+
+
+    if (link) {
+
+        link.remove();
+
+    }
+
+}
+
+
+// ============================================================
+// ⭐ REMOVER BOTÃO ÁREA DO PARCEIRO
+// ============================================================
+
+function removerBotaoAreaParceiro() {
+
+    const link =
+        document.querySelector(
+            'a[data-area-parceiro="true"]'
         );
 
 
