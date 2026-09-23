@@ -39,9 +39,6 @@ async function carregarMotoristas() {
 
     try {
 
-        console.log("Iniciando carregamento dos motoristas...");
-
-
         if (
             typeof supabaseClient === "undefined" ||
             !supabaseClient
@@ -52,27 +49,21 @@ async function carregarMotoristas() {
             );
 
             mostrarMensagem(
-                "Erro na conexão com o banco de dados."
+                "Não foi possível conectar ao sistema."
             );
 
             return;
-
         }
 
-
-        // ====================================================
-        // BUSCAR TODOS OS CAMPOS EXISTENTES NA TABELA
-        // ====================================================
 
         const { data, error } =
             await supabaseClient
                 .from("motoristas")
-                .select("*");
+                .select("*")
+                .order("created_at", {
+                    ascending: false
+                });
 
-
-        // ====================================================
-        // VERIFICAR ERRO
-        // ====================================================
 
         if (error) {
 
@@ -86,19 +77,15 @@ async function carregarMotoristas() {
             );
 
             return;
-
         }
 
 
-        // ====================================================
-        // GUARDAR RESULTADOS
-        // ====================================================
-
-        motoristas = data || [];
+        motoristas =
+            data || [];
 
 
         console.log(
-            "Motoristas encontrados:",
+            "Motoristas carregados:",
             motoristas
         );
 
@@ -109,10 +96,6 @@ async function carregarMotoristas() {
         );
 
 
-        // ====================================================
-        // MOSTRAR NA TELA
-        // ====================================================
-
         renderizarMotoristas(
             motoristas
         );
@@ -122,7 +105,7 @@ async function carregarMotoristas() {
     catch (erro) {
 
         console.error(
-            "Erro inesperado ao carregar motoristas:",
+            "Erro inesperado:",
             erro
         );
 
@@ -148,43 +131,29 @@ function renderizarMotoristas(lista) {
         );
 
         return;
-
     }
 
 
     listaMotoristas.innerHTML = "";
 
 
-    // ========================================================
-    // NENHUM MOTORISTA
-    // ========================================================
-
-    if (!lista || lista.length === 0) {
+    if (
+        !lista ||
+        lista.length === 0
+    ) {
 
         mostrarMensagem(
             "Nenhum motorista cadastrado foi encontrado."
         );
 
         return;
-
     }
 
 
     esconderMensagem();
 
 
-    // ========================================================
-    // CRIAR CARDS
-    // ========================================================
-
     lista.forEach(function (motorista) {
-
-        const card =
-            document.createElement("article");
-
-
-        card.className =
-            "card-motorista";
 
 
         // ====================================================
@@ -198,37 +167,47 @@ function renderizarMotoristas(lista) {
 
         const marca =
             motorista.marca ||
-            "Não informado";
+            "";
 
 
         const modelo =
             motorista.modelo ||
-            "Não informado";
+            "";
 
 
         const cor =
             motorista.cor ||
-            "Não informada";
+            "";
 
 
         const ano =
             motorista.ano ||
-            "Não informado";
+            "";
 
 
         const placa =
             motorista.placa ||
-            "Não informada";
+            "";
 
 
         const assentos =
             motorista.assentos ||
-            "Não informado";
+            "";
 
 
         const status =
             motorista.status ||
             "pendente";
+
+
+        // ====================================================
+        // FOTO
+        // ====================================================
+
+        const foto =
+            motorista.foto_url ||
+            motorista.foto ||
+            "";
 
 
         // ====================================================
@@ -248,20 +227,12 @@ function renderizarMotoristas(lista) {
         if (
             statusNormalizado === "aprovado" ||
             statusNormalizado === "ativo" ||
-            statusNormalizado === "disponivel"
-        ) {
-
-            textoStatus =
-                "Disponível";
-
-        }
-
-        else if (
+            statusNormalizado === "disponivel" ||
             statusNormalizado === "online"
         ) {
 
             textoStatus =
-                "Online";
+                "Disponível";
 
         }
 
@@ -299,21 +270,68 @@ function renderizarMotoristas(lista) {
 
 
         // ====================================================
-        // HTML DO CARD
+        // VEÍCULO
+        // ====================================================
+
+        const veiculo =
+            [marca, modelo]
+                .filter(Boolean)
+                .join(" ");
+
+
+        // ====================================================
+        // CRIAR CARD
+        // ====================================================
+
+        const card =
+            document.createElement("article");
+
+
+        card.className =
+            "card-motorista";
+
+
+        // ====================================================
+        // CARD
         // ====================================================
 
         card.innerHTML = `
 
-            <div class="motorista-topo">
+            <!-- FOTO -->
 
-                <div class="motorista-foto">
+            <div class="motorista-foto">
+
+                ${
+                    foto
+                    ?
+                    `
+                        <img
+                            src="${escaparHTML(foto)}"
+                            alt="Foto de ${escaparHTML(nome)}"
+                            onerror="this.style.display='none'; this.parentElement.classList.add('sem-foto');"
+                        >
+                    `
+                    :
+                    ""
+                }
+
+                <div class="foto-placeholder">
 
                     <i class="fa-solid fa-user"></i>
 
                 </div>
 
+            </div>
 
-                <div class="motorista-nome">
+
+            <!-- CONTEÚDO -->
+
+            <div class="motorista-conteudo">
+
+
+                <!-- NOME + STATUS -->
+
+                <div class="motorista-linha-topo">
 
                     <h3>
                         ${escaparHTML(nome)}
@@ -322,82 +340,116 @@ function renderizarMotoristas(lista) {
                     <span
                         class="status-motorista ${classeStatus}"
                     >
+
+                        <span class="status-ponto"></span>
+
                         ${escaparHTML(textoStatus)}
+
                     </span>
 
                 </div>
 
-            </div>
+
+                <!-- INFORMAÇÕES -->
+
+                <div class="motorista-detalhes">
 
 
-            <div class="veiculo-motorista">
+                    ${
+                        veiculo
+                        ?
+                        `
+                            <div class="detalhe">
+
+                                <i class="fa-solid fa-car"></i>
+
+                                <span>
+                                    ${escaparHTML(veiculo)}
+                                </span>
+
+                            </div>
+                        `
+                        :
+                        ""
+                    }
 
 
-                <div class="veiculo-dado">
+                    ${
+                        cor
+                        ?
+                        `
+                            <div class="detalhe">
 
-                    <small>
-                        Veículo
-                    </small>
+                                <i class="fa-solid fa-palette"></i>
 
-                    <strong>
-                        ${escaparHTML(marca)}
-                        ${escaparHTML(modelo)}
-                    </strong>
+                                <span>
+                                    ${escaparHTML(cor)}
+                                </span>
+
+                            </div>
+                        `
+                        :
+                        ""
+                    }
+
+
+                    ${
+                        placa
+                        ?
+                        `
+                            <div class="detalhe">
+
+                                <i class="fa-solid fa-id-card"></i>
+
+                                <span>
+                                    ${escaparHTML(placa)}
+                                </span>
+
+                            </div>
+                        `
+                        :
+                        ""
+                    }
+
+
+                    ${
+                        assentos
+                        ?
+                        `
+                            <div class="detalhe">
+
+                                <i class="fa-solid fa-users"></i>
+
+                                <span>
+                                    ${escaparHTML(assentos)} lugares
+                                </span>
+
+                            </div>
+                        `
+                        :
+                        ""
+                    }
+
+
+                    ${
+                        ano
+                        ?
+                        `
+                            <div class="detalhe">
+
+                                <i class="fa-regular fa-calendar"></i>
+
+                                <span>
+                                    ${escaparHTML(ano)}
+                                </span>
+
+                            </div>
+                        `
+                        :
+                        ""
+                    }
 
                 </div>
-
-
-                <div class="veiculo-dado">
-
-                    <small>
-                        Cor
-                    </small>
-
-                    <strong>
-                        ${escaparHTML(cor)}
-                    </strong>
-
-                </div>
-
-
-                <div class="veiculo-dado">
-
-                    <small>
-                        Ano
-                    </small>
-
-                    <strong>
-                        ${escaparHTML(ano)}
-                    </strong>
-
-                </div>
-
-
-                <div class="veiculo-dado">
-
-                    <small>
-                        Placa
-                    </small>
-
-                    <strong>
-                        ${escaparHTML(placa)}
-                    </strong>
-
-                </div>
-
-
-                <div class="veiculo-dado">
-
-                    <small>
-                        Passageiros
-                    </small>
-
-                    <strong>
-                        ${escaparHTML(assentos)}
-                    </strong>
-
-                </div>
-
 
             </div>
 
@@ -429,10 +481,6 @@ if (pesquisaMotorista) {
                     .trim();
 
 
-            // =================================================
-            // CAMPO VAZIO
-            // =================================================
-
             if (!termo) {
 
                 renderizarMotoristas(
@@ -440,13 +488,8 @@ if (pesquisaMotorista) {
                 );
 
                 return;
-
             }
 
-
-            // =================================================
-            // FILTRAR
-            // =================================================
 
             const resultado =
                 motoristas.filter(
@@ -454,14 +497,12 @@ if (pesquisaMotorista) {
 
                         const texto =
                             [
-
                                 motorista.nome,
                                 motorista.marca,
                                 motorista.modelo,
                                 motorista.placa,
                                 motorista.cor,
                                 motorista.status
-
                             ]
                             .filter(Boolean)
                             .join(" ")
@@ -476,30 +517,24 @@ if (pesquisaMotorista) {
                 );
 
 
-            // =================================================
-            // NENHUM RESULTADO
-            // =================================================
-
             if (
                 resultado.length === 0
             ) {
 
-                listaMotoristas.innerHTML = "";
+                if (listaMotoristas) {
 
+                    listaMotoristas.innerHTML =
+                        "";
+
+                }
 
                 mostrarMensagem(
-                    "Nenhum motorista encontrado."
+                    "Nenhum motorista encontrado para essa pesquisa."
                 );
 
-
                 return;
-
             }
 
-
-            // =================================================
-            // MOSTRAR RESULTADOS
-            // =================================================
 
             renderizarMotoristas(
                 resultado
@@ -518,12 +553,10 @@ if (pesquisaMotorista) {
 function obterClasseStatus(status) {
 
     if (
-
         status === "aprovado" ||
         status === "ativo" ||
         status === "disponivel" ||
         status === "online"
-
     ) {
 
         return "status-ok";
@@ -532,11 +565,9 @@ function obterClasseStatus(status) {
 
 
     if (
-
         status === "reprovado" ||
         status === "recusado" ||
         status === "inativo"
-
     ) {
 
         return "status-off";
@@ -550,7 +581,7 @@ function obterClasseStatus(status) {
 
 
 // ============================================================
-// MENSAGEM
+// MENSAGENS
 // ============================================================
 
 function mostrarMensagem(texto) {
@@ -558,7 +589,6 @@ function mostrarMensagem(texto) {
     if (!mensagemMotoristas) {
 
         return;
-
     }
 
 
@@ -577,7 +607,6 @@ function esconderMensagem() {
     if (!mensagemMotoristas) {
 
         return;
-
     }
 
 
@@ -588,21 +617,36 @@ function esconderMensagem() {
 
 
 // ============================================================
-// PROTEÇÃO DO TEXTO
+// SEGURANÇA
 // ============================================================
 
 function escaparHTML(valor) {
 
     return String(valor)
 
-        .replace(/&/g, "&amp;")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-        .replace(/</g, "&lt;")
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-        .replace(/>/g, "&gt;")
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-        .replace(/"/g, "&quot;")
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-        .replace(/'/g, "&#039;");
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
