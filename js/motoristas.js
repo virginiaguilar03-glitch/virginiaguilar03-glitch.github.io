@@ -1,9 +1,7 @@
-
 // ============================================================
 // MOTORISTAS - VAIDTÁXI
 // Lista e pesquisa dos motoristas cadastrados no Supabase
 // ============================================================
-
 
 let motoristas = [];
 
@@ -34,12 +32,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // ============================================================
-// CARREGAR MOTORISTAS DO SUPABASE
+// CARREGAR MOTORISTAS
 // ============================================================
 
 async function carregarMotoristas() {
 
     try {
+
+        console.log("Iniciando carregamento dos motoristas...");
+
 
         if (
             typeof supabaseClient === "undefined" ||
@@ -51,7 +52,7 @@ async function carregarMotoristas() {
             );
 
             mostrarMensagem(
-                "Não foi possível conectar ao sistema."
+                "Erro na conexão com o banco de dados."
             );
 
             return;
@@ -59,27 +60,19 @@ async function carregarMotoristas() {
         }
 
 
+        // ====================================================
+        // BUSCAR TODOS OS CAMPOS EXISTENTES NA TABELA
+        // ====================================================
+
         const { data, error } =
             await supabaseClient
                 .from("motoristas")
-                .select(`
-                    id,
-                    nome,
-                    marca,
-                    modelo,
-                    cor,
-                    ano,
-                    placa,
-                    assentos,
-                    telefone,
-                    email,
-                    status,
-                    created_at
-                `)
-                .order("created_at", {
-                    ascending: false
-                });
+                .select("*");
 
+
+        // ====================================================
+        // VERIFICAR ERRO
+        // ====================================================
 
         if (error) {
 
@@ -97,23 +90,39 @@ async function carregarMotoristas() {
         }
 
 
+        // ====================================================
+        // GUARDAR RESULTADOS
+        // ====================================================
+
         motoristas = data || [];
 
 
         console.log(
-            "Motoristas carregados:",
+            "Motoristas encontrados:",
             motoristas
         );
 
 
-        renderizarMotoristas(motoristas);
+        console.log(
+            "Quantidade de motoristas:",
+            motoristas.length
+        );
+
+
+        // ====================================================
+        // MOSTRAR NA TELA
+        // ====================================================
+
+        renderizarMotoristas(
+            motoristas
+        );
 
     }
 
     catch (erro) {
 
         console.error(
-            "Erro inesperado:",
+            "Erro inesperado ao carregar motoristas:",
             erro
         );
 
@@ -127,12 +136,16 @@ async function carregarMotoristas() {
 
 
 // ============================================================
-// MOSTRAR MOTORISTAS NA TELA
+// RENDERIZAR MOTORISTAS
 // ============================================================
 
 function renderizarMotoristas(lista) {
 
     if (!listaMotoristas) {
+
+        console.error(
+            "Elemento listaMotoristas não encontrado."
+        );
 
         return;
 
@@ -141,6 +154,10 @@ function renderizarMotoristas(lista) {
 
     listaMotoristas.innerHTML = "";
 
+
+    // ========================================================
+    // NENHUM MOTORISTA
+    // ========================================================
 
     if (!lista || lista.length === 0) {
 
@@ -156,48 +173,67 @@ function renderizarMotoristas(lista) {
     esconderMensagem();
 
 
-    lista.forEach(function (motorista) {
+    // ========================================================
+    // CRIAR CARDS
+    // ========================================================
 
+    lista.forEach(function (motorista) {
 
         const card =
             document.createElement("article");
+
 
         card.className =
             "card-motorista";
 
 
+        // ====================================================
+        // DADOS
+        // ====================================================
+
         const nome =
             motorista.nome ||
             "Motorista VaidTáxi";
+
 
         const marca =
             motorista.marca ||
             "Não informado";
 
+
         const modelo =
             motorista.modelo ||
             "Não informado";
+
 
         const cor =
             motorista.cor ||
             "Não informada";
 
+
         const ano =
             motorista.ano ||
             "Não informado";
+
 
         const placa =
             motorista.placa ||
             "Não informada";
 
+
         const assentos =
             motorista.assentos ||
             "Não informado";
+
 
         const status =
             motorista.status ||
             "pendente";
 
+
+        // ====================================================
+        // STATUS
+        // ====================================================
 
         const statusNormalizado =
             String(status)
@@ -257,9 +293,14 @@ function renderizarMotoristas(lista) {
 
 
         const classeStatus =
-            obterClasseStatus(statusNormalizado);
+            obterClasseStatus(
+                statusNormalizado
+            );
 
 
+        // ====================================================
+        // HTML DO CARD
+        // ====================================================
 
         card.innerHTML = `
 
@@ -278,14 +319,15 @@ function renderizarMotoristas(lista) {
                         ${escaparHTML(nome)}
                     </h3>
 
-                    <span class="status-motorista ${classeStatus}">
+                    <span
+                        class="status-motorista ${classeStatus}"
+                    >
                         ${escaparHTML(textoStatus)}
                     </span>
 
                 </div>
 
             </div>
-
 
 
             <div class="veiculo-motorista">
@@ -305,7 +347,6 @@ function renderizarMotoristas(lista) {
                 </div>
 
 
-
                 <div class="veiculo-dado">
 
                     <small>
@@ -317,7 +358,6 @@ function renderizarMotoristas(lista) {
                     </strong>
 
                 </div>
-
 
 
                 <div class="veiculo-dado">
@@ -333,7 +373,6 @@ function renderizarMotoristas(lista) {
                 </div>
 
 
-
                 <div class="veiculo-dado">
 
                     <small>
@@ -345,7 +384,6 @@ function renderizarMotoristas(lista) {
                     </strong>
 
                 </div>
-
 
 
                 <div class="veiculo-dado">
@@ -366,8 +404,9 @@ function renderizarMotoristas(lista) {
         `;
 
 
-        listaMotoristas.appendChild(card);
-
+        listaMotoristas.appendChild(
+            card
+        );
 
     });
 
@@ -375,22 +414,24 @@ function renderizarMotoristas(lista) {
 
 
 // ============================================================
-// PESQUISA DOS MOTORISTAS
+// PESQUISA
 // ============================================================
 
 if (pesquisaMotorista) {
 
-
     pesquisaMotorista.addEventListener(
         "input",
         function () {
-
 
             const termo =
                 pesquisaMotorista.value
                     .toLowerCase()
                     .trim();
 
+
+            // =================================================
+            // CAMPO VAZIO
+            // =================================================
 
             if (!termo) {
 
@@ -403,11 +444,13 @@ if (pesquisaMotorista) {
             }
 
 
+            // =================================================
+            // FILTRAR
+            // =================================================
 
             const resultado =
                 motoristas.filter(
                     function (motorista) {
-
 
                         const texto =
                             [
@@ -425,41 +468,42 @@ if (pesquisaMotorista) {
                             .toLowerCase();
 
 
-
                         return texto.includes(
                             termo
                         );
-
 
                     }
                 );
 
 
+            // =================================================
+            // NENHUM RESULTADO
+            // =================================================
 
-            if (resultado.length === 0) {
+            if (
+                resultado.length === 0
+            ) {
 
-
-                if (listaMotoristas) {
-
-                    listaMotoristas.innerHTML = "";
-
-                }
+                listaMotoristas.innerHTML = "";
 
 
                 mostrarMensagem(
-                    "Nenhum motorista encontrado para essa pesquisa."
+                    "Nenhum motorista encontrado."
                 );
+
 
                 return;
 
             }
 
 
+            // =================================================
+            // MOSTRAR RESULTADOS
+            // =================================================
 
             renderizarMotoristas(
                 resultado
             );
-
 
         }
     );
@@ -468,11 +512,10 @@ if (pesquisaMotorista) {
 
 
 // ============================================================
-// CLASSE DO STATUS
+// STATUS
 // ============================================================
 
 function obterClasseStatus(status) {
-
 
     if (
 
@@ -488,7 +531,6 @@ function obterClasseStatus(status) {
     }
 
 
-
     if (
 
         status === "reprovado" ||
@@ -502,19 +544,16 @@ function obterClasseStatus(status) {
     }
 
 
-
     return "status-pendente";
-
 
 }
 
 
 // ============================================================
-// MENSAGENS
+// MENSAGEM
 // ============================================================
 
 function mostrarMensagem(texto) {
-
 
     if (!mensagemMotoristas) {
 
@@ -530,13 +569,10 @@ function mostrarMensagem(texto) {
     mensagemMotoristas.style.display =
         "block";
 
-
 }
 
 
-
 function esconderMensagem() {
-
 
     if (!mensagemMotoristas) {
 
@@ -548,16 +584,14 @@ function esconderMensagem() {
     mensagemMotoristas.style.display =
         "none";
 
-
 }
 
 
 // ============================================================
-// PROTEÇÃO CONTRA HTML INDESEJADO
+// PROTEÇÃO DO TEXTO
 // ============================================================
 
 function escaparHTML(valor) {
-
 
     return String(valor)
 
@@ -570,6 +604,5 @@ function escaparHTML(valor) {
         .replace(/"/g, "&quot;")
 
         .replace(/'/g, "&#039;");
-
 
 }
