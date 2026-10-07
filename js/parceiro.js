@@ -377,7 +377,300 @@ async function carregarDadosMotorista(usuarioId) {
     }
 
 }
+// ============================================================
+// CARREGAR CORRIDAS DO MOTORISTA
+// ============================================================
 
+async function carregarCorridasDoMotorista(
+    motoristaId
+) {
+
+    const lista =
+        document.getElementById(
+            "listaCorridas"
+        );
+
+    if (!lista) {
+
+        console.error(
+            "Elemento #listaCorridas não encontrado."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        console.log(
+            "Buscando corridas para o motorista:",
+            motoristaId
+        );
+
+
+        const {
+            data: corridas,
+            error
+        } =
+            await supabaseClient
+                .from("corridas")
+                .select(`
+                    id,
+                    cliente_id,
+                    motorista_id,
+                    origem,
+                    destino,
+                    observacao,
+                    status,
+                    created_at
+                `)
+                .eq(
+                    "motorista_id",
+                    motoristaId
+                )
+                .eq(
+                    "status",
+                    "aguardando"
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao buscar corridas:",
+                error
+            );
+
+            lista.innerHTML = `
+                <div class="corrida-item">
+                    <div class="corrida-cabecalho">
+                        <strong>
+                            Erro ao carregar solicitações
+                        </strong>
+                    </div>
+
+                    <div class="corrida-local">
+                        Verifique o console.
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        console.log(
+            "Corridas encontradas:",
+            corridas
+        );
+
+
+        if (
+            !corridas ||
+            corridas.length === 0
+        ) {
+
+            lista.innerHTML = `
+                <div class="corrida-item">
+
+                    <div class="corrida-cabecalho">
+
+                        <strong>
+                            Nenhuma corrida disponível
+                        </strong>
+
+                        <span class="corrida-status">
+                            Aguardando
+                        </span>
+
+                    </div>
+
+
+                    <div class="corrida-local">
+
+                        <div>
+
+                            <i class="fa-solid fa-location-dot"></i>
+
+                            Aguardando novas solicitações
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        lista.innerHTML = "";
+
+
+        corridas.forEach(
+            function (corrida) {
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+                item.className =
+                    "corrida-item";
+
+
+                item.innerHTML = `
+
+                    <div class="corrida-cabecalho">
+
+                        <strong>
+                            Nova solicitação
+                        </strong>
+
+                        <span class="corrida-status">
+                            Aguardando
+                        </span>
+
+                    </div>
+
+
+                    <div class="corrida-local">
+
+                        <div>
+
+                            <i class="fa-solid fa-location-dot"></i>
+
+                            <strong>Origem:</strong>
+
+                            ${corrida.origem || "Não informado"}
+
+                        </div>
+
+
+                        <div>
+
+                            <i class="fa-solid fa-flag-checkered"></i>
+
+                            <strong>Destino:</strong>
+
+                            ${corrida.destino || "Não informado"}
+
+                        </div>
+
+                    </div>
+
+
+                    ${
+                        corrida.observacao
+                        ? `
+                            <div class="corrida-local">
+
+                                <div>
+
+                                    <i class="fa-solid fa-comment"></i>
+
+                                    <strong>Observação:</strong>
+
+                                    ${corrida.observacao}
+
+                                </div>
+
+                            </div>
+                        `
+                        : ""
+                    }
+
+                `;
+
+
+                lista.appendChild(
+                    item
+                );
+
+            }
+        );
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro inesperado ao carregar corridas:",
+            erro
+        );
+
+    }
+
+}
+// ============================================================
+// ESCUTAR NOVAS CORRIDAS EM TEMPO REAL
+// ============================================================
+
+function escutarNovasCorridas(
+    motoristaId
+) {
+
+    console.log(
+        "Iniciando escuta de novas corridas para:",
+        motoristaId
+    );
+
+
+    supabaseClient
+        .channel(
+            "corridas-motorista-" +
+            motoristaId
+        )
+        .on(
+            "postgres_changes",
+            {
+                event: "INSERT",
+                schema: "public",
+                table: "corridas",
+                filter:
+                    "motorista_id=eq." +
+                    motoristaId
+            },
+            function (payload) {
+
+                console.log(
+                    "NOVA SOLICITAÇÃO RECEBIDA:",
+                    payload.new
+                );
+
+
+                if (
+                    payload.new.status ===
+                    "aguardando"
+                ) {
+
+                    carregarCorridasDoMotorista(
+                        motoristaId
+                    );
+
+                }
+
+            }
+        )
+        .subscribe(
+            function (status) {
+
+                console.log(
+                    "Canal de corridas do motorista:",
+                    status
+                );
+
+            }
+        );
+
+}
 
 // ============================================================
 // VERIFICAR SESSÃO
