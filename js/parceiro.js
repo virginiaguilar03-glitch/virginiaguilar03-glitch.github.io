@@ -534,6 +534,17 @@ async function verificarSessaoParceiro() {
         await carregarDadosMotorista(
             usuario.id
         );
+        // ====================================================
+// CARREGAR SOLICITAÇÕES DE CORRIDA
+// ====================================================
+
+await carregarCorridasDoMotorista(usuario.id);
+
+// ====================================================
+// ESCUTAR NOVAS SOLICITAÇÕES EM TEMPO REAL
+// ====================================================
+
+escutarNovasCorridas(usuario.id);
 
 
         console.log(
