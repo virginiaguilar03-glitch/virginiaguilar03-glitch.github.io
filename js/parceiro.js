@@ -404,15 +404,13 @@ async function carregarCorridasDoMotorista(motoristaId) {
         "Buscando corridas do motorista:",
         motoristaId
     );
-
     const { data: corridas, error } = await supabaseClient
-      .from("corridas")
-      .select("*")
-      .eq("status", "aguardando")
-      .filter("created_at::date", "eq", "now()") // O banco avalia 'now()' em UTC e extrai apenas a data YYYY-MM-DD
-      .order("created_at", { ascending: false });
-    
-    if (error) {
+        .from("corridas")
+        .select("*")
+        .eq("motorista_id", motoristaId)
+        .eq("status", "aguardando")
+        .order("created_at", { ascending: false });
+        if (error) {
 
         console.error(
             "Erro ao buscar corridas:",
@@ -499,7 +497,38 @@ async function carregarCorridasDoMotorista(motoristaId) {
     );
 
 }
+function ouvirNovasCorridas(motoristaId) {
 
+    console.log("Iniciando escuta de novas corridas para:", motoristaId);
+
+    const canal = supabaseClient
+        .channel(`corridas-motorista-${motoristaId}`)
+        .on(
+            "postgres_changes",
+            {
+                event: "INSERT",
+                schema: "public",
+                table: "corridas",
+                filter: `motorista_id=eq.${motoristaId}`
+            },
+            (payload) => {
+
+                console.log("NOVA CORRIDA RECEBIDA:", payload);
+
+                carregarCorridasDoMotorista(motoristaId);
+            }
+        )
+        .subscribe((status) => {
+
+            console.log(
+                "Status do canal de corridas:",
+                status
+            );
+
+        });
+
+    return canal;
+}
 
 // ============================================================
 // VERIFICAR SESSÃO
@@ -667,6 +696,15 @@ async function verificarSessaoParceiro() {
         );
 
 
+    // ====================================================
+    // OUVIR NOVAS CORRIDAS
+    // ====================================================
+    
+    ouvirNovasCorridas(
+        usuario.id
+    );
+
+
         console.log(
             "Parceiro carregado completamente:",
             parceiro
@@ -685,7 +723,6 @@ async function verificarSessaoParceiro() {
     }
 
 }
-
 
 // ============================================================
 // LOGOUT
