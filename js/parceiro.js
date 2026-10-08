@@ -405,13 +405,14 @@ async function carregarCorridasDoMotorista(motoristaId) {
         motoristaId
     );
 
-    // Define o início do dia de hoje (00:00:00.000)
-    const inicioDeHoje = new Date();
-    inicioDeHoje.setHours(0, 0, 0, 0);
-
-    // Define o fim do dia de hoje (23:59:59.999)
-    const fimDeHoje = new Date();
-    fimDeHoje.setHours(23, 59, 59, 999);
+    // Obtém a data atual no fuso local
+    const agora = new Date();
+    
+    // Define o início do dia local (00:00:00.000)
+    const inicioHoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0, 0);
+    
+    // Define o fim do dia local (23:59:59.999)
+    const fimHoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59, 999);
 
     const {
         data: corridas,
@@ -421,8 +422,8 @@ async function carregarCorridasDoMotorista(motoristaId) {
           .from("corridas")
           .select("*")
           .eq("status", "aguardando")
-          .gte("created_at", inicioDeHoje.toISOString()) // Maior ou igual ao início de hoje
-          .lte("created_at", fimDeHoje.toISOString())     // Menor ou igual ao fim de hoje
+          .gte("created_at", inicioHoje.toISOString()) // Converte para ISO/UTC mantendo o intervalo correto
+          .lte("created_at", fimHoje.toISOString())
           .order("created_at", {
             ascending: false
           });
