@@ -405,18 +405,14 @@ async function carregarCorridasDoMotorista(motoristaId) {
         motoristaId
     );
 
-    const agora = new Date();
+    // Força a obtenção da data no fuso de Brasília (YYYY-MM-DD)
+    const hojeBrasilia = new Date().toLocaleDateString("sv-SE", { 
+      timeZone: "America/Sao_Paulo" 
+    });
     
-    // Ano, Mês e Dia no fuso de Brasília
-    const ano = agora.getFullYear();
-    const mes = String(agora.getMonth() + 1).padStart(2, "0");
-    const dia = String(agora.getDate()).padStart(2, "0");
-    
-    const dataHoje = `${ano}-${mes}-${dia}`;
-    
-    // Define os limites explicitamente com o fuso -03:00
-    const inicioHojeISO = `${dataHoje}T00:00:00.000-03:00`;
-    const fimHojeISO = `${dataHoje}T23:59:59.999-03:00`;
+    // Define o intervalo exato do dia de hoje no fuso de Brasília (-03:00)
+    const inicioHojeISO = `${hojeBrasilia}T00:00:00.000-03:00`;
+    const fimHojeISO = `${hojeBrasilia}T23:59:59.999-03:00`;
     
     const { data: corridas, error } = await supabaseClient
       .from("corridas")
