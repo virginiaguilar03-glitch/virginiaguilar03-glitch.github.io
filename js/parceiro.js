@@ -405,10 +405,13 @@ async function carregarCorridasDoMotorista(motoristaId) {
         motoristaId
     );
 
-    // Obtém o início do dia de amanhã (00:00:00) em formato ISO
-    const amanha = new Date();
-    amanha.setHours(24, 0, 0, 0); // Define para meia-noite do dia seguinte
-    const dataLimite = amanha.toISOString();
+    // Define o início do dia de hoje (00:00:00.000)
+    const inicioDeHoje = new Date();
+    inicioDeHoje.setHours(0, 0, 0, 0);
+
+    // Define o fim do dia de hoje (23:59:59.999)
+    const fimDeHoje = new Date();
+    fimDeHoje.setHours(23, 59, 59, 999);
 
     const {
         data: corridas,
@@ -418,7 +421,8 @@ async function carregarCorridasDoMotorista(motoristaId) {
           .from("corridas")
           .select("*")
           .eq("status", "aguardando")
-          .gt("created_at", dataLimite) // Filtra registros com created_at maiores que o início de amanhã
+          .gte("created_at", inicioDeHoje.toISOString()) // Maior ou igual ao início de hoje
+          .lte("created_at", fimDeHoje.toISOString())     // Menor ou igual ao fim de hoje
           .order("created_at", {
             ascending: false
           });
