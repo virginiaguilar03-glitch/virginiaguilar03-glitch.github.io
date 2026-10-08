@@ -405,25 +405,11 @@ async function carregarCorridasDoMotorista(motoristaId) {
         motoristaId
     );
 
-    const agora = new Date();
-
-    // Pega Ano, Mês e Dia considerando o fuso UTC (mesmo do banco de dados)
-    const anoUTC = agora.getUTCFullYear();
-    const mesUTC = String(agora.getUTCMonth() + 1).padStart(2, "0");
-    const diaUTC = String(agora.getUTCDate()).padStart(2, "0");
-    
-    const dataHojeUTC = `${anoUTC}-${mesUTC}-${diaUTC}`;
-    
-    // Monta o intervalo considerando o início e fim do dia em UTC (+00:00)
-    const inicioHojeUTC = `${dataHojeUTC}T00:00:00.000Z`;
-    const fimHojeUTC = `${dataHojeUTC}T23:59:59.999Z`;
-    
     const { data: corridas, error } = await supabaseClient
       .from("corridas")
       .select("*")
       .eq("status", "aguardando")
-      .gte("created_at", inicioHojeUTC)
-      .lte("created_at", fimHojeUTC)
+      .filter("created_at::date", "eq", "now()") // O banco avalia 'now()' em UTC e extrai apenas a data YYYY-MM-DD
       .order("created_at", { ascending: false });
     
     if (error) {
