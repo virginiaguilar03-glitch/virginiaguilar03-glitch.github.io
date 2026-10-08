@@ -405,6 +405,8 @@ async function carregarCorridasDoMotorista(motoristaId) {
         motoristaId
     );
 
+    const agora = new Date();
+    
     // Ano, Mês e Dia no fuso de Brasília
     const ano = agora.getFullYear();
     const mes = String(agora.getMonth() + 1).padStart(2, "0");
