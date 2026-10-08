@@ -405,28 +405,24 @@ async function carregarCorridasDoMotorista(motoristaId) {
         motoristaId
     );
 
-    // Obtém a data atual no fuso local
-    const agora = new Date();
+    // Ano, Mês e Dia no fuso de Brasília
+    const ano = agora.getFullYear();
+    const mes = String(agora.getMonth() + 1).padStart(2, "0");
+    const dia = String(agora.getDate()).padStart(2, "0");
     
-    // Define o início do dia local (00:00:00.000)
-    const inicioHoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0, 0);
+    const dataHoje = `${ano}-${mes}-${dia}`;
     
-    // Define o fim do dia local (23:59:59.999)
-    const fimHoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59, 999);
-
-    const {
-        data: corridas,
-        error
-    } =
-        await supabaseClient
-          .from("corridas")
-          .select("*")
-          .eq("status", "aguardando")
-          .gte("created_at", inicioHoje.toISOString()) // Converte para ISO/UTC mantendo o intervalo correto
-          .lte("created_at", fimHoje.toISOString())
-          .order("created_at", {
-            ascending: false
-          });
+    // Define os limites explicitamente com o fuso -03:00
+    const inicioHojeISO = `${dataHoje}T00:00:00.000-03:00`;
+    const fimHojeISO = `${dataHoje}T23:59:59.999-03:00`;
+    
+    const { data: corridas, error } = await supabaseClient
+      .from("corridas")
+      .select("*")
+      .eq("status", "aguardando")
+      .gte("created_at", inicioHojeISO)
+      .lte("created_at", fimHojeISO)
+      .order("created_at", { ascending: false });
     
     if (error) {
 
