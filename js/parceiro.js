@@ -405,21 +405,24 @@ async function carregarCorridasDoMotorista(motoristaId) {
         motoristaId
     );
 
+    // Obtém o início do dia de amanhã (00:00:00) em formato ISO
+    const amanha = new Date();
+    amanha.setHours(24, 0, 0, 0); // Define para meia-noite do dia seguinte
+    const dataLimite = amanha.toISOString();
 
     const {
         data: corridas,
         error
     } =
         await supabaseClient
-            .from("corridas")
-            .select("*")
-            .eq("motorista_id", motoristaId)
-            .eq("status", "aguardando")
-            .order("created_at", {
-                ascending: false
-            });
-
-
+          .from("corridas")
+          .select("*")
+          .eq("status", "aguardando")
+          .gt("created_at", dataLimite) // Filtra registros com created_at maiores que o início de amanhã
+          .order("created_at", {
+            ascending: false
+          });
+    
     if (error) {
 
         console.error(
