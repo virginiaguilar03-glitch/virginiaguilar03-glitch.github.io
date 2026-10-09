@@ -314,10 +314,17 @@ async function carregarDadosMotorista(usuarioId) {
         // MOSTRAR MOTORISTA NO CONSOLE
         // ----------------------------------------------------
 
-        console.log(
-            "Motorista encontrado:",
-            motorista
-        );
+        
+    console.log(
+        "Motorista encontrado:",
+        motorista
+    );
+    
+    // Atualizar o botão com o estado salvo no banco
+    atualizarVisualStatus(
+        motorista.disponivel === true
+    );
+
 
 
         // ====================================================
