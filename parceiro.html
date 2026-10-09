@@ -801,64 +801,47 @@
        STATUS ONLINE / OFFLINE
     ====================================================== */
 
-    let motoristaOnline = false;
+   
+let motoristaOnline = false;
 
-
-    function alternarStatus() {
-
-        motoristaOnline =
-            !motoristaOnline;
-
-
-        const indicador =
-            document.getElementById(
-                "statusIndicador"
-            );
-
-
-        const texto =
-            document.getElementById(
-                "statusTexto"
-            );
-
-
-        const botao =
-            document.getElementById(
-                "btnStatus"
-            );
-
-
-        if (motoristaOnline) {
-
-            indicador.classList.add(
-                "online"
-            );
-
-
-            texto.textContent =
-                "Online";
-
-
-            botao.textContent =
-                "Ficar Offline";
-
-        } else {
-
-            indicador.classList.remove(
-                "online"
-            );
-
-
-            texto.textContent =
-                "Offline";
-
-
-            botao.textContent =
-                "Ficar Online";
-
-        }
-
+async function alternarStatus() {
+    if (!parceiro.id) {
+        alert("Não foi possível identificar o motorista.");
+        return;
     }
+
+    const novoStatus = !motoristaOnline;
+
+    const { data, error } = await supabaseClient
+        .from("motoristas")
+        .update({ disponivel: novoStatus })
+        .eq("id", parceiro.id)
+        .select("id, disponivel")
+        .maybeSingle();
+
+    if (error || !data) {
+        console.error("Erro ao atualizar disponibilidade:", error);
+        alert("Não foi possível alterar seu status. Verifique seu cadastro e as permissões.");
+        return;
+    }
+
+    atualizarVisualStatus(data.disponivel);
+}
+
+function atualizarVisualStatus(online) {
+    motoristaOnline = online;
+
+    const indicador = document.getElementById("statusIndicador");
+    const texto = document.getElementById("statusTexto");
+    const botao = document.getElementById("btnStatus");
+
+    if (!indicador || !texto || !botao) return;
+
+    indicador.classList.toggle("online", online);
+    texto.textContent = online ? "Online" : "Offline";
+    botao.textContent = online ? "Ficar Offline" : "Ficar Online";
+}
+
 
 
 
