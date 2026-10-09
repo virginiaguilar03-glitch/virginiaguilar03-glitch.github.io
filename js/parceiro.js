@@ -383,120 +383,79 @@ async function carregarDadosMotorista(usuarioId) {
 // CARREGAR CORRIDAS DO MOTORISTA
 // ============================================================
 
-async function carregarCorridasDoMotorista(motoristaId) {
 
-    const lista =
-        document.getElementById("listaCorridas");
-
-
-    if (!lista) {
-
-        console.error(
-            "Elemento #listaCorridas não encontrado."
-        );
-
-        return;
-
-    }
-
-
-    console.log(
-        "Buscando corridas do motorista:",
-        motoristaId
-    );
-    const { data: corridas, error } = await supabaseClient
-        .from("corridas")
-        .select("*")
-        .eq("motorista_id", motoristaId)
-        .eq("status", "aguardando")
-        .order("created_at", { ascending: false });
-        if (error) {
-
-        console.error(
-            "Erro ao buscar corridas:",
-            error
-        );
-
-        return;
-
-    }
-
-
-    console.log(
-        "Corridas encontradas:",
-        corridas
-    );
-
-
-    if (
-        !corridas ||
-        corridas.length === 0
-    ) {
-
-        lista.innerHTML = `
-            <div class="sem-corridas">
-                <p>Nenhuma corrida disponível.</p>
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    lista.innerHTML = "";
-
-
-    corridas.forEach(
-        corrida => {
-
-            const card =
-                document.createElement("div");
-
-
-            card.className =
-                "card-corrida";
-
-
-            card.innerHTML = `
-                <h3>Nova solicitação de corrida</h3>
-
-                <p>
-                    <strong>Origem:</strong>
-                    ${corrida.origem || "Não informada"}
-                </p>
-
-                <p>
-                    <strong>Destino:</strong>
-                    ${corrida.destino || "Não informado"}
-                </p>
-
-                ${
-                    corrida.observacao
-                        ? `
-                            <p>
-                                <strong>Observação:</strong>
-                                ${corrida.observacao}
-                            </p>
-                        `
-                        : ""
-                }
-
-                <button
-                    type="button"
-                    onclick="aceitarCorrida('${corrida.id}')"
-                >
-                    Aceitar corrida
-                </button>
-            `;
-
-
-            lista.appendChild(card);
-
+    async function carregarCorridasDoMotorista(motoristaId) {
+        const lista = document.getElementById("listaCorridas");
+    
+        if (!lista) {
+            console.error("Elemento #listaCorridas não encontrado.");
+            return;
         }
-    );
+    
+        const { data: corridas, error } = await supabaseClient
+            .from("corridas")
+            .select("*")
+            .eq("motorista_id", motoristaId)
+            .eq("status", "aguardando")
+            .order("created_at", { ascending: false });
+    
+        if (error) {
+            console.error("Erro ao buscar corridas:", error);
+            lista.innerHTML = "<p>Não foi possível carregar as corridas.</p>";
+            return;
+        }
+    
+        if (!corridas || corridas.length === 0) {
+            lista.innerHTML = `
+                <div class="sem-corridas">
+                    <p>Nenhuma corrida disponível.</p>
+                </div>
+            `;
+            return;
+        }
+    
+        lista.innerHTML = "";
+    
+        corridas.forEach(corrida => {
+            const card = document.createElement("div");
+            card.className = "corrida-item";
+    
+            const titulo = document.createElement("h3");
+            titulo.textContent = "Nova solicitação de corrida";
+    
+            const origem = document.createElement("p");
+            origem.textContent = "Origem: " + (corrida.origem || "Não informada");
+    
+            const destino = document.createElement("p");
+            destino.textContent = "Destino: " + (corrida.destino || "Não informado");
+    
+            card.append(titulo, origem, destino);
+    
+            if (corrida.observacao) {
+                const observacao = document.createElement("p");
+                observacao.textContent = "Observação: " + corrida.observacao;
+                card.appendChild(observacao);
+            }
+    
+            const botoes = document.createElement("div");
+            botoes.className = "acoes-corrida";
+    
+            const aceitar = document.createElement("button");
+            aceitar.type = "button";
+            aceitar.textContent = "Aceitar corrida";
+            aceitar.onclick = () => aceitarCorrida(corrida.id);
+    
+            const recusar = document.createElement("button");
+            recusar.type = "button";
+            recusar.textContent = "Recusar corrida";
+            recusar.onclick = () => recusarCorrida(corrida.id);
+    
+            botoes.append(aceitar, recusar);
+            card.appendChild(botoes);
+            lista.appendChild(card);
+        });
+    }
 
-}
 function ouvirNovasCorridas(motoristaId) {
 
     console.log("Iniciando escuta de novas corridas para:", motoristaId);
@@ -801,6 +760,53 @@ async function sairParceiro() {
     );
 
 }
+
+
+    async function atualizarStatusCorrida(corridaId, novoStatus) {
+        const { data: usuarioData, error: erroUsuario } =
+            await supabaseClient.auth.getUser();
+    
+        const usuario = usuarioData?.user;
+    
+        if (erroUsuario || !usuario) {
+            alert("Sua sessão expirou. Entre novamente.");
+            return;
+        }
+    
+        const { data, error } = await supabaseClient
+            .from("corridas")
+            .update({ status: novoStatus })
+            .eq("id", corridaId)
+            .eq("motorista_id", usuario.id)
+            .eq("status", "aguardando")
+            .select("id");
+    
+        if (error) {
+            console.error("Erro ao atualizar corrida:", error);
+            alert("Não foi possível atualizar a corrida. Verifique as permissões.");
+            return;
+        }
+    
+        if (!data || data.length === 0) {
+            alert("A corrida não está mais disponível ou você não tem permissão.");
+            await carregarCorridasDoMotorista(usuario.id);
+            return;
+        }
+    
+        alert(novoStatus === "aceita"
+            ? "Corrida aceita com sucesso!"
+            : "Corrida recusada.");
+    
+        await carregarCorridasDoMotorista(usuario.id);
+    }
+    
+    async function aceitarCorrida(corridaId) {
+        await atualizarStatusCorrida(corridaId, "aceita");
+    }
+    
+    async function recusarCorrida(corridaId) {
+        await atualizarStatusCorrida(corridaId, "recusada");
+    }
 
 
 // ============================================================
