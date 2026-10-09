@@ -420,7 +420,20 @@ async function carregarDadosMotorista(usuarioId) {
             `;
             return;
         }
+
+        
+    for (const corrida of corridas) {
+        const { data: nomeCliente, error: erroNome } =
+            await supabaseClient.rpc(
+                "nome_cliente_da_corrida",
+                { p_corrida_id: corrida.id }
+            );
     
+        corrida.nome_cliente = erroNome
+            ? "Cliente"
+            : (nomeCliente || "Cliente");
+    }
+
         lista.innerHTML = "";
     
         corridas.forEach(corrida => {
@@ -442,7 +455,12 @@ async function carregarDadosMotorista(usuarioId) {
                 const observacao = document.createElement("p");
                 observacao.textContent = "Observação: " + corrida.observacao;
                 card.appendChild(observacao);
-            }
+                }
+          
+            const cliente = document.createElement("p");
+            cliente.textContent = "Cliente: " + corrida.nome_cliente;
+            card.appendChild(cliente);
+
     
             const botoes = document.createElement("div");
             botoes.className = "acoes-corrida";
