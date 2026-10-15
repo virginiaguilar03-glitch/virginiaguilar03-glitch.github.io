@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VaidTáxi | Configurações do Parceiro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="css/configuracoes-parceiro.css">
+</head>
+
+<body>
+
+    <header class="topo-configuracoes">
+        <a href="parceiro.html" class="logo">
+            <img src="img/logo-vdb.png" alt="VaidTáxi">
+            <span>Vaid<span class="amarelo">Táxi</span></span>
+        </a>
+
+        <a href="parceiro.html" class="botao-voltar">
+            <i class="fa-solid fa-arrow-left"></i>
+            Voltar ao painel
+        </a>
+    </header>
+
+    <main class="conteudo-configuracoes">
+
+        <div class="titulo-pagina">
+            <h1>Configurações do parceiro</h1>
+            <p>Gerencie seus dados pessoais, sua foto e as informações do veículo.</p>
+        </div>
+
+        <form id="formConfiguracoesParceiro">
+
+            <section class="cartao-configuracoes">
+
+                <h2><i class="fa-solid fa-camera"></i> Foto de perfil</h2>
+
+                <div class="area-foto">
+                    <div class="foto-preview">
+                        <img id="previewFoto" src="" alt="Prévia da foto de perfil" hidden>
+                        <i id="iconeFoto" class="fa-solid fa-user"></i>
+                    </div>
+
+                    <div class="dados-foto">
+                        <label for="configFoto" class="botao-foto">
+                            <i class="fa-solid fa-upload"></i>
+                            Escolher foto
+                        </label>
+
+                        <input
+                            type="file"
+                            id="configFoto"
+                            name="foto"
+                            accept="image/jpeg,image/png,image/webp"
+                            hidden
+                        >
+
+                        <p>Escolha uma imagem JPG, PNG ou WebP.</p>
+                        <p id="nomeArquivoFoto">Nenhuma foto selecionada.</p>
+                    </div>
+                </div>
+
+                <p id="mensagemFoto" class="mensagem" role="status"></p>
+
+            </section>
+
+            <section class="cartao-configuracoes">
+
+                <h2><i class="fa-solid fa-user"></i> Dados pessoais</h2>
+
+                <div class="grade-campos">
+
+                    <div class="campo">
+                        <label for="configNome">Nome completo</label>
+                        <input type="text" id="configNome" name="nome" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="configTelefone">Telefone</label>
+                        <input type="tel" id="configTelefone" name="telefone">
+                    </div>
+
+                    <div class="campo campo-completo">
+                        <label for="configEmail">E-mail</label>
+                        <input type="email" id="configEmail" name="email" readonly>
+                        <small>O e-mail da conta não pode ser alterado nesta página.</small>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="cartao-configuracoes">
+
+                <h2><i class="fa-solid fa-car"></i> Dados do veículo</h2>
+
+                <div class="grade-campos">
+
+                    <div class="campo">
+                        <label for="configMarca">Marca</label>
+                        <input type="text" id="configMarca" name="marca">
+                    </div>
+
+                    <div class="campo">
+                        <label for="configModelo">Modelo</label>
+                        <input type="text" id="configModelo" name="modelo">
+                    </div>
+
+                    <div class="campo">
+                        <label for="configCor">Cor</label>
+                        <input type="text" id="configCor" name="cor">
+                    </div>
+
+                    <div class="campo">
+                        <label for="configAno">Ano</label>
+                        <input type="number" id="configAno" name="ano" min="1900" max="2100">
+                    </div>
+
+                    <div class="campo">
+                        <label for="configPlaca">Placa</label>
+                        <input type="text" id="configPlaca" name="placa" maxlength="8">
+                    </div>
+
+                    <div class="campo">
+                        <label for="configPassageiros">Quantidade de passageiros</label>
+                        <input type="number" id="configPassageiros" name="quantidade_assentos" min="1" max="20">
+                    </div>
+
+                </div>
+
+            </section>
+
+            <p id="mensagemConfiguracoes" class="mensagem" role="status"></p>
+
+            <div class="acoes-formulario">
+                <a href="parceiro.html" class="botao-cancelar">Cancelar</a>
+
+                <button type="submit" id="btnSalvarConfiguracoes">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Salvar alterações
+                </button>
+            </div>
+
+        </form>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/configuracoes-parceiro.js"></script>
+
+</body>
+</html>
