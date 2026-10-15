@@ -746,11 +746,64 @@
         </div>
 
     </div>
-
-</section>
-
-</main>
-
+    
+        <!-- CONFIGURAÇÕES DO PARCEIRO -->
+        <section id="secaoConfiguracoes" class="painel-bloco" hidden>
+            <div class="painel-bloco-titulo">
+                <h3>Minhas configurações</h3>
+            </div>
+        
+            <form id="formConfiguracoesParceiro">
+        
+                <h4>Dados pessoais</h4>
+        
+                <label for="configNome">Nome completo</label>
+                <input type="text" id="configNome" required>
+        
+                <label for="configTelefone">Telefone</label>
+                <input type="tel" id="configTelefone" required>
+        
+                <label for="configEmail">E-mail</label>
+                <input type="email" id="configEmail" disabled>
+        
+                <h4>Dados do veículo</h4>
+        
+                <label for="configMarca">Marca</label>
+                <input type="text" id="configMarca" required>
+        
+                <label for="configModelo">Modelo</label>
+                <input type="text" id="configModelo" required>
+        
+                <label for="configCor">Cor</label>
+                <input type="text" id="configCor" required>
+        
+                <label for="configAno">Ano</label>
+                <input type="number" id="configAno" min="1900" max="2100" required>
+        
+                <label for="configPlaca">Placa</label>
+                <input type="text" id="configPlaca" required>
+        
+                <label for="configPassageiros">Quantidade de passageiros</label>
+                <input type="number" id="configPassageiros" min="1" max="20" required>
+        
+                <p id="mensagemConfiguracoes" role="status"></p>
+        
+                <button type="submit" id="btnSalvarConfiguracoes">
+                    Salvar alterações
+                </button>
+        
+                <button type="button" id="btnCancelarConfiguracoes">
+                    Cancelar
+                </button>
+        
+                </form>
+                
+              </section>
+                        
+            </section>
+                
+         </main>
+                
 
 
 <!-- =========================================================
