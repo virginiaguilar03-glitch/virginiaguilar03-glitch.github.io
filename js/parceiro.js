@@ -846,3 +846,179 @@ document.addEventListener(
 
     }
 );
+
+/* =========================================================
+   CONFIGURAÇÕES DO PARCEIRO
+========================================================= */
+
+const btnAbrirConfiguracoes =
+    document.getElementById("btnAbrirConfiguracoes");
+
+const secaoConfiguracoes =
+    document.getElementById("secaoConfiguracoes");
+
+const formConfiguracoesParceiro =
+    document.getElementById("formConfiguracoesParceiro");
+
+const btnCancelarConfiguracoes =
+    document.getElementById("btnCancelarConfiguracoes");
+
+const mensagemConfiguracoes =
+    document.getElementById("mensagemConfiguracoes");
+
+
+// Abrir configurações
+if (btnAbrirConfiguracoes && secaoConfiguracoes) {
+    btnAbrirConfiguracoes.addEventListener("click", function () {
+        secaoConfiguracoes.hidden = false;
+
+        document.getElementById("configNome").value =
+            parceiro.nome === "Parceiro VaidTáxi" ? "" : parceiro.nome;
+
+        document.getElementById("configTelefone").value =
+            parceiro.telefone === "Telefone não informado"
+                ? ""
+                : parceiro.telefone;
+
+        document.getElementById("configEmail").value =
+            parceiro.email === "E-mail não informado" ? "" : parceiro.email;
+
+        document.getElementById("configMarca").value =
+            parceiro.marca === "Não informado" ? "" : parceiro.marca;
+
+        document.getElementById("configModelo").value =
+            parceiro.modelo === "Não informado" ? "" : parceiro.modelo;
+
+        document.getElementById("configCor").value =
+            parceiro.cor === "Não informado" ? "" : parceiro.cor;
+
+        document.getElementById("configAno").value =
+            parceiro.ano === "Não informado" ? "" : parceiro.ano;
+
+        document.getElementById("configPlaca").value =
+            parceiro.placa === "Não informado" ? "" : parceiro.placa;
+
+        document.getElementById("configPassageiros").value =
+            parceiro.passageiros === "Não informado"
+                ? ""
+                : parceiro.passageiros;
+
+        mensagemConfiguracoes.textContent = "";
+
+        secaoConfiguracoes.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    });
+}
+
+
+// Cancelar edição
+if (btnCancelarConfiguracoes && secaoConfiguracoes) {
+    btnCancelarConfiguracoes.addEventListener("click", function () {
+        secaoConfiguracoes.hidden = true;
+        mensagemConfiguracoes.textContent = "";
+    });
+}
+
+
+// Salvar configurações
+if (formConfiguracoesParceiro) {
+    formConfiguracoesParceiro.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        if (!parceiro.id) {
+            mensagemConfiguracoes.textContent =
+                "Não foi possível identificar sua conta. Entre novamente.";
+            return;
+        }
+
+        const nome = document.getElementById("configNome").value.trim();
+        const telefone = document.getElementById("configTelefone").value.trim();
+        const marca = document.getElementById("configMarca").value.trim();
+        const modelo = document.getElementById("configModelo").value.trim();
+        const cor = document.getElementById("configCor").value.trim();
+        const ano = Number(document.getElementById("configAno").value);
+        const placa = document.getElementById("configPlaca").value.trim().toUpperCase();
+        const passageiros = Number(
+            document.getElementById("configPassageiros").value
+        );
+
+        const btnSalvar =
+            document.getElementById("btnSalvarConfiguracoes");
+
+        btnSalvar.disabled = true;
+        btnSalvar.textContent = "Salvando...";
+        mensagemConfiguracoes.textContent = "";
+
+        try {
+            // Atualizar os dados do veículo
+            const { data: motoristaAtualizado, error: erroVeiculo } =
+                await supabaseClient
+                    .from("motoristas")
+                    .update({
+                        marca: marca,
+                        modelo: modelo,
+                        cor: cor,
+                        ano: ano,
+                        placa: placa,
+                        quantidade_assentos: passageiros
+                    })
+                    .eq("id", parceiro.id)
+                    .select("id")
+                    .maybeSingle();
+
+            if (erroVeiculo) {
+                throw erroVeiculo;
+            }
+
+            if (!motoristaAtualizado) {
+                throw new Error(
+                    "O veículo não foi atualizado. Verifique as permissões da tabela motoristas."
+                );
+            }
+
+            // Atualizar nome e telefone na conta autenticada
+            const { data: usuarioAtualizado, error: erroPerfil } =
+                await supabaseClient.auth.updateUser({
+                    data: {
+                        nome: nome,
+                        telefone: telefone
+                    }
+                });
+
+            if (erroPerfil) {
+                throw erroPerfil;
+            }
+
+            // Atualizar os dados exibidos no painel
+            parceiro.nome = nome;
+            parceiro.telefone = telefone;
+            parceiro.marca = marca;
+            parceiro.modelo = modelo;
+            parceiro.cor = cor;
+            parceiro.ano = ano;
+            parceiro.placa = placa;
+            parceiro.passageiros = passageiros;
+
+            carregarDadosParceiro();
+
+            mensagemConfiguracoes.textContent =
+                "Alterações salvas com sucesso!";
+
+            console.log(
+                "Configurações atualizadas:",
+                usuarioAtualizado.user
+            );
+
+        } catch (erro) {
+            console.error("Erro ao salvar configurações:", erro);
+
+            mensagemConfiguracoes.textContent =
+                "Não foi possível salvar tudo. Verifique o console e as permissões do Supabase.";
+        } finally {
+            btnSalvar.disabled = false;
+            btnSalvar.textContent = "Salvar alterações";
+        }
+    });
+}
