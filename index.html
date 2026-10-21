@@ -64,6 +64,11 @@
         rel="stylesheet"
         href="css/animations.css"
     >
+    
+    <link 
+        rel="stylesheet"
+        href="css/assistente.css"
+    >
 
 </head>
 
@@ -555,6 +560,78 @@
 </footer>
 
 
+<!-- ASSISTENTE VIRTUAL VAIDTÁXI -->
+<div id="vaid-assistente">
+
+    <section
+        id="vaid-chat-window"
+        aria-label="Assistente virtual do VaidTáxi"
+        hidden
+    >
+        <header id="vaid-chat-header">
+
+            <div id="vaid-chat-avatar">
+                <i class="fa-solid fa-taxi" aria-hidden="true"></i>
+            </div>
+
+            <div id="vaid-chat-heading">
+                <strong>Assistente VaidTáxi</strong>
+                <span>Como podemos ajudar?</span>
+            </div>
+
+            <button
+                type="button"
+                id="vaid-chat-close"
+                aria-label="Fechar conversa"
+            >
+                &times;
+            </button>
+
+        </header>
+
+        <div
+            id="vaid-chat-messages"
+            role="log"
+            aria-live="polite"
+            aria-label="Mensagens da conversa"
+        ></div>
+
+        <form id="vaid-chat-form">
+
+            <input
+                type="text"
+                id="vaid-chat-input"
+                placeholder="Digite sua mensagem..."
+                maxlength="2000"
+                autocomplete="off"
+                aria-label="Digite sua mensagem"
+                required
+            >
+
+            <button
+                type="submit"
+                id="vaid-chat-send"
+                aria-label="Enviar mensagem"
+            >
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            </button>
+
+        </form>
+    </section>
+
+    <button
+        type="button"
+        id="vaid-chat-toggle"
+        aria-label="Abrir assistente virtual"
+        aria-controls="vaid-chat-window"
+        aria-expanded="false"
+    >
+        <i class="fa-solid fa-comment-dots" aria-hidden="true"></i>
+    </button>
+
+</div>
+<!-- FIM DO ASSISTENTE VIRTUAL -->
+
 
 <!-- ==================================================
      JAVASCRIPT
@@ -565,6 +642,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/supabase.js"></script>
+
+<script src="js/assistente.js"></script>
 
 
 <!-- AUTENTICAÇÃO GLOBAL -->
