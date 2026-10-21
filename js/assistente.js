@@ -1,4 +1,4 @@
-```javascript
+
 /* =====================================================
    ASSISTENTE VIRTUAL - VAIDTÁXI
    Conexão com a Edge Function do Supabase
@@ -189,4 +189,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-```
