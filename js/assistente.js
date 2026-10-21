@@ -1,6 +1,6 @@
 
 /* =====================================================
-   ASSISTENTE VIRTUAL - VAIDTÁXI
+   ASSISTENTE VIRTUAL - VAIDTÁXI teste
    Conexão com a Edge Function do Supabase
 ===================================================== */
 
