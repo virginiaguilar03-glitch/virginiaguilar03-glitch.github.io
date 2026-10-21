@@ -1,6 +1,6 @@
-
+```javascript
 /* =====================================================
-   ASSISTENTE VIRTUAL - VAIDTÁXI teste
+   ASSISTENTE VIRTUAL - VAIDTÁXI
    Conexão com a Edge Function do Supabase
 ===================================================== */
 
@@ -22,7 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
         !mensagens ||
         !enviar
     ) {
-        console.error("Assistente VaidTáxi: elementos do chat não encontrados.");
+        console.error(
+            "Assistente VaidTáxi: elementos do chat não encontrados."
+        );
         return;
     }
 
@@ -100,19 +102,30 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         try {
-            console.log("VaidTáxi: enviando mensagem ao assistente.");
+            console.log(
+                "VaidTáxi: verificando conexão com o Supabase..."
+            );
+
+            // CORREÇÃO:
+            // supabaseClient foi declarado com const em js/supabase.js.
+            // Por isso, não devemos procurá-lo em window.supabaseClient.
 
             if (
-                !window.supabaseClient ||
-                !window.supabaseClient.functions
+                typeof supabaseClient === "undefined" ||
+                !supabaseClient ||
+                !supabaseClient.functions
             ) {
                 throw new Error(
-                    "O cliente Supabase não foi encontrado. Confira js/supabase.js."
+                    "A conexão Supabase não foi encontrada. Confira a ordem dos scripts na página."
                 );
             }
 
+            console.log(
+                "VaidTáxi: conexão Supabase encontrada."
+            );
+
             const { data, error } =
-                await window.supabaseClient.functions.invoke(
+                await supabaseClient.functions.invoke(
                     "assistente-vaidtaxi",
                     {
                         body: {
@@ -122,14 +135,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
             if (error) {
-                console.error("Erro ao chamar a função:", error);
+                console.error(
+                    "Erro ao chamar a função do assistente:",
+                    error
+                );
+
                 throw new Error(
                     "Não consegui conectar ao assistente. Tente novamente."
                 );
             }
 
             if (!data || !data.resposta) {
-                console.error("Resposta inesperada:", data);
+                console.error(
+                    "Resposta inesperada do assistente:",
+                    data
+                );
+
                 throw new Error(
                     data?.erro ||
                     "O assistente não retornou uma resposta."
@@ -137,11 +158,21 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             status.remove();
-            adicionarMensagem(data.resposta, "bot");
 
-            console.log("VaidTáxi: resposta recebida com sucesso.");
+            adicionarMensagem(
+                data.resposta,
+                "bot"
+            );
+
+            console.log(
+                "VaidTáxi: resposta recebida com sucesso."
+            );
+
         } catch (erro) {
-            console.error("Erro no assistente VaidTáxi:", erro);
+            console.error(
+                "Erro no assistente VaidTáxi:",
+                erro
+            );
 
             status.remove();
 
@@ -150,6 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Não foi possível responder agora. Tente novamente.",
                 "bot"
             );
+
         } finally {
             enviar.disabled = false;
             entrada.disabled = false;
@@ -157,3 +189,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+```
