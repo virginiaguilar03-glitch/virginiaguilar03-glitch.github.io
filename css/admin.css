@@ -2178,3 +2178,236 @@ body {
     z-index: 2;
 
 }
+
+
+/* ============================================================
+   VAIDTÁXI — REFINAMENTO VISUAL DO PAINEL ADMINISTRATIVO
+   Complemento: adicionar ao FINAL de css/admin.css
+   Preserva os identificadores e as funções existentes.
+============================================================ */
+
+/* Conteúdo principal */
+.admin-conteudo {
+    background:
+        radial-gradient(
+            ellipse at 90% 0%,
+            rgba(255, 212, 0, 0.055),
+            transparent 36%
+        ),
+        #101010;
+}
+
+/* Cabeçalho */
+.admin-topo {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: rgba(15, 15, 15, 0.94);
+    border-bottom: 1px solid rgba(255, 212, 0, 0.10);
+}
+
+/* Títulos das seções */
+.admin-secao-titulo {
+    margin-bottom: 28px;
+    gap: 18px;
+}
+
+.admin-secao-titulo h2 {
+    letter-spacing: -0.7px;
+}
+
+.admin-data {
+    padding: 10px 14px;
+    border: 1px solid #303030;
+    border-radius: 10px;
+    background: #191919;
+    color: #c9c9c9;
+}
+
+/* Cards dos indicadores */
+.admin-cards {
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.admin-card {
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    padding: 25px;
+    border: 1px solid #303030;
+    border-radius: 16px;
+    background: linear-gradient(
+        145deg,
+        #1d1d1d,
+        #151515
+    );
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+    transition:
+        transform 0.22s ease,
+        border-color 0.22s ease,
+        box-shadow 0.22s ease;
+}
+
+.admin-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    border-radius: 0 0 4px 4px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #ffd400,
+        transparent
+    );
+    opacity: 0.65;
+}
+
+.admin-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 212, 0, 0.38);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.admin-card-icone {
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 212, 0, 0.15);
+    border-radius: 14px;
+    background: rgba(255, 212, 0, 0.09);
+    transition: transform 0.22s ease;
+}
+
+.admin-card:hover .admin-card-icone {
+    transform: scale(1.05);
+}
+
+.admin-card h3 {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.8px;
+}
+
+.admin-card p {
+    line-height: 1.6;
+}
+
+/* Painéis internos do Dashboard */
+.admin-grid-2 {
+    gap: 22px;
+}
+
+.admin-painel {
+    overflow: hidden;
+    border: 1px solid #303030;
+    border-radius: 16px;
+    background: #171717;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.admin-painel-topo {
+    padding: 23px 24px;
+    border-bottom: 1px solid #2b2b2b;
+    background: linear-gradient(
+        110deg,
+        rgba(255, 212, 0, 0.035),
+        transparent 75%
+    );
+}
+
+.admin-painel-topo h2 {
+    letter-spacing: -0.35px;
+}
+
+/* Atalhos e botões */
+.admin-btn-link {
+    border-radius: 9px;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.admin-btn-link:hover {
+    transform: translateY(-1px);
+}
+
+/* Cards de validação de parceiros */
+.admin-validacao-card {
+    border: 1px solid #303030;
+    border-radius: 14px;
+    background: linear-gradient(
+        145deg,
+        #1c1c1c,
+        #151515
+    );
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.admin-validacao-card:hover {
+    border-color: rgba(255, 212, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Tabelas */
+.admin-tabela-container {
+    border: 1px solid #303030;
+    border-radius: 14px;
+    background: #171717;
+}
+
+.admin-tabela-container table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.admin-tabela-container th {
+    background: #202020;
+    color: #ffd400;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.45px;
+    text-transform: uppercase;
+}
+
+.admin-tabela-container td,
+.admin-tabela-container th {
+    padding: 15px 16px;
+}
+
+.admin-tabela-container tbody tr {
+    transition: background 0.18s ease;
+}
+
+.admin-tabela-container tbody tr:hover {
+    background: rgba(255, 212, 0, 0.035);
+}
+
+/* Foco acessível */
+.admin-menu-item:focus-visible,
+.admin-btn-link:focus-visible,
+.admin-btn-aprovar:focus-visible,
+.admin-btn-reprovar:focus-visible {
+    outline: 2px solid #ffd400;
+    outline-offset: 3px;
+}
+
+/* Respeitar usuários que preferem menos animações */
+@media (prefers-reduced-motion: reduce) {
+    .admin-card,
+    .admin-card-icone,
+    .admin-validacao-card,
+    .admin-menu-item,
+    .admin-btn-link {
+        transition: none;
+    }
+
+    .admin-card:hover,
+    .admin-validacao-card:hover,
+    .admin-menu-item:hover,
+    .admin-btn-link:hover {
+        transform: none;
+    }
+}
