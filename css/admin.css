@@ -2411,3 +2411,86 @@ body {
         transform: none;
     }
 }
+
+
+/* ==================================================
+   ATALHOS RÁPIDOS DO DASHBOARD
+================================================== */
+
+.admin-atalhos {
+    margin: 28px 0;
+}
+
+.admin-atalhos-titulo {
+    margin-bottom: 16px;
+}
+
+.admin-atalhos-titulo span {
+    color: #FFD400;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.admin-atalhos-titulo h2 {
+    margin-top: 5px;
+    font-size: 19px;
+}
+
+.admin-atalhos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.admin-atalho {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 18px;
+    color: inherit;
+    background: #181818;
+    border: 1px solid #303030;
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.admin-atalho > i:first-child {
+    color: #FFD400;
+    font-size: 20px;
+}
+
+.admin-atalho span {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.admin-atalho > i:last-child {
+    color: #888;
+    font-size: 12px;
+}
+
+.admin-atalho:hover {
+    border-color: #FFD400;
+    transform: translateY(-2px);
+}
+
+.admin-atalho:focus-visible {
+    outline: 2px solid #FFD400;
+    outline-offset: 3px;
+}
+
+@media (max-width: 1000px) {
+    .admin-atalhos-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-atalhos-grid {
+        grid-template-columns: 1fr;
+    }
+}
