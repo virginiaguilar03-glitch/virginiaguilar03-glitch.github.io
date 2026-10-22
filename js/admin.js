@@ -950,12 +950,34 @@ async function carregarValidacoes() {
         // BADGE
         // =====================================================
 
-        if (badgeValidacao) {
+       
+/* =====================================================
+   CONTADORES DE NOTIFICAÇÕES
+===================================================== */
 
-            badgeValidacao.textContent =
-                quantidade;
+if (badgeValidacao) {
+    badgeValidacao.textContent = quantidade;
+}
 
-        }
+const badgeNotificacoesAdmin =
+    document.getElementById("badgeNotificacoesAdmin");
+
+if (badgeNotificacoesAdmin) {
+
+    badgeNotificacoesAdmin.textContent =
+        quantidade > 99 ? "99+" : quantidade;
+
+    badgeNotificacoesAdmin.hidden =
+        quantidade === 0;
+
+}
+
+console.log(
+    "Notificações administrativas:",
+    quantidade,
+    "cadastros pendentes."
+);
+
 
 
         // =====================================================
@@ -1082,6 +1104,15 @@ function mostrarErroValidacoes() {
             "0";
 
     }
+
+    
+const badgeNotificacoesAdmin =
+    document.getElementById("badgeNotificacoesAdmin");
+
+if (badgeNotificacoesAdmin) {
+    badgeNotificacoesAdmin.hidden = true;
+}
+
 
 
     const mensagem = `
