@@ -263,6 +263,56 @@
 </footer>
 
 
+<!-- ==================================================
+     ASSISTENTE VIRTUAL VAIDTÁXI
+================================================== -->
+
+<div id="vaid-assistente">
+
+    <div id="vaid-chat-window" style="display: none;">
+
+        <div id="vaid-chat-header">
+            <span>Assistente VaidTáxi</span>
+            <button type="button" id="vaid-chat-close" aria-label="Fechar conversa">×</button>
+        </div>
+
+        <div id="vaid-chat-messages">
+            <div class="mensagem-assistente">
+                Olá! 👋 Como posso ajudar você com o VaidTáxi?
+            </div>
+        </div>
+
+        <form id="vaid-chat-form">
+
+            <input
+                type="text"
+                id="vaid-chat-input"
+                placeholder="Digite sua pergunta..."
+                autocomplete="off"
+                required
+            >
+
+            <button type="submit" id="vaid-chat-send">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+
+        </form>
+
+    </div>
+
+    <button
+        type="button"
+        id="vaid-chat-toggle"
+        aria-label="Abrir assistente virtual"
+        title="Fale com o assistente VaidTáxi"
+    >
+        <i class="fa-solid fa-comments"></i>
+    </button>
+
+</div>
+
+
+
 
 <!-- ==================================================
      JAVASCRIPT
