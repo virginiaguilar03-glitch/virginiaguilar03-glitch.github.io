@@ -2489,6 +2489,68 @@ body {
     }
 }
 
+
+/* ==================================================
+   SINO DE NOTIFICAÇÕES DO ADMINISTRADOR
+================================================== */
+
+.admin-notificacao-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    margin-left: auto;
+    color: #FFD400;
+    background: #181818;
+    border: 1px solid #303030;
+    border-radius: 12px;
+    font-size: 19px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.admin-notificacao-btn:hover {
+    background: #242424;
+    border-color: #FFD400;
+}
+
+.admin-notificacao-btn:focus-visible {
+    outline: 2px solid #FFD400;
+    outline-offset: 3px;
+}
+
+.admin-notificacao-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    color: #111;
+    background: #FFD400;
+    border: 2px solid #111;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.admin-notificacao-badge[hidden] {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .admin-notificacao-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
 @media (max-width: 480px) {
     .admin-atalhos-grid {
         grid-template-columns: 1fr;
