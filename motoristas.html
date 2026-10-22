@@ -263,57 +263,77 @@
 </footer>
 
 
-<!-- ==================================================
-     ASSISTENTE VIRTUAL VAIDTÁXI
-================================================== -->
-
+<!-- ASSISTENTE VIRTUAL VAIDTÁXI -->
 <div id="vaid-assistente">
 
-    <div id="vaid-chat-window" style="display: none;">
+    <section
+        id="vaid-chat-window"
+        aria-label="Assistente virtual do VaidTáxi"
+        hidden
+    >
+        <header id="vaid-chat-header">
 
-        <div id="vaid-chat-header">
-            <span>Assistente VaidTáxi</span>
-            <button type="button" id="vaid-chat-close" aria-label="Fechar conversa">×</button>
-        </div>
-
-        <div id="vaid-chat-messages">
-            <div class="mensagem-assistente">
-                Olá! 👋 Como posso ajudar você com o VaidTáxi?
+            <div id="vaid-chat-avatar">
+                <i class="fa-solid fa-taxi" aria-hidden="true"></i>
             </div>
-        </div>
+
+            <div id="vaid-chat-heading">
+                <strong>Assistente VaidTáxi</strong>
+                <span>Como podemos ajudar?</span>
+            </div>
+
+            <button
+                type="button"
+                id="vaid-chat-close"
+                aria-label="Fechar conversa"
+            >
+                &times;
+            </button>
+
+        </header>
+
+        <div
+            id="vaid-chat-messages"
+            role="log"
+            aria-live="polite"
+            aria-label="Mensagens da conversa"
+        ></div>
 
         <form id="vaid-chat-form">
 
             <input
                 type="text"
                 id="vaid-chat-input"
-                placeholder="Digite sua pergunta..."
+                placeholder="Digite sua mensagem..."
+                maxlength="2000"
                 autocomplete="off"
+                aria-label="Digite sua mensagem"
                 required
             >
 
-            <button type="submit" id="vaid-chat-send">
-                <i class="fa-solid fa-paper-plane"></i>
+            <button
+                type="submit"
+                id="vaid-chat-send"
+                aria-label="Enviar mensagem"
+            >
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
             </button>
 
         </form>
-
-    </div>
+    </section>
 
     <button
         type="button"
         id="vaid-chat-toggle"
         aria-label="Abrir assistente virtual"
-        title="Fale com o assistente VaidTáxi"
+        aria-controls="vaid-chat-window"
+        aria-expanded="false"
     >
-        <i class="fa-solid fa-comments"></i>
+        <i class="fa-solid fa-comment-dots" aria-hidden="true"></i>
     </button>
 
 </div>
-
-
-
-
+<!-- FIM DO ASSISTENTE VIRTUAL -->
 <!-- ==================================================
      JAVASCRIPT
 ================================================== -->
