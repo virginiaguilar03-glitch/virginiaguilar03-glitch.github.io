@@ -214,6 +214,9 @@ const totalFaturamento =
 const badgeValidacao =
     document.getElementById("badgeValidacao");
 
+const badgeSuporte =
+    document.getElementById("badgeSuporte");
+
 const listaValidacoes =
     document.getElementById("listaValidacoes");
 
@@ -1601,30 +1604,60 @@ function verCliente(id) {
 }
 
 
+/* ============================================================
+   CONTAR CHAMADOS DE SUPORTE PENDENTES
+============================================================ */
+
+async function carregarNotificacoesSuporte() {
+    if (!verificarSupabase()) return;
+
+    if (!badgeSuporte) {
+        console.warn("Badge de suporte não encontrado no HTML.");
+        return;
+    }
+
+    try {
+        const { count, error } = await supabaseClient
+            .from("suporte")
+            .select("id", { count: "exact", head: true })
+            .in("status", ["pendente", "aberto", "novo"]);
+
+        if (error) {
+            console.error("Erro ao contar chamados do suporte:", error);
+            return;
+        }
+
+        badgeSuporte.textContent = count || 0;
+
+        console.log(
+            "Chamados de suporte pendentes:",
+            count || 0
+        );
+    } catch (erro) {
+        console.error("Erro inesperado ao contar suporte:", erro);
+    }
+}
+
+
 // ============================================================
 // ATUALIZAR PAINEL
 // ============================================================
 
+
 async function atualizarPainel() {
-
-    console.log(
-        "Atualizando painel administrativo..."
-    );
-
+    console.log("Atualizando painel administrativo...");
 
     await Promise.all([
         carregarDashboard(),
         carregarClientes(),
         carregarParceiros(),
-        carregarValidacoes()
+        carregarValidacoes(),
+        carregarNotificacoesSuporte()
     ]);
 
-
-    console.log(
-        "Painel administrativo atualizado."
-    );
-
+    console.log("Painel administrativo atualizado.");
 }
+
 
 
 // ============================================================
