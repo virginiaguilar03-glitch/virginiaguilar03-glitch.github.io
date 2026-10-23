@@ -479,58 +479,170 @@
 
 
 
-    <!-- =====================================================
-         CORRIDA ATUAL
-    ====================================================== -->
+<!-- =====================================================
+     PAINEL DE ACOMPANHAMENTO DA CORRIDA
+====================================================== -->
 
-    <section class="container">
+<section class="container">
 
-        <div class="section-title">
+    <div class="section-title">
+        <h2>Corrida <span>Atual</span></h2>
+        <p>Acompanhe cada etapa da sua viagem.</p>
+    </div>
 
-            <h2>
-                Corrida <span>Atual</span>
-            </h2>
+    <div class="painel-acompanhamento">
+
+        <!-- CABEÇALHO DO PAINEL -->
+        <div class="acompanhamento-topo">
+
+            <div class="icone-corrida">
+                <i class="fa-solid fa-taxi"></i>
+            </div>
+
+            <div>
+                <span class="acompanhamento-etiqueta">
+                    ACOMPANHAMENTO DA CORRIDA
+                </span>
+
+                <h3 id="tituloCorridaAtual">
+                    Nenhuma corrida solicitada
+                </h3>
+
+                <p id="textoCorridaAtual">
+                    Quando você solicitar uma corrida, poderá
+                    acompanhar o andamento nesta área.
+                </p>
+            </div>
 
         </div>
 
+        <!-- ETAPAS DA CORRIDA -->
+        <div class="progresso-corrida">
 
-        
-<div class="card corrida-atual-card">
+            <div class="etapa-corrida atual" data-etapa="aguardando">
+                <div class="etapa-icone">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                </div>
+                <span>Solicitada</span>
+            </div>
 
-    <div class="corrida-atual-icone">
-        <i class="fa-solid fa-taxi"></i>
+            <div class="linha-etapa"></div>
+
+            <div class="etapa-corrida" data-etapa="aceita">
+                <div class="etapa-icone">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <span>Aceita</span>
+            </div>
+
+            <div class="linha-etapa"></div>
+
+            <div class="etapa-corrida" data-etapa="motorista_a_caminho">
+                <div class="etapa-icone">
+                    <i class="fa-solid fa-car-side"></i>
+                </div>
+                <span>A caminho</span>
+            </div>
+
+            <div class="linha-etapa"></div>
+
+            <div class="etapa-corrida" data-etapa="em_andamento">
+                <div class="etapa-icone">
+                    <i class="fa-solid fa-route"></i>
+                </div>
+                <span>Em viagem</span>
+            </div>
+
+            <div class="linha-etapa"></div>
+
+            <div class="etapa-corrida" data-etapa="concluida">
+                <div class="etapa-icone">
+                    <i class="fa-solid fa-flag-checkered"></i>
+                </div>
+                <span>Concluída</span>
+            </div>
+
+        </div>
+
+        <!-- TRAJETO ILUSTRATIVO -->
+        <div class="trajeto-visual">
+
+            <div class="trajeto-cabecalho">
+
+                <div>
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>Seu trajeto</span>
+                </div>
+
+                <div class="trajeto-status">
+                    <span class="status-ponto"></span>
+                    <span id="statusVisualCorrida">
+                        Aguardando atualização
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="mapa-ilustrativo">
+
+                <div class="rua rua-horizontal rua-1"></div>
+                <div class="rua rua-horizontal rua-2"></div>
+                <div class="rua rua-horizontal rua-3"></div>
+
+                <div class="rua rua-vertical rua-4"></div>
+                <div class="rua rua-vertical rua-5"></div>
+                <div class="rua rua-vertical rua-6"></div>
+
+                <div class="rota-amarela"></div>
+
+                <div class="ponto-origem">
+                    <i class="fa-solid fa-circle-dot"></i>
+                    <span>Origem</span>
+                </div>
+
+                <div class="ponto-destino">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>Destino</span>
+                </div>
+
+                <div class="carrinho-rota">
+                    <i class="fa-solid fa-taxi"></i>
+                </div>
+
+            </div>
+
+            <div class="legenda-trajeto">
+                <span>
+                    <i class="fa-solid fa-circle-check"></i>
+                    Status da corrida sincronizado
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-route"></i>
+                    Trajeto ilustrativo
+                </span>
+            </div>
+
+        </div>
+
+        <!-- CANCELAMENTO: O JAVASCRIPT CONTROLA O PRAZO -->
+        <div id="areaCancelarCorrida"></div>
+
+        <!-- VALOR FINAL -->
+        <div id="valorFinalCorrida" hidden>
+            <strong>Valor final:</strong>
+            <span id="valorFinalCorridaTexto"></span>
+        </div>
+
+        <!-- NOVA CORRIDA -->
+        <a href="corrida.html" class="btn-nova-corrida">
+            <i class="fa-solid fa-plus"></i>
+            Solicitar uma Corrida
+        </a>
+
     </div>
 
-    <span class="corrida-atual-legenda">
-        ACOMPANHAMENTO DA CORRIDA
-    </span>
-
-    <h3 id="tituloCorridaAtual">
-        Nenhuma corrida em andamento
-    </h3>
-
-    <p id="textoCorridaAtual">
-        Quando você solicitar uma corrida,
-        o acompanhamento aparecerá nesta área.
-    </p>
-
-<div id="areaCancelarCorrida"></div>
-
-    <div class="corrida-atual-rodape">
-        <i class="fa-solid fa-rotate"></i>
-        <span>Atualização de status em tempo real</span>
-    </div>
-
-    <a href="corrida.html" class="btn">
-        <i class="fa-solid fa-plus"></i>
-        Solicitar uma Corrida
-    </a>
-
-</div>
-
-
-    </section>
-
+</section>
 
 
     <!-- =====================================================
