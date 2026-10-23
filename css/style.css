@@ -1131,3 +1131,96 @@ table tr:hover{
     }
 
 }
+
+
+/* =====================================================
+   PAINEL DE ACOMPANHAMENTO DA CORRIDA
+   VAIDTÁXI
+===================================================== */
+
+.corrida-atual-card {
+    position: relative;
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 32px;
+    text-align: left;
+    border: 1px solid rgba(255, 208, 0, 0.35);
+    border-top: 4px solid #FFD000;
+    border-radius: 16px;
+    background: #171717;
+    color: #ffffff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+}
+
+.corrida-atual-card .corrida-atual-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    margin-bottom: 18px;
+    border-radius: 14px;
+    background: #FFD000;
+    color: #111111;
+    font-size: 25px;
+}
+
+.corrida-atual-card .corrida-atual-legenda {
+    display: block;
+    margin-bottom: 10px;
+    color: #FFD000;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+}
+
+.corrida-atual-card h3 {
+    margin: 0 0 12px;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.corrida-atual-card p {
+    color: #d0d0d0;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.corrida-atual-card .corrida-atual-rodape {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 20px 0;
+    padding-top: 16px;
+    border-top: 1px solid #333333;
+    color: #bdbdbd;
+    font-size: 13px;
+}
+
+.corrida-atual-card .corrida-atual-rodape i {
+    color: #FFD000;
+}
+
+.corrida-atual-card .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+@media (max-width: 600px) {
+    .corrida-atual-card {
+        padding: 22px 18px;
+    }
+
+    .corrida-atual-card h3 {
+        font-size: 19px;
+    }
+
+    .corrida-atual-card .corrida-atual-rodape {
+        align-items: flex-start;
+        font-size: 12px;
+    }
+}
+
