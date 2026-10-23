@@ -13,6 +13,7 @@
  const btnHistorico = document.getElementById("btnHistorico");
  const btnAvaliacoes = document.getElementById("btnAvaliacoes");
 
+
  const tituloCorridaAtual = document.getElementById("tituloCorridaAtual");
  const textoCorridaAtual = document.getElementById("textoCorridaAtual");
 
@@ -27,6 +28,7 @@
  let usuarioClienteId = null;
  let canalCorridasCliente = null;
  let corridaAtualClienteId = null;
+ let intervaloCancelamento = null;
 
  // STATUS E MENSAGENS
  const statusCorridas = {
@@ -109,10 +111,14 @@
              info.texto +
              (detalhes.length ? " " + detalhes.join(" | ") : "");
      }
+console.log(
+    "Painel da corrida atualizado:",
+    corrida.status,
+    corrida.id
+);
 
-     console.log("Painel da corrida atualizado:", corrida.status, corrida.id);
- }
-
+renderizarCancelamentoCorrida(corrida);
+}
  // PARAR A ESCUTA ANTERIOR
  async function pararEscutaCorridas() {
      if (canalCorridasCliente && typeof supabaseClient !== "undefined") {
@@ -311,3 +317,110 @@
          supabaseClient.removeChannel(canalCorridasCliente);
      }
  });
+
+
+function renderizarCancelamentoCorrida(corrida) {
+    const area = document.getElementById("areaCancelarCorrida");
+
+    if (!area) return;
+
+    if (intervaloCancelamento) {
+        clearInterval(intervaloCancelamento);
+        intervaloCancelamento = null;
+    }
+
+    area.innerHTML = "";
+
+    if (!corrida || corrida.status !== "aguardando" || !corrida.created_at) {
+        return;
+    }
+
+    const prazoFinal =
+        new Date(corrida.created_at).getTime() + 3 * 60 * 1000;
+
+    function atualizarContagem() {
+        const restante = prazoFinal - Date.now();
+
+        if (restante <= 0) {
+            clearInterval(intervaloCancelamento);
+            intervaloCancelamento = null;
+            area.innerHTML = "";
+            return;
+        }
+
+        const minutos = Math.floor(restante / 60000);
+        const segundos = Math.floor((restante % 60000) / 1000);
+
+        const tempo = document.getElementById("tempoCancelarCorrida");
+
+        if (tempo) {
+            tempo.textContent =
+                String(minutos).padStart(2, "0") + ":" +
+                String(segundos).padStart(2, "0");
+        }
+    }
+
+    area.innerHTML = `
+        <div class="cancelamento-corrida">
+            <p>
+                <i class="fa-solid fa-clock"></i>
+                Tempo para cancelar:
+                <strong id="tempoCancelarCorrida">03:00</strong>
+            </p>
+
+            <button type="button" class="btn btn-cancelar-corrida"
+                    id="btnCancelarCorrida">
+                <i class="fa-solid fa-xmark"></i>
+                Cancelar corrida
+            </button>
+        </div>
+    `;
+
+    atualizarContagem();
+
+    intervaloCancelamento = setInterval(atualizarContagem, 1000);
+
+    document.getElementById("btnCancelarCorrida")
+        .addEventListener("click", async function () {
+            const confirmar = confirm(
+                "Tem certeza de que deseja cancelar esta corrida?"
+            );
+
+            if (!confirmar) return;
+
+            const botao = this;
+            botao.disabled = true;
+            botao.textContent = "Cancelando...";
+
+            try {
+                const { data, error } = await supabaseClient.rpc(
+                    "cancelar_corrida_cliente",
+                    { p_corrida_id: corrida.id }
+                );
+
+                if (error) throw error;
+
+                console.log("Cancelamento confirmado:", data);
+
+                atualizarPainelCorrida({
+                    ...corrida,
+                    status: "cancelada"
+                });
+
+            } catch (erro) {
+                console.error("Erro ao cancelar corrida:", erro);
+
+                alert(
+                    erro.message ||
+                    "Não foi possível cancelar. O prazo pode ter terminado ou o motorista já ter aceitado."
+                );
+
+                botao.disabled = false;
+                botao.innerHTML =
+                    '<i class="fa-solid fa-xmark"></i> Cancelar corrida';
+
+                // Consultar o estado real antes de permitir nova tentativa.
+                await carregarCorridaAtualCliente();
+            }
+        });
+}
