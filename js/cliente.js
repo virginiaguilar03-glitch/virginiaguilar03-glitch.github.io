@@ -118,6 +118,7 @@ console.log(
 );
 
 renderizarCancelamentoCorrida(corrida);
+atualizarEtapasVisuaisCorrida(corrida);
 }
  // PARAR A ESCUTA ANTERIOR
  async function pararEscutaCorridas() {
@@ -423,4 +424,109 @@ function renderizarCancelamentoCorrida(corrida) {
                 await carregarCorridaAtualCliente();
             }
         });
+}
+
+function atualizarEtapasVisuaisCorrida(corrida) {
+    if (!corrida) return;
+
+    const etapas = Array.from(
+        document.querySelectorAll(".etapa-corrida")
+    );
+
+    const linhas = Array.from(
+        document.querySelectorAll(".linha-etapa")
+    );
+
+    const statusTexto = document.getElementById(
+        "statusVisualCorrida"
+    );
+
+    const carrinho = document.getElementById(
+        "carrinhoRota"
+    );
+
+    const status = corrida.status;
+
+    const ordemStatus = {
+        aguardando: 0,
+        aceita: 1,
+        motorista_a_caminho: 2,
+        chegou: 3,
+        em_andamento: 3,
+        aguardando_pagamento: 4,
+        concluida: 4
+    };
+
+    const textosStatus = {
+        aguardando: "Aguardando motorista",
+        aceita: "Motorista confirmou a corrida",
+        motorista_a_caminho: "Motorista a caminho",
+        chegou: "Motorista chegou à origem",
+        em_andamento: "Corrida em andamento",
+        aguardando_pagamento: "Aguardando pagamento",
+        concluida: "Corrida concluída",
+        cancelada: "Corrida cancelada",
+        recusada: "Solicitação recusada"
+    };
+
+    const indiceAtual = ordemStatus[status];
+
+    etapas.forEach(function (etapa, indice) {
+        etapa.classList.remove("atual", "concluida");
+
+        if (indiceAtual === undefined) return;
+
+        if (indice < indiceAtual) {
+            etapa.classList.add("concluida");
+        } else if (indice === indiceAtual) {
+            etapa.classList.add("atual");
+        }
+    });
+
+    linhas.forEach(function (linha, indice) {
+        linha.classList.toggle(
+            "concluida",
+            indiceAtual !== undefined && indice < indiceAtual
+        );
+    });
+
+    if (statusTexto) {
+        statusTexto.textContent =
+            textosStatus[status] || "Acompanhando corrida";
+    }
+
+    if (carrinho) {
+        const posicoes = {
+            aguardando: { left: "15%", top: "53%" },
+            aceita: { left: "27%", top: "48%" },
+            motorista_a_caminho: { left: "40%", top: "43%" },
+            chegou: { left: "48%", top: "42%" },
+            em_andamento: { left: "65%", top: "35%" },
+            aguardando_pagamento: { left: "78%", top: "28%" },
+            concluida: { left: "82%", top: "25%" }
+        };
+
+        const posicao = posicoes[status];
+
+        if (posicao) {
+            carrinho.style.left = posicao.left;
+            carrinho.style.top = posicao.top;
+        }
+    }
+
+    const painel = document.getElementById(
+        "progressoCorrida"
+    );
+
+    if (painel) {
+        painel.style.display =
+            status === "cancelada" || status === "recusada"
+                ? "none"
+                : "flex";
+    }
+
+    console.log(
+        "Etapas visuais atualizadas:",
+        status
+    );
 }
