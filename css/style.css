@@ -1224,3 +1224,42 @@ table tr:hover{
     }
 }
 
+
+/* CANCELAMENTO DA CORRIDA */
+
+.cancelamento-corrida {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #333;
+}
+
+.cancelamento-corrida p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    color: #FFD000;
+}
+
+#tempoCancelarCorrida {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.btn-cancelar-corrida {
+    margin-top: 10px;
+    background: #b42318;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-cancelar-corrida:hover {
+    background: #8f1d14;
+}
+
+.btn-cancelar-corrida:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
