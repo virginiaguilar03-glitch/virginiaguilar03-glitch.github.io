@@ -200,28 +200,137 @@
                  SOLICITAR CORRIDA
             ================================================== -->
 
-            <div class="card">
+            
+<div class="painel-acompanhamento">
 
-                <i class="fa-solid fa-taxi"></i>
+    <div class="acompanhamento-topo">
+        <div class="icone-corrida">
+            <i class="fa-solid fa-taxi"></i>
+        </div>
 
-                <h3>
-                    Solicitar Corrida
-                </h3>
+        <div>
+            <span class="acompanhamento-etiqueta">
+                ACOMPANHAMENTO EM TEMPO REAL
+            </span>
 
-                <p>
-                    Informe sua origem e destino para
-                    solicitar uma corrida.
-                </p>
+            <h3 id="tituloCorridaAtual">Nenhuma corrida solicitada</h3>
 
-                <a
-                    href="corrida.html"
-                    class="btn"
-                >
-                    Solicitar Corrida
-                </a>
+            <p id="textoCorridaAtual">
+                Quando você solicitar uma corrida, o acompanhamento aparecerá aqui.
+            </p>
+        </div>
+    </div>
 
+    <div class="progresso-corrida" id="progressoCorrida">
+
+        <div class="etapa-corrida" data-etapa="0">
+            <span class="etapa-icone">
+                <i class="fa-solid fa-clipboard-check"></i>
+            </span>
+            <span>Solicitada</span>
+        </div>
+
+        <div class="linha-etapa"></div>
+
+        <div class="etapa-corrida" data-etapa="1">
+            <span class="etapa-icone">
+                <i class="fa-solid fa-check"></i>
+            </span>
+            <span>Aceita</span>
+        </div>
+
+        <div class="linha-etapa"></div>
+
+        <div class="etapa-corrida" data-etapa="2">
+            <span class="etapa-icone">
+                <i class="fa-solid fa-car-side"></i>
+            </span>
+            <span>A caminho</span>
+        </div>
+
+        <div class="linha-etapa"></div>
+
+        <div class="etapa-corrida" data-etapa="3">
+            <span class="etapa-icone">
+                <i class="fa-solid fa-location-dot"></i>
+            </span>
+            <span>No local</span>
+        </div>
+
+        <div class="linha-etapa"></div>
+
+        <div class="etapa-corrida" data-etapa="4">
+            <span class="etapa-icone">
+                <i class="fa-solid fa-flag-checkered"></i>
+            </span>
+            <span>Concluída</span>
+        </div>
+
+    </div>
+
+    <div class="trajeto-visual">
+
+        <div class="trajeto-cabecalho">
+            <div>
+                <i class="fa-solid fa-route"></i>
+                Seu trajeto
             </div>
 
+            <span class="trajeto-status">
+                <span class="status-ponto"></span>
+                <span id="statusVisualCorrida">Aguardando solicitação</span>
+            </span>
+        </div>
+
+        <div class="mapa-ilustrativo" id="mapaIlustrativoCorrida">
+
+            <div class="rua rua-horizontal rua-1"></div>
+            <div class="rua rua-horizontal rua-2"></div>
+            <div class="rua rua-horizontal rua-3"></div>
+
+            <div class="rua rua-vertical rua-4"></div>
+            <div class="rua rua-vertical rua-5"></div>
+            <div class="rua rua-vertical rua-6"></div>
+
+            <div class="rota-amarela"></div>
+
+            <div class="ponto-origem">
+                <i class="fa-solid fa-circle-dot"></i>
+                <span>Origem</span>
+            </div>
+
+            <div class="carrinho-rota" id="carrinhoRota">
+                <i class="fa-solid fa-taxi"></i>
+            </div>
+
+            <div class="ponto-destino">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Destino</span>
+            </div>
+
+        </div>
+
+        <div class="legenda-trajeto">
+            <span>
+                <i class="fa-solid fa-circle-check"></i>
+                Status sincronizado com a corrida
+            </span>
+            <span class="legenda-aviso">
+                <i class="fa-solid fa-circle-info"></i>
+                Trajeto ilustrativo
+            </span>
+        </div>
+
+    </div>
+
+    <div id="areaCancelarCorrida"></div>
+
+    <a href="corrida.html" class="btn btn-nova-corrida">
+        <i class="fa-solid fa-plus"></i>
+        Solicitar uma Corrida
+    </a>
+
+</div>
 
 
             <!-- =================================================
