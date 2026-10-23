@@ -1,396 +1,313 @@
-// ============================================================
-// ÁREA DO CLIENTE - VAIDTÁXI
-// ============================================================
 
-
-// ============================================================
-// ELEMENTOS
-// ============================================================
-
-const nomeCliente =
-    document.getElementById("nomeCliente");
-
-const totalCorridas =
-    document.getElementById("totalCorridas");
-
-const totalAvaliacoes =
-    document.getElementById("totalAvaliacoes");
-
-const motoristasFavoritos =
-    document.getElementById("motoristasFavoritos");
-
-const btnSairTopo =
-    document.getElementById("btnSairTopo");
-
-const btnHistorico =
-    document.getElementById("btnHistorico");
-
-const btnAvaliacoes =
-    document.getElementById("btnAvaliacoes");
-
-
-// ============================================================
-// DADOS TEMPORÁRIOS
-// ============================================================
-//
-// Por enquanto, como combinamos de deixar o banco para depois,
-// os dados abaixo são apenas valores iniciais.
-//
-// Depois vamos substituir pelos dados reais do Supabase.
-//
-// ============================================================
-
-const cliente = {
-
-    nome: "Cliente",
-
-    corridas: 0,
-
-    avaliacoes: 0,
-
-    favoritos: 0
-
-};
-
-
-// ============================================================
-// CARREGAR DADOS DO CLIENTE
-// ============================================================
-
-function carregarCliente() {
-
-    if (nomeCliente) {
-
-        nomeCliente.textContent =
-            cliente.nome;
-
-    }
-
-
-    if (totalCorridas) {
-
-        totalCorridas.textContent =
-            cliente.corridas;
-
-    }
-
-
-    if (totalAvaliacoes) {
-
-        totalAvaliacoes.textContent =
-            cliente.avaliacoes;
-
-    }
-
-
-    if (motoristasFavoritos) {
-
-        motoristasFavoritos.textContent =
-            cliente.favoritos;
-
-    }
-
-}
-
-
-// ============================================================
-// VERIFICAR USUÁRIO LOGADO
-// ============================================================
-
-async function verificarCliente() {
-
-    // --------------------------------------------------------
-    // Verificar se o Supabase está disponível
-    // --------------------------------------------------------
-
-    if (
-        typeof supabaseClient ===
-        "undefined"
-    ) {
-
-        console.warn(
-            "Supabase não encontrado. Modo de desenvolvimento."
-        );
-
-        carregarCliente();
-
-        return;
-
-    }
-
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.auth.getSession();
-
-
-        // ----------------------------------------------------
-        // ERRO
-        // ----------------------------------------------------
-
-        if (error) {
-
-            console.error(
-                "Erro ao verificar sessão:",
-                error
-            );
-
-            carregarCliente();
-
-            return;
-
-        }
-
-
-        // ----------------------------------------------------
-        // SESSÃO
-        // ----------------------------------------------------
-
-        const sessao =
-            data.session;
-
-
-        // ----------------------------------------------------
-        // NENHUM USUÁRIO LOGADO
-        // ----------------------------------------------------
-
-        if (!sessao) {
-
-            console.warn(
-                "Nenhum usuário conectado."
-            );
-
-            /*
-             * Por enquanto não vamos expulsar
-             * o usuário da página.
-             *
-             * Depois vamos ativar a proteção
-             * definitiva das áreas.
-             */
-
-            carregarCliente();
-
-            return;
-
-        }
-
-
-        // ----------------------------------------------------
-        // USUÁRIO LOGADO
-        // ----------------------------------------------------
-
-        console.log(
-            "Cliente conectado:",
-            sessao.user
-        );
-
-
-        // ----------------------------------------------------
-        // DADOS DO USUÁRIO
-        // ----------------------------------------------------
-
-        const dadosUsuario =
-            sessao.user.user_metadata || {};
-
-
-        if (dadosUsuario.nome) {
-
-            cliente.nome =
-                dadosUsuario.nome;
-
-        }
-
-
-        // ----------------------------------------------------
-        // E-MAIL
-        // ----------------------------------------------------
-
-        console.log(
-            "E-mail do cliente:",
-            sessao.user.email
-        );
-
-
-        // ----------------------------------------------------
-        // ATUALIZAR TELA
-        // ----------------------------------------------------
-
-        carregarCliente();
-
-    }
-
-
-    catch (erro) {
-
-        console.error(
-            "Erro inesperado:",
-            erro
-        );
-
-        carregarCliente();
-
-    }
-
-}
-
-
-// ============================================================
-// BOTÃO SAIR
-// ============================================================
-
-if (btnSairTopo) {
-
-    btnSairTopo.addEventListener(
-        "click",
-        async function (event) {
-
-            event.preventDefault();
-
-
-            // ------------------------------------------------
-            // Verificar Supabase
-            // ------------------------------------------------
-
-            if (
-                typeof supabaseClient ===
-                "undefined"
-            ) {
-
-                localStorage.removeItem(
-                    "tipoAcesso"
-                );
-
-                localStorage.removeItem(
-                    "usuarioId"
-                );
-
-                window.location.href =
-                    "index.html";
-
-                return;
-
-            }
-
-
-            try {
-
-                // --------------------------------------------
-                // Encerrar sessão
-                // --------------------------------------------
-
-                const {
-                    error
-                } =
-                    await supabaseClient.auth.signOut();
-
-
-                if (error) {
-
-                    console.error(
-                        "Erro ao sair:",
-                        error
-                    );
-
-                }
-
-
-                // --------------------------------------------
-                // Limpar dados locais
-                // --------------------------------------------
-
-                localStorage.removeItem(
-                    "tipoAcesso"
-                );
-
-                localStorage.removeItem(
-                    "usuarioId"
-                );
-
-
-                // --------------------------------------------
-                // Voltar para o início
-                // --------------------------------------------
-
-                window.location.href =
-                    "index.html";
-
-            }
-
-
-            catch (erro) {
-
-                console.error(
-                    "Erro ao sair:",
-                    erro
-                );
-
-
-                window.location.href =
-                    "index.html";
-
-            }
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// BOTÃO HISTÓRICO
-// ============================================================
-
-if (btnHistorico) {
-
-    btnHistorico.addEventListener(
-        "click",
-        function () {
-
-            alert(
-                "O histórico de corridas será disponibilizado aqui."
-            );
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// BOTÃO AVALIAÇÕES
-// ============================================================
-
-if (btnAvaliacoes) {
-
-    btnAvaliacoes.addEventListener(
-        "click",
-        function () {
-
-            alert(
-                "Suas avaliações serão disponibilizadas aqui."
-            );
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// INICIAR ÁREA DO CLIENTE
-// ============================================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        carregarCliente();
-
-        verificarCliente();
-
-    }
-);
+ // ============================================================
+ // ÁREA DO CLIENTE - VAIDTÁXI
+ // Integração com Supabase e acompanhamento de corridas
+ // ============================================================
+
+ // ELEMENTOS
+ const nomeCliente = document.getElementById("nomeCliente");
+ const totalCorridas = document.getElementById("totalCorridas");
+ const totalAvaliacoes = document.getElementById("totalAvaliacoes");
+ const motoristasFavoritos = document.getElementById("motoristasFavoritos");
+ const btnSairTopo = document.getElementById("btnSairTopo");
+ const btnHistorico = document.getElementById("btnHistorico");
+ const btnAvaliacoes = document.getElementById("btnAvaliacoes");
+
+ const tituloCorridaAtual = document.getElementById("tituloCorridaAtual");
+ const textoCorridaAtual = document.getElementById("textoCorridaAtual");
+
+ // DADOS
+ const cliente = {
+     nome: "Cliente",
+     corridas: 0,
+     avaliacoes: 0,
+     favoritos: 0
+ };
+
+ let usuarioClienteId = null;
+ let canalCorridasCliente = null;
+ let corridaAtualClienteId = null;
+
+ // STATUS E MENSAGENS
+ const statusCorridas = {
+     aguardando: {
+         titulo: "Aguardando motorista",
+         texto: "Sua solicitação foi enviada. Estamos aguardando o atendimento."
+     },
+     aceita: {
+         titulo: "Corrida aceita!",
+         texto: "O motorista aceitou sua corrida."
+     },
+     motorista_a_caminho: {
+         titulo: "Motorista a caminho",
+         texto: "O motorista está indo até o local de partida."
+     },
+     chegou: {
+         titulo: "Motorista chegou",
+         texto: "O motorista chegou ao local de partida."
+     },
+     em_andamento: {
+         titulo: "Corrida em andamento",
+         texto: "Você está a caminho do destino."
+     },
+     aguardando_pagamento: {
+         titulo: "Corrida finalizada",
+         texto: "Sua corrida foi finalizada. Aguardando pagamento."
+     },
+     concluida: {
+         titulo: "Corrida concluída!",
+         texto: "Sua corrida foi concluída com sucesso."
+     },
+     cancelada: {
+         titulo: "Corrida cancelada",
+         texto: "Esta corrida foi cancelada."
+     },
+     recusada: {
+         titulo: "Solicitação recusada",
+         texto: "O motorista recusou esta solicitação. Você pode solicitar outra corrida."
+     }
+ };
+
+ // CARREGAR INFORMAÇÕES BÁSICAS
+ function carregarCliente() {
+     if (nomeCliente) nomeCliente.textContent = cliente.nome;
+     if (totalCorridas) totalCorridas.textContent = cliente.corridas;
+     if (totalAvaliacoes) totalAvaliacoes.textContent = cliente.avaliacoes;
+     if (motoristasFavoritos) motoristasFavoritos.textContent = cliente.favoritos;
+ }
+
+ // ATUALIZAR A SEÇÃO "CORRIDA ATUAL"
+ function atualizarPainelCorrida(corrida) {
+     if (!corrida) return;
+
+     const info = statusCorridas[corrida.status] || {
+         titulo: "Status da corrida",
+         texto: "Situação atual: " + (corrida.status || "não informado") + "."
+     };
+
+     if (tituloCorridaAtual) {
+         tituloCorridaAtual.textContent = info.titulo;
+     }
+
+     if (textoCorridaAtual) {
+         const detalhes = [];
+
+         if (corrida.origem) detalhes.push("Origem: " + corrida.origem);
+         if (corrida.destino) detalhes.push("Destino: " + corrida.destino);
+
+         if (corrida.valor_final !== null && corrida.valor_final !== undefined) {
+             detalhes.push(
+                 "Valor final: R$ " +
+                 Number(corrida.valor_final).toLocaleString("pt-BR", {
+                     minimumFractionDigits: 2,
+                     maximumFractionDigits: 2
+                 })
+             );
+         }
+
+         textoCorridaAtual.textContent =
+             info.texto +
+             (detalhes.length ? " " + detalhes.join(" | ") : "");
+     }
+
+     console.log("Painel da corrida atualizado:", corrida.status, corrida.id);
+ }
+
+ // PARAR A ESCUTA ANTERIOR
+ async function pararEscutaCorridas() {
+     if (canalCorridasCliente && typeof supabaseClient !== "undefined") {
+         await supabaseClient.removeChannel(canalCorridasCliente);
+         canalCorridasCliente = null;
+     }
+ }
+
+ // ACOMPANHAR ALTERAÇÕES DE UMA CORRIDA
+ async function acompanharCorrida(corridaId) {
+     if (!corridaId || typeof supabaseClient === "undefined") return;
+
+     await pararEscutaCorridas();
+     corridaAtualClienteId = corridaId;
+
+     canalCorridasCliente = supabaseClient
+         .channel("cliente-corrida-" + corridaId)
+         .on(
+             "postgres_changes",
+             {
+                 event: "UPDATE",
+                 schema: "public",
+                 table: "corridas",
+                 filter: "id=eq." + corridaId
+             },
+             (payload) => {
+                 console.log("Atualização recebida para a corrida:", payload.new);
+                 atualizarPainelCorrida(payload.new);
+             }
+         )
+         .subscribe((status) => {
+             console.log("Realtime da corrida do cliente:", status);
+         });
+ }
+
+ // BUSCAR A CORRIDA MAIS RECENTE DO CLIENTE
+ async function carregarCorridaAtualCliente() {
+     if (!usuarioClienteId || typeof supabaseClient === "undefined") return;
+
+     try {
+         const { data, error } = await supabaseClient
+             .from("corridas")
+             .select("*")
+             .eq("cliente_id", usuarioClienteId)
+             .order("created_at", { ascending: false })
+             .limit(1)
+             .maybeSingle();
+
+         if (error) {
+             console.error("Erro ao buscar corrida do cliente:", error);
+             return;
+         }
+
+         if (!data) {
+             if (tituloCorridaAtual) {
+                 tituloCorridaAtual.textContent = "Nenhuma corrida solicitada";
+             }
+
+             if (textoCorridaAtual) {
+                 textoCorridaAtual.textContent =
+                     "Quando você solicitar uma corrida, o acompanhamento aparecerá nesta área.";
+             }
+
+             return;
+         }
+
+         console.log("Corrida mais recente do cliente:", data);
+         atualizarPainelCorrida(data);
+         await acompanharCorrida(data.id);
+     } catch (erro) {
+         console.error("Erro ao carregar acompanhamento:", erro);
+     }
+ }
+
+ // VERIFICAR USUÁRIO E INICIAR INTEGRAÇÃO
+ async function verificarCliente() {
+     if (typeof supabaseClient === "undefined") {
+         console.warn("Supabase não encontrado.");
+         carregarCliente();
+         return;
+     }
+
+     try {
+         const { data, error } = await supabaseClient.auth.getSession();
+
+         if (error) {
+             console.error("Erro ao verificar sessão:", error);
+             carregarCliente();
+             return;
+         }
+
+         const sessao = data.session;
+
+         if (!sessao) {
+             console.warn("Nenhum usuário conectado.");
+             carregarCliente();
+             return;
+         }
+
+         const usuario = sessao.user;
+         usuarioClienteId = usuario.id;
+
+         const dadosUsuario = usuario.user_metadata || {};
+         cliente.nome =
+             dadosUsuario.nome ||
+             dadosUsuario.name ||
+             usuario.email?.split("@")[0] ||
+             "Cliente";
+
+         console.log("Cliente conectado:", usuario.id);
+         carregarCliente();
+
+         await carregarCorridaAtualCliente();
+
+         // Detectar novas corridas do próprio cliente.
+         // A inscrição UPDATE da corrida será refeita após nova solicitação.
+         canalCorridasCliente = supabaseClient
+             .channel("cliente-novas-corridas-" + usuario.id)
+             .on(
+                 "postgres_changes",
+                 {
+                     event: "INSERT",
+                     schema: "public",
+                     table: "corridas",
+                     filter: "cliente_id=eq." + usuario.id
+                 },
+                 (payload) => {
+                     console.log("Nova corrida detectada:", payload.new);
+                     atualizarPainelCorrida(payload.new);
+                     acompanharCorrida(payload.new.id);
+                 }
+             )
+             .subscribe((status) => {
+                 console.log("Escuta de novas corridas:", status);
+             });
+
+     } catch (erro) {
+         console.error("Erro inesperado ao verificar cliente:", erro);
+         carregarCliente();
+     }
+ }
+
+ // BOTÃO SAIR
+ if (btnSairTopo) {
+     btnSairTopo.addEventListener("click", async function (event) {
+         event.preventDefault();
+
+         if (typeof supabaseClient === "undefined") {
+             localStorage.removeItem("tipoAcesso");
+             localStorage.removeItem("usuarioId");
+             localStorage.removeItem("corridaAtual");
+             window.location.href = "index.html";
+             return;
+         }
+
+         try {
+             const { error } = await supabaseClient.auth.signOut();
+
+             if (error) console.error("Erro ao sair:", error);
+
+             localStorage.removeItem("tipoAcesso");
+             localStorage.removeItem("usuarioId");
+             localStorage.removeItem("corridaAtual");
+
+             window.location.href = "index.html";
+         } catch (erro) {
+             console.error("Erro ao sair:", erro);
+             window.location.href = "index.html";
+         }
+     });
+ }
+
+ // BOTÃO HISTÓRICO
+ if (btnHistorico) {
+     btnHistorico.addEventListener("click", function () {
+         alert("O histórico de corridas será disponibilizado aqui.");
+     });
+ }
+
+ // BOTÃO AVALIAÇÕES
+ if (btnAvaliacoes) {
+     btnAvaliacoes.addEventListener("click", function () {
+         alert("Suas avaliações serão disponibilizadas aqui.");
+     });
+ }
+
+ // INICIALIZAÇÃO
+ document.addEventListener("DOMContentLoaded", function () {
+     carregarCliente();
+     verificarCliente();
+ });
+
+ // LIMPAR CANAIS AO SAIR DA PÁGINA
+ window.addEventListener("beforeunload", function () {
+     if (canalCorridasCliente && typeof supabaseClient !== "undefined") {
+         supabaseClient.removeChannel(canalCorridasCliente);
+     }
+ });
