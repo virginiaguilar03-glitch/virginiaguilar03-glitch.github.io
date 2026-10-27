@@ -1022,3 +1022,389 @@ if (formConfiguracoesParceiro) {
         }
     });
 }
+
+/* ============================================================
+   VAIDTÁXI — CONTROLE DA CORRIDA ATIVA DO MOTORISTA
+   ============================================================ */
+
+let canalAtualizacoesCorridaMotorista = null;
+
+const statusAtivosMotorista = [
+    "aceita",
+    "motorista_a_caminho",
+    "chegou",
+    "em_andamento",
+    "aguardando_pagamento"
+];
+
+function obterPainelCorridaMotorista() {
+    let painel = document.getElementById(
+        "painelCorridaAtivaMotorista"
+    );
+
+    if (painel) return painel;
+
+    const lista = document.getElementById("listaCorridas");
+
+    if (!lista || !lista.parentNode) {
+        console.error(
+            "Não foi possível localizar #listaCorridas."
+        );
+        return null;
+    }
+
+    painel = document.createElement("section");
+    painel.id = "painelCorridaAtivaMotorista";
+
+    Object.assign(painel.style, {
+        display: "none",
+        background: "#111",
+        color: "#fff",
+        border: "1px solid #FFD400",
+        borderRadius: "12px",
+        padding: "18px",
+        marginBottom: "20px"
+    });
+
+    lista.parentNode.insertBefore(painel, lista);
+
+    console.log("Painel da corrida ativa criado.");
+
+    return painel;
+}
+
+function escaparTextoCorridaMotorista(valor) {
+    return String(valor ?? "").replace(/[&<>"']/g, caractere => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[caractere]);
+}
+
+async function carregarPainelCorridaAtiva(motoristaId) {
+    const painel = obterPainelCorridaMotorista();
+
+    if (!painel || !motoristaId) return;
+
+    try {
+        const { data: corrida, error } = await supabaseClient
+            .from("corridas")
+            .select("*")
+            .eq("motorista_id", motoristaId)
+            .in("status", statusAtivosMotorista)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        if (!corrida) {
+            painel.style.display = "none";
+            painel.innerHTML = "";
+            console.log("Nenhuma corrida ativa para controlar.");
+            return;
+        }
+
+        painel.style.display = "block";
+
+        const origem = escaparTextoCorridaMotorista(
+            corrida.origem || "Não informada"
+        );
+
+        const destino = escaparTextoCorridaMotorista(
+            corrida.destino || "Não informado"
+        );
+
+        const clienteConfirmou =
+            corrida.cliente_confirmou_finalizacao === true;
+
+        const motoristaConfirmou =
+            corrida.motorista_confirmou_finalizacao === true;
+
+        let botaoAcao = "";
+
+        if (corrida.status === "aceita") {
+            botaoAcao = `
+                <button type="button" id="btnAvancarCorridaMotorista">
+                    Iniciar deslocamento até o cliente
+                </button>
+            `;
+        } else if (corrida.status === "motorista_a_caminho") {
+            botaoAcao = `
+                <button type="button" id="btnAvancarCorridaMotorista">
+                    Cheguei ao local
+                </button>
+            `;
+        } else if (corrida.status === "chegou") {
+            botaoAcao = `
+                <button type="button" id="btnAvancarCorridaMotorista">
+                    Iniciar corrida
+                </button>
+            `;
+        } else if (corrida.status === "em_andamento") {
+            botaoAcao = `
+                <label for="valorFinalCorridaMotorista">
+                    Valor final da corrida (R$)
+                </label>
+
+                <input
+                    type="number"
+                    id="valorFinalCorridaMotorista"
+                    min="0.01"
+                    step="0.01"
+                    required
+                    placeholder="Ex.: 25,00"
+                    style="display:block;width:100%;max-width:260px;padding:10px;margin:8px 0 14px;box-sizing:border-box;"
+                >
+
+                <button type="button" id="btnFinalizarCorridaMotorista">
+                    Finalizar corrida e confirmar
+                </button>
+            `;
+        } else if (corrida.status === "aguardando_pagamento") {
+            botaoAcao = `
+                <p>
+                    ${motoristaConfirmou
+                        ? "✅ Você já confirmou a finalização."
+                        : "Aguardando sua confirmação de finalização."}
+                </p>
+                <p>
+                    ${clienteConfirmou
+                        ? "✅ O cliente já confirmou a finalização."
+                        : "⏳ Aguardando confirmação do cliente."}
+                </p>
+            `;
+        }
+
+        painel.innerHTML = `
+            <h3 style="color:#FFD400;margin-top:0;">
+                <i class="fa-solid fa-route"></i>
+                Corrida em andamento
+            </h3>
+
+            <p><strong>Status:</strong>
+                ${escaparTextoCorridaMotorista(corrida.status)}
+            </p>
+
+            <p><strong>Origem:</strong> ${origem}</p>
+            <p><strong>Destino:</strong> ${destino}</p>
+
+            ${corrida.valor_final !== null &&
+              corrida.valor_final !== undefined
+                ? `<p><strong>Valor final:</strong>
+                    ${Number(corrida.valor_final).toLocaleString(
+                        "pt-BR",
+                        { style: "currency", currency: "BRL" }
+                    )}
+                   </p>`
+                : ""}
+
+            <div style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
+                ${botaoAcao}
+            </div>
+
+            <p id="mensagemCorridaAtivaMotorista"
+               role="status"
+               style="color:#FFD400;"></p>
+        `;
+
+        const botaoAvancar = document.getElementById(
+            "btnAvancarCorridaMotorista"
+        );
+
+        if (botaoAvancar) {
+            botaoAvancar.addEventListener("click", async () => {
+                const proximosStatus = {
+                    aceita: "motorista_a_caminho",
+                    motorista_a_caminho: "chegou",
+                    chegou: "em_andamento"
+                };
+
+                const novoStatus = proximosStatus[corrida.status];
+
+                if (novoStatus) {
+                    await atualizarEtapaCorridaMotorista(
+                        corrida,
+                        novoStatus,
+                        motoristaId
+                    );
+                }
+            });
+        }
+
+        const botaoFinalizar = document.getElementById(
+            "btnFinalizarCorridaMotorista"
+        );
+
+        if (botaoFinalizar) {
+            botaoFinalizar.addEventListener("click", async () => {
+                const campo = document.getElementById(
+                    "valorFinalCorridaMotorista"
+                );
+
+                const valor = Number(campo?.value);
+
+                if (!Number.isFinite(valor) || valor <= 0) {
+                    alert("Informe um valor final maior que zero.");
+                    campo?.focus();
+                    return;
+                }
+
+                botaoFinalizar.disabled = true;
+                botaoFinalizar.textContent = "Confirmando...";
+
+                try {
+                    const { data: atualizada, error } =
+                        await supabaseClient
+                            .from("corridas")
+                            .update({
+                                valor_final: valor,
+                                motorista_confirmou_finalizacao: true,
+                                status: clienteConfirmou
+                                    ? "concluida"
+                                    : "aguardando_pagamento"
+                            })
+                            .eq("id", corrida.id)
+                            .eq("motorista_id", motoristaId)
+                            .eq("status", "em_andamento")
+                            .select("id,status");
+
+                    if (error) throw error;
+
+                    if (!atualizada || atualizada.length === 0) {
+                        throw new Error(
+                            "A corrida mudou de status ou não foi possível atualizá-la."
+                        );
+                    }
+
+                    console.log(
+                        "Motorista confirmou a finalização:",
+                        atualizada[0]
+                    );
+
+                    alert(
+                        clienteConfirmou
+                            ? "Corrida concluída! Os dois confirmaram."
+                            : "Sua confirmação foi registrada. Agora o cliente precisa confirmar."
+                    );
+
+                    await carregarPainelCorridaAtiva(motoristaId);
+                    await carregarCorridasDoMotorista(motoristaId);
+
+                } catch (erro) {
+                    console.error(
+                        "Erro ao finalizar corrida:",
+                        erro
+                    );
+
+                    alert(
+                        erro.message ||
+                        "Não foi possível finalizar a corrida."
+                    );
+
+                    await carregarPainelCorridaAtiva(motoristaId);
+                }
+            });
+        }
+
+        console.log(
+            "Painel da corrida ativa atualizado:",
+            corrida.id,
+            corrida.status
+        );
+
+    } catch (erro) {
+        console.error(
+            "Erro ao carregar painel da corrida ativa:",
+            erro
+        );
+    }
+}
+
+async function atualizarEtapaCorridaMotorista(
+    corrida,
+    novoStatus,
+    motoristaId
+) {
+    const painel = obterPainelCorridaMotorista();
+
+    const mensagem = document.getElementById(
+        "mensagemCorridaAtivaMotorista"
+    );
+
+    try {
+        const { data, error } = await supabaseClient
+            .from("corridas")
+            .update({ status: novoStatus })
+            .eq("id", corrida.id)
+            .eq("motorista_id", motoristaId)
+            .eq("status", corrida.status)
+            .select("id,status");
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            throw new Error(
+                "A etapa não foi atualizada. Confira o status atual da corrida."
+            );
+        }
+
+        console.log(
+            "Etapa da corrida atualizada:",
+            data[0]
+        );
+
+        await carregarPainelCorridaAtiva(motoristaId);
+
+        if (mensagem && painel) {
+            mensagem.textContent = "Etapa atualizada com sucesso!";
+        }
+
+        await carregarCorridasDoMotorista(motoristaId);
+
+    } catch (erro) {
+        console.error("Erro ao avançar a corrida:", erro);
+
+        alert(
+            erro.message ||
+            "Não foi possível atualizar a etapa da corrida."
+        );
+    }
+}
+
+function ouvirAtualizacoesCorridaMotorista(motoristaId) {
+    if (canalAtualizacoesCorridaMotorista) {
+        supabaseClient.removeChannel(
+            canalAtualizacoesCorridaMotorista
+        );
+    }
+
+    canalAtualizacoesCorridaMotorista = supabaseClient
+        .channel("atualizacoes-corrida-motorista-" + motoristaId)
+        .on(
+            "postgres_changes",
+            {
+                event: "UPDATE",
+                schema: "public",
+                table: "corridas",
+                filter: "motorista_id=eq." + motoristaId
+            },
+            async payload => {
+                console.log(
+                    "Atualização da corrida recebida pelo motorista:",
+                    payload.new
+                );
+
+                await carregarPainelCorridaAtiva(motoristaId);
+                await carregarCorridasDoMotorista(motoristaId);
+            }
+        )
+        .subscribe(status => {
+            console.log(
+                "Canal de atualizações do motorista:",
+                status
+            );
+        });
+}
