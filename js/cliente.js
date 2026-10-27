@@ -119,6 +119,7 @@ function atualizarPainelCorrida(corrida) {
 
     renderizarCancelamentoCorrida(corrida);
     atualizarEtapasVisuaisCorrida(corrida);
+    renderizarConfirmacaoFinalizacaoCliente(corrida);
 }
 
 // PARAR A ESCUTA ANTERIOR
@@ -823,3 +824,242 @@ function atualizarEtapasVisuaisCorrida(corrida) {
         status
     );
 }
+
+
+/* ============================================================
+   VAIDTÁXI — CONFIRMAÇÃO DA FINALIZAÇÃO PELO CLIENTE
+   ============================================================ */
+
+function renderizarConfirmacaoFinalizacaoCliente(corrida) {
+    const textoCorrida = document.getElementById("textoCorridaAtual");
+
+    if (!textoCorrida || !corrida) {
+        console.warn(
+            "Painel do cliente ou corrida não encontrado.",
+            { corrida }
+        );
+        return;
+    }
+
+    let painel = document.getElementById(
+        "confirmacaoFinalizacaoCliente"
+    );
+
+    if (!painel) {
+        painel = document.createElement("section");
+        painel.id = "confirmacaoFinalizacaoCliente";
+
+        Object.assign(painel.style, {
+            background: "#111",
+            color: "#fff",
+            border: "1px solid #FFD400",
+            borderRadius: "12px",
+            padding: "16px",
+            marginTop: "16px"
+        });
+
+        textoCorrida.insertAdjacentElement("afterend", painel);
+    }
+
+    const status = corrida.status;
+
+    // Mostrar a confirmação somente na etapa de finalização.
+    if (
+        status !== "aguardando_pagamento" &&
+        status !== "concluida"
+    ) {
+        painel.style.display = "none";
+        painel.innerHTML = "";
+        return;
+    }
+
+    painel.style.display = "block";
+
+    const valor = Number(corrida.valor_final);
+    const valorFormatado = Number.isFinite(valor)
+        ? valor.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        })
+        : "Valor ainda não informado";
+
+    const motoristaConfirmou =
+        corrida.motorista_confirmou_finalizacao === true;
+
+    const clienteConfirmou =
+        corrida.cliente_confirmou_finalizacao === true;
+
+    if (status === "concluida") {
+        painel.innerHTML = `
+            <h3 style="color:#FFD400;margin-top:0;">
+                Corrida concluída!
+            </h3>
+            <p>Valor final: <strong>${valorFormatado}</strong></p>
+            <p>✅ Motorista confirmou a finalização.</p>
+            <p>✅ Cliente confirmou a finalização.</p>
+        `;
+        return;
+    }
+
+    painel.innerHTML = `
+        <h3 style="color:#FFD400;margin-top:0;">
+            Confirmação da corrida
+        </h3>
+
+        <p>Confira o valor final informado pelo motorista:</p>
+
+        <p style="font-size:1.25rem;">
+            <strong>${valorFormatado}</strong>
+        </p>
+
+        <p>
+            ${motoristaConfirmou
+                ? "✅ O motorista confirmou a finalização."
+                : "⏳ Aguardando confirmação do motorista."}
+        </p>
+
+        <p>
+            ${clienteConfirmou
+                ? "✅ Você já confirmou a finalização."
+                : "Sua confirmação é necessária para concluir a corrida."}
+        </p>
+
+        <button
+            type="button"
+            id="btnConfirmarFinalizacaoCliente"
+            ${!motoristaConfirmou || clienteConfirmou ? "disabled" : ""}
+            style="
+                background:#FFD400;
+                color:#111;
+                border:0;
+                border-radius:8px;
+                padding:12px 16px;
+                font-weight:bold;
+                cursor:pointer;
+                opacity:${!motoristaConfirmou || clienteConfirmou ? "0.6" : "1"};
+            "
+        >
+            ${clienteConfirmou
+                ? "Finalização confirmada"
+                : "Confirmar finalização"}
+        </button>
+
+        <p
+            id="mensagemFinalizacaoCliente"
+            role="status"
+            style="color:#FFD400;"
+        ></p>
+    `;
+
+    const botao = document.getElementById(
+        "btnConfirmarFinalizacaoCliente"
+    );
+
+    if (!botao || !motoristaConfirmou || clienteConfirmou) {
+        return;
+    }
+
+    botao.addEventListener("click", async () => {
+        if (!usuarioClienteId) {
+            alert("Sua sessão não foi identificada. Entre novamente.");
+            return;
+        }
+
+        const confirmar = window.confirm(
+            `Você confirma a finalização da corrida no valor de ${valorFormatado}?`
+        );
+
+        if (!confirmar) return;
+
+        botao.disabled = true;
+        botao.textContent = "Registrando confirmação...";
+
+        try {
+            // Consultar novamente para conferir as confirmações atuais.
+            const { data: corridaAtual, error: erroConsulta } =
+                await supabaseClient
+                    .from("corridas")
+                    .select(
+                        "id, status, cliente_id, motorista_confirmou_finalizacao, cliente_confirmou_finalizacao, valor_final"
+                    )
+                    .eq("id", corrida.id)
+                    .eq("cliente_id", usuarioClienteId)
+                    .maybeSingle();
+
+            if (erroConsulta) throw erroConsulta;
+
+            if (!corridaAtual) {
+                throw new Error(
+                    "Não foi possível localizar sua corrida."
+                );
+            }
+
+            if (
+                corridaAtual.status !== "aguardando_pagamento" &&
+                corridaAtual.status !== "concluida"
+            ) {
+                throw new Error(
+                    "O status da corrida mudou. Atualize a página e confira."
+                );
+            }
+
+            if (corridaAtual.cliente_confirmou_finalizacao) {
+                alert("Sua confirmação já está registrada.");
+                await carregarCorridaAtualCliente();
+                return;
+            }
+
+            if (!corridaAtual.motorista_confirmou_finalizacao) {
+                throw new Error(
+                    "O motorista ainda não confirmou a finalização."
+                );
+            }
+
+            const { data: atualizada, error } = await supabaseClient
+                .from("corridas")
+                .update({
+                    cliente_confirmou_finalizacao: true,
+                    status: "concluida"
+                })
+                .eq("id", corrida.id)
+                .eq("cliente_id", usuarioClienteId)
+                .eq("status", "aguardando_pagamento")
+                .eq("motorista_confirmou_finalizacao", true)
+                .eq("cliente_confirmou_finalizacao", false)
+                .select("id, status");
+
+            if (error) throw error;
+
+            if (!atualizada || atualizada.length === 0) {
+                throw new Error(
+                    "A confirmação não foi salva. Verifique as permissões da tabela corridas no Supabase e tente novamente."
+                );
+            }
+
+            console.log(
+                "Cliente confirmou a finalização:",
+                atualizada[0]
+            );
+
+            alert(
+                "Finalização confirmada! A corrida foi concluída."
+            );
+
+            await carregarCorridaAtualCliente();
+
+        } catch (erro) {
+            console.error(
+                "Erro na confirmação de finalização do cliente:",
+                erro
+            );
+
+            alert(
+                erro.message ||
+                "Não foi possível confirmar a finalização."
+            );
+
+            await carregarCorridaAtualCliente();
+        }
+    });
+}
+
