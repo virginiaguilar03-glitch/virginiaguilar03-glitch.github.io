@@ -678,7 +678,11 @@ async function verificarSessaoParceiro() {
         await carregarCorridasDoMotorista(
             usuario.id
         );
-
+        // Iniciar painel de controle da corrida ativa
+        await carregarPainelCorridaAtiva(usuario.id);
+        
+        // Escutar alterações de status e confirmações
+        ouvirAtualizacoesCorridaMotorista(usuario.id);
 
     // ====================================================
     // OUVIR NOVAS CORRIDAS
