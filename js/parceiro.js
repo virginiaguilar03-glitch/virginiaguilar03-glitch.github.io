@@ -425,18 +425,30 @@ async function carregarDadosMotorista(usuarioId) {
         }
 
         
-    for (const corrida of corridas) {
-        const { data: nomeCliente, error: erroNome } =
-            await supabaseClient.rpc(
-                "nome_cliente_da_corrida",
-                { p_corrida_id: corrida.id }
-            );
-    
-        corrida.nome_cliente = erroNome
-            ? "Cliente"
-            : (nomeCliente || "Cliente");
-    }
-
+          for (const corrida of corridas) {
+            console.log("🚕 Corrida recebida:", corrida.id);
+            console.log("🔎 Buscando nome do cliente...");
+        
+            const { data: nomeCliente, error: erroNome } =
+                await supabaseClient.rpc(
+                    "nome_cliente_da_corrida",
+                    { p_corrida_id: corrida.id }
+                );
+        
+            if (erroNome) {
+                console.error(
+                    "❌ Erro ao buscar nome do cliente:",
+                    erroNome
+                );
+        
+                corrida.nome_cliente = "Cliente";
+            } else {
+                console.log("👤 Nome retornado pelo Supabase:", nomeCliente);
+        
+                corrida.nome_cliente =
+                    nomeCliente || "Cliente";
+            }
+        }
         lista.innerHTML = "";
     
         corridas.forEach(corrida => {
