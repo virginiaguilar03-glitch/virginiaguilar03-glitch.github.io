@@ -1277,10 +1277,13 @@ async function carregarPainelCorridaAtiva(motoristaId) {
                             .update({
                                 valor_final: valor,
                                 motorista_confirmou_finalizacao: true,
+                                motorista_confirmou_finalizacao_em:
+                                    new Date().toISOString(),
                                 status: clienteConfirmou
                                     ? "concluida"
                                     : "aguardando_pagamento"
                             })
+                        
                             .eq("id", corrida.id)
                             .eq("motorista_id", motoristaId)
                             .eq("status", "em_andamento")
