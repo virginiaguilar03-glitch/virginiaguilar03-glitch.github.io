@@ -1412,3 +1412,274 @@ function ouvirAtualizacoesCorridaMotorista(motoristaId) {
             );
         });
 }
+
+/* ============================================================
+   VAIDTÁXI — HISTÓRICO COMPLETO DE CORRIDAS DO MOTORISTA
+   ============================================================ */
+
+let canalHistoricoMotorista = null;
+
+const nomesStatusHistorico = {
+    aguardando: "Pendente",
+    aceita: "Aceita",
+    motorista_a_caminho: "Motorista a caminho",
+    chegou: "Motorista chegou",
+    em_andamento: "Em andamento",
+    aguardando_pagamento: "Aguardando confirmação do cliente",
+    concluida: "Concluída",
+    cancelada: "Cancelada",
+    recusada: "Recusada"
+};
+
+function escaparHistoricoMotorista(valor) {
+    return String(valor ?? "").replace(/[&<>"']/g, caractere => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[caractere]);
+}
+
+function obterAreaHistoricoMotorista() {
+    const lista = document.getElementById("listaCorridas");
+
+    if (!lista || !lista.parentElement) {
+        console.error("Não encontrei #listaCorridas para montar o histórico.");
+        return null;
+    }
+
+    let area = document.getElementById("historicoCorridasMotorista");
+
+    if (!area) {
+        area = document.createElement("section");
+        area.id = "historicoCorridasMotorista";
+
+        Object.assign(area.style, {
+            marginTop: "24px",
+            padding: "18px",
+            background: "#111",
+            color: "#fff",
+            border: "1px solid #333",
+            borderRadius: "12px"
+        });
+
+        lista.insertAdjacentElement("afterend", area);
+    }
+
+    return area;
+}
+
+async function carregarHistoricoCorridasMotorista(motoristaId) {
+    const area = obterAreaHistoricoMotorista();
+
+    if (!area || !motoristaId) return;
+
+    area.innerHTML = `
+        <h3 style="color:#FFD400;margin-top:0;">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            Histórico de corridas
+        </h3>
+        <p>Carregando corridas...</p>
+    `;
+
+    try {
+        const { data: corridas, error } = await supabaseClient
+            .from("corridas")
+            .select("*")
+            .eq("motorista_id", motoristaId)
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        const registros = corridas || [];
+
+        area.innerHTML = `
+            <h3 style="color:#FFD400;margin-top:0;">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Histórico de corridas
+            </h3>
+
+            <label for="filtroHistoricoMotorista">
+                Filtrar por situação:
+            </label>
+
+            <select
+                id="filtroHistoricoMotorista"
+                style="display:block;width:100%;max-width:360px;padding:10px;margin:8px 0 18px;border-radius:8px;"
+            >
+                <option value="todas">Todas as corridas</option>
+                <option value="aguardando">Pendentes</option>
+                <option value="ativa">Em andamento</option>
+                <option value="aguardando_pagamento">
+                    Aguardando confirmação do cliente
+                </option>
+                <option value="concluida">Concluídas</option>
+                <option value="cancelada">Canceladas</option>
+                <option value="recusada">Recusadas</option>
+            </select>
+
+            <p id="totalHistoricoMotorista">
+                ${registros.length} corrida(s) registrada(s)
+            </p>
+
+            <div id="itensHistoricoMotorista"></div>
+        `;
+
+        const filtro = document.getElementById(
+            "filtroHistoricoMotorista"
+        );
+
+        const listaHistorico = document.getElementById(
+            "itensHistoricoMotorista"
+        );
+
+        function renderizarHistorico() {
+            const valorFiltro = filtro.value;
+
+            const filtradas = registros.filter(corrida => {
+                if (valorFiltro === "todas") return true;
+
+                if (valorFiltro === "ativa") {
+                    return [
+                        "aceita",
+                        "motorista_a_caminho",
+                        "chegou",
+                        "em_andamento"
+                    ].includes(corrida.status);
+                }
+
+                return corrida.status === valorFiltro;
+            });
+
+            document.getElementById(
+                "totalHistoricoMotorista"
+            ).textContent =
+                `${filtradas.length} corrida(s) nesta categoria`;
+
+            if (filtradas.length === 0) {
+                listaHistorico.innerHTML = `
+                    <p style="color:#bbb;">
+                        Nenhuma corrida encontrada nesta categoria.
+                    </p>
+                `;
+                return;
+            }
+
+            listaHistorico.innerHTML = filtradas.map(corrida => {
+                const status = escaparHistoricoMotorista(
+                    nomesStatusHistorico[corrida.status] ||
+                    corrida.status ||
+                    "Status desconhecido"
+                );
+
+                const origem = escaparHistoricoMotorista(
+                    corrida.origem || "Não informada"
+                );
+
+                const destino = escaparHistoricoMotorista(
+                    corrida.destino || "Não informado"
+                );
+
+                const data = corrida.created_at
+                    ? new Date(corrida.created_at).toLocaleString("pt-BR")
+                    : "Data não informada";
+
+                const valor = corrida.valor_final !== null &&
+                    corrida.valor_final !== undefined
+                    ? Number(corrida.valor_final).toLocaleString(
+                        "pt-BR",
+                        { style: "currency", currency: "BRL" }
+                    )
+                    : "Ainda não informado";
+
+                const confirmacaoMotorista =
+                    corrida.motorista_confirmou_finalizacao === true
+                        ? "Sim"
+                        : "Não";
+
+                const confirmacaoCliente =
+                    corrida.cliente_confirmou_finalizacao === true
+                        ? "Sim"
+                        : "Não";
+
+                return `
+                    <article style="
+                        border:1px solid #333;
+                        border-radius:10px;
+                        padding:14px;
+                        margin-bottom:12px;
+                        background:#1b1b1b;
+                    ">
+                        <strong style="color:#FFD400;">
+                            ${status}
+                        </strong>
+
+                        <p><strong>Origem:</strong> ${origem}</p>
+                        <p><strong>Destino:</strong> ${destino}</p>
+                        <p><strong>Data da solicitação:</strong> ${data}</p>
+                        <p><strong>Valor final:</strong> ${valor}</p>
+                        <p>
+                            <strong>Confirmação do motorista:</strong>
+                            ${confirmacaoMotorista}
+                        </p>
+                        <p>
+                            <strong>Confirmação do cliente:</strong>
+                            ${confirmacaoCliente}
+                        </p>
+                    </article>
+                `;
+            }).join("");
+        }
+
+        filtro.addEventListener("change", renderizarHistorico);
+        renderizarHistorico();
+
+        console.log(
+            "Histórico do motorista carregado:",
+            registros.length,
+            "corridas"
+        );
+
+    } catch (erro) {
+        console.error("Erro ao carregar histórico:", erro);
+
+        area.innerHTML = `
+            <h3 style="color:#FFD400;">Histórico de corridas</h3>
+            <p>Não foi possível carregar o histórico.</p>
+            <p style="color:#bbb;">
+                Confira o console e as permissões de leitura no Supabase.
+            </p>
+        `;
+    }
+}
+
+function ouvirAtualizacoesHistoricoMotorista(motoristaId) {
+    if (canalHistoricoMotorista) {
+        supabaseClient.removeChannel(canalHistoricoMotorista);
+    }
+
+    canalHistoricoMotorista = supabaseClient
+        .channel("historico-motorista-" + motoristaId)
+        .on(
+            "postgres_changes",
+            {
+                event: "*",
+                schema: "public",
+                table: "corridas",
+                filter: "motorista_id=eq." + motoristaId
+            },
+            async payload => {
+                console.log(
+                    "Alteração recebida no histórico:",
+                    payload
+                );
+
+                await carregarHistoricoCorridasMotorista(motoristaId);
+                await atualizarIndicadoresMotorista(motoristaId);
+            }
+        )
+        .subscribe(status => {
+            console.log("Canal do histórico:", status);
+        });
+}
