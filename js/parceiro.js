@@ -100,18 +100,21 @@ function formatarMoeda(valor) {
 // FUNÇÃO PARA PREENCHER ELEMENTO
 // ============================================================
 
+
 function preencherElemento(id, valor) {
+    const elemento = document.getElementById(id);
 
-    const elemento =
-        document.getElementById(id);
-
-    if (elemento) {
-
-        elemento.textContent =
-            valor || "Não informado";
-
+    if (!elemento) {
+        console.warn("Elemento não encontrado:", id);
+        return;
     }
 
+    elemento.textContent =
+        valor === null ||
+        valor === undefined ||
+        valor === ""
+            ? "Não informado"
+            : valor;
 }
 
 
@@ -1689,3 +1692,111 @@ function ouvirAtualizacoesHistoricoMotorista(motoristaId) {
             console.log("Canal do histórico:", status);
         });
 }
+
+/* ============================================================
+   VAIDTÁXI — INDICADORES REAIS DO MOTORISTA
+   ============================================================ */
+
+async function atualizarIndicadoresMotorista(motoristaId) {
+    if (!motoristaId) {
+        console.error("ID do motorista não informado.");
+        return;
+    }
+
+    console.log("Atualizando indicadores do motorista:", motoristaId);
+
+    try {
+        const agora = new Date();
+
+        // Início do dia e do mês no horário local.
+        const inicioHoje = new Date(
+            agora.getFullYear(),
+            agora.getMonth(),
+            agora.getDate()
+        );
+
+        const inicioMes = new Date(
+            agora.getFullYear(),
+            agora.getMonth(),
+            1
+        );
+
+        const inicioMesISO = inicioMes.toISOString();
+        const inicioHojeISO = inicioHoje.toISOString();
+
+        // Buscar corridas do mês atual.
+        const { data: corridasMesDados, error: erroCorridas } =
+            await supabaseClient
+                .from("corridas")
+                .select("id, status, valor_final, created_at")
+                .eq("motorista_id", motoristaId)
+                .gte("created_at", inicioMesISO)
+                .lte("created_at", agora.toISOString())
+                .order("created_at", { ascending: false });
+
+        if (erroCorridas) throw erroCorridas;
+
+        const corridas = corridasMesDados || [];
+
+        // Considerar o dia local do navegador.
+        const corridasHojeDados = corridas.filter(corrida => {
+            if (!corrida.created_at) return false;
+
+            return new Date(corrida.created_at) >= inicioHoje;
+        });
+
+        // Ganhos somente das corridas concluídas hoje.
+        const ganhosHojeCalculados = corridasHojeDados
+            .filter(corrida => corrida.status === "concluida")
+            .reduce((total, corrida) => {
+                const valor = Number(corrida.valor_final);
+                return total + (
+                    Number.isFinite(valor) ? valor : 0
+                );
+            }, 0);
+
+        // Buscar as avaliações reais do motorista.
+        const { data: avaliacoes, error: erroAvaliacoes } =
+            await supabaseClient
+                .from("avaliacoes")
+                .select("nota")
+                .eq("motorista_id", motoristaId);
+
+        if (erroAvaliacoes) throw erroAvaliacoes;
+
+        const notasValidas = (avaliacoes || [])
+            .map(item => Number(item.nota))
+            .filter(nota =>
+                Number.isFinite(nota) && nota >= 1 && nota <= 5
+            );
+
+        const mediaAvaliacoes = notasValidas.length
+            ? notasValidas.reduce((soma, nota) => soma + nota, 0)
+                / notasValidas.length
+            : 0;
+
+        // Atualizar os dados usados pelo painel.
+        parceiro.corridasHoje = corridasHojeDados.length;
+        parceiro.corridasMes = corridas.length;
+        parceiro.ganhosHoje = ganhosHojeCalculados;
+        parceiro.avaliacao = mediaAvaliacoes;
+
+        // Atualizar os quatro cards e os valores relacionados.
+        carregarDadosParceiro();
+
+        console.log("Indicadores atualizados:", {
+            corridasHoje: parceiro.corridasHoje,
+            ganhosHoje: parceiro.ganhosHoje,
+            avaliacaoMedia: parceiro.avaliacao,
+            corridasMes: parceiro.corridasMes,
+            totalAvaliacoes: notasValidas.length
+        });
+
+    } catch (erro) {
+        console.error("Erro ao atualizar indicadores:", erro);
+        console.error(
+            "Confira as permissões RLS das tabelas corridas e avaliacoes."
+        );
+    }
+}
+
