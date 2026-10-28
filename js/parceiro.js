@@ -1775,115 +1775,21 @@ async function atualizarIndicadoresMotorista(motoristaId) {
                 / notasValidas.length
             : 0;
 
-       
         // Atualizar os dados usados pelo painel.
         parceiro.corridasHoje = corridasHojeDados.length;
         parceiro.corridasMes = corridas.length;
         parceiro.ganhosHoje = ganhosHojeCalculados;
         parceiro.avaliacao = mediaAvaliacoes;
 
-        // Calcular os ganhos das corridas concluídas.
-        const corridasConcluidas = corridas.filter(
-            corrida => corrida.status === "concluida"
-        );
-
-        const somarGanhos = lista =>
-            lista.reduce((total, corrida) => {
-                const valor = Number(corrida.valor_final);
-
-                return total + (
-                    Number.isFinite(valor) ? valor : 0
-                );
-            }, 0);
-
-        // Ganhos do mês.
-        const ganhosMesCalculados = somarGanhos(
-            corridasConcluidas
-        );
-
-        // Ganhos da semana atual (segunda-feira até hoje).
-        const inicioSemana = new Date(inicioHoje);
-
-        const diaSemana = inicioSemana.getDay();
-
-        const diasDesdeSegunda = diaSemana === 0
-            ? 6
-            : diaSemana - 1;
-
-        inicioSemana.setDate(
-            inicioSemana.getDate() - diasDesdeSegunda
-        );
-
-        const corridasSemana = corridasConcluidas.filter(
-            corrida =>
-                corrida.created_at &&
-                new Date(corrida.created_at) >= inicioSemana
-        );
-
-        const ganhosSemanaCalculados = somarGanhos(
-            corridasSemana
-        );
-
-        // Atualizar os valores do quadro "Meus ganhos".
-        preencherElemento(
-            "ganhoHoje",
-            formatarMoeda(ganhosHojeCalculados)
-        );
-
-        preencherElemento(
-            "ganhoSemana",
-            formatarMoeda(ganhosSemanaCalculados)
-        );
-
-        preencherElemento(
-            "ganhosMes",
-            formatarMoeda(ganhosMesCalculados)
-        );
-
-        preencherElemento(
-            "ganhoMes",
-            formatarMoeda(ganhosMesCalculados)
-        );
-
-        console.log("Quadro Meus ganhos atualizado:", {
-            hoje: ganhosHojeCalculados,
-            semana: ganhosSemanaCalculados,
-            mes: ganhosMesCalculados
-        });
-
-       
-        // Atualizar os quatro cards e o quadro Meus ganhos.
+        // Atualizar os quatro cards e os valores relacionados.
         carregarDadosParceiro();
-
-        // Reaplicar os ganhos calculados após atualizar o painel.
-        preencherElemento(
-            "ganhosMes",
-            formatarMoeda(ganhosMesCalculados)
-        );
-
-        preencherElemento(
-            "ganhoHoje",
-            formatarMoeda(ganhosHojeCalculados)
-        );
-
-        preencherElemento(
-            "ganhoSemana",
-            formatarMoeda(ganhosSemanaCalculados)
-        );
-
-        preencherElemento(
-            "ganhoMes",
-            formatarMoeda(ganhosMesCalculados)
-        );
 
         console.log("Indicadores atualizados:", {
             corridasHoje: parceiro.corridasHoje,
             ganhosHoje: parceiro.ganhosHoje,
             avaliacaoMedia: parceiro.avaliacao,
             corridasMes: parceiro.corridasMes,
-            totalAvaliacoes: notasValidas.length,
-            ganhosMes: ganhosMesCalculados,
-            ganhosSemana: ganhosSemanaCalculados
+            totalAvaliacoes: notasValidas.length
         });
 
     } catch (erro) {
