@@ -678,6 +678,12 @@ async function verificarSessaoParceiro() {
         await carregarCorridasDoMotorista(
             usuario.id
         );
+        // Carregar histórico e indicadores do motorista
+        await carregarHistoricoCorridasMotorista(usuario.id);
+        await atualizarIndicadoresMotorista(usuario.id);
+    
+        // Acompanhar alterações nas corridas pelo Supabase
+        ouvirAtualizacoesHistoricoMotorista(usuario.id);
         // Iniciar painel de controle da corrida ativa
         await carregarPainelCorridaAtiva(usuario.id);
         
