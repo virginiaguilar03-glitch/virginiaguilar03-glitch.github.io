@@ -1453,6 +1453,7 @@ function escaparHistoricoMotorista(valor) {
 }
 
 
+
 function obterAreaHistoricoMotorista() {
     const lista = document.getElementById("listaCorridas");
 
@@ -1463,14 +1464,41 @@ function obterAreaHistoricoMotorista() {
         return null;
     }
 
-    let area = document.getElementById("historicoCorridasMotorista");
+    let botao = document.getElementById(
+        "btnToggleHistoricoMotorista"
+    );
+
+    let area = document.getElementById(
+        "historicoCorridasMotorista"
+    );
+
+    if (!botao) {
+        botao = document.createElement("button");
+        botao.id = "btnToggleHistoricoMotorista";
+        botao.type = "button";
+        botao.textContent = "📋 Ver histórico de corridas";
+
+        Object.assign(botao.style, {
+            display: "block",
+            marginTop: "24px",
+            padding: "12px 18px",
+            background: "#FFD400",
+            color: "#111",
+            border: "none",
+            borderRadius: "8px",
+            fontWeight: "bold",
+            cursor: "pointer"
+        });
+
+        lista.insertAdjacentElement("afterend", botao);
+    }
 
     if (!area) {
         area = document.createElement("section");
         area.id = "historicoCorridasMotorista";
 
         Object.assign(area.style, {
-            marginTop: "24px",
+            marginTop: "16px",
             padding: "18px",
             background: "#111",
             color: "#fff",
@@ -1480,8 +1508,22 @@ function obterAreaHistoricoMotorista() {
 
         area.hidden = true;
 
-        lista.insertAdjacentElement("afterend", area);
+        botao.insertAdjacentElement("afterend", area);
     }
+
+    botao.onclick = async function () {
+        if (area.hidden) {
+            area.hidden = false;
+            botao.textContent = "✖ Fechar histórico";
+
+            await carregarHistoricoCorridasMotorista(
+                parceiro.id
+            );
+        } else {
+            area.hidden = true;
+            botao.textContent = "📋 Ver histórico de corridas";
+        }
+    };
 
     return area;
 }
