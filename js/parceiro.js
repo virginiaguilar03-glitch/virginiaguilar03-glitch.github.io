@@ -425,90 +425,64 @@ async function carregarDadosMotorista(usuarioId) {
         }
 
         
-          for (const corrida of corridas) {
-            console.log("🚕 Corrida recebida:", corrida.id);
-            console.log("🔎 Buscando nome do cliente...");
-        
-            const { data: nomeCliente, error: erroNome } =
-                await supabaseClient.rpc(
-                    "nome_cliente_da_corrida",
-                    { p_corrida_id: corrida.id }
-                );
-        
-            if (erroNome) {
-                console.error(
-                    "❌ Erro ao buscar nome do cliente:",
-                    erroNome
-                );
-        
-                corrida.nome_cliente = "Cliente";
-            } else {
-                console.log("👤 Nome retornado pelo Supabase:", nomeCliente);
-        
-                corrida.nome_cliente =
-                    nomeCliente || "Cliente";
-            }
-        }
-        lista.innerHTML = "";
+    for (const corrida of corridas) {
+        const { data: nomeCliente, error: erroNome } =
+            await supabaseClient.rpc(
+                "nome_cliente_da_corrida",
+                { p_corrida_id: corrida.id }
+            );
     
-       
-corridas.forEach(corrida => {
-    const card = document.createElement("div");
-    card.className = "corrida-item";
-
-    const cliente = document.createElement("p");
-    cliente.textContent =
-        "Cliente: " + (corrida.nome_cliente || "Nome não identificado");
-
-    const status = document.createElement("p");
-    status.innerHTML = "<strong>Status:</strong> ";
-
-    const textoStatus = document.createElement("span");
-    textoStatus.textContent = corrida.status || "aguardando";
-    status.appendChild(textoStatus);
-
-    const origem = document.createElement("p");
-    origem.innerHTML = "<strong>Origem:</strong> ";
-
-    const textoOrigem = document.createElement("span");
-    textoOrigem.textContent = corrida.origem || "Não informada";
-    origem.appendChild(textoOrigem);
-
-    const destino = document.createElement("p");
-    destino.innerHTML = "<strong>Destino:</strong> ";
-
-    const textoDestino = document.createElement("span");
-    textoDestino.textContent = corrida.destino || "Não informado";
-    destino.appendChild(textoDestino);
-
-    const titulo = document.createElement("h3");
-    titulo.textContent = "Nova solicitação de corrida";
-
-    card.append(titulo, cliente, status, origem, destino);
-
-    if (corrida.observacao) {
-        const observacao = document.createElement("p");
-        observacao.textContent = "Observação: " + corrida.observacao;
-        card.appendChild(observacao);
+        corrida.nome_cliente = erroNome
+            ? "Cliente"
+            : (nomeCliente || "Cliente");
     }
 
-    const botoes = document.createElement("div");
-    botoes.className = "acoes-corrida";
+        lista.innerHTML = "";
+    
+        corridas.forEach(corrida => {
+            const card = document.createElement("div");
+            card.className = "corrida-item";
+    
+            const titulo = document.createElement("h3");
+            titulo.textContent = "Nova solicitação de corrida";
+    
+            const origem = document.createElement("p");
+            origem.textContent = "Origem: " + (corrida.origem || "Não informada");
+    
+            const destino = document.createElement("p");
+            destino.textContent = "Destino: " + (corrida.destino || "Não informado");
+    
+            card.append(titulo, origem, destino);
+    
+            if (corrida.observacao) {
+                const observacao = document.createElement("p");
+                observacao.textContent = "Observação: " + corrida.observacao;
+                card.appendChild(observacao);
+                }
+          
+            const cliente = document.createElement("p");
+            cliente.textContent = "Cliente: " + corrida.nome_cliente;
+            card.appendChild(cliente);
 
-    const aceitar = document.createElement("button");
-    aceitar.type = "button";
-    aceitar.textContent = "Aceitar corrida";
-    aceitar.onclick = () => aceitarCorrida(corrida.id);
-
-    const recusar = document.createElement("button");
-    recusar.type = "button";
-    recusar.textContent = "Recusar corrida";
-    recusar.onclick = () => recusarCorrida(corrida.id);
-
-    botoes.append(aceitar, recusar);
-    card.appendChild(botoes);
-    lista.appendChild(card);
-});
+    
+            const botoes = document.createElement("div");
+            botoes.className = "acoes-corrida";
+    
+            const aceitar = document.createElement("button");
+            aceitar.type = "button";
+            aceitar.textContent = "Aceitar corrida";
+            aceitar.onclick = () => aceitarCorrida(corrida.id);
+    
+            const recusar = document.createElement("button");
+            recusar.type = "button";
+            recusar.textContent = "Recusar corrida";
+            recusar.onclick = () => recusarCorrida(corrida.id);
+    
+            botoes.append(aceitar, recusar);
+            card.appendChild(botoes);
+            lista.appendChild(card);
+        });
+    }
 
 function ouvirNovasCorridas(motoristaId) {
 
