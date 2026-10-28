@@ -451,50 +451,64 @@ async function carregarDadosMotorista(usuarioId) {
         }
         lista.innerHTML = "";
     
-        corridas.forEach(corrida => {
-            const card = document.createElement("div");
-            card.className = "corrida-item";
-    
-            const titulo = document.createElement("h3");
-            titulo.textContent = "Nova solicitação de corrida";
-    
-            const origem = document.createElement("p");
-            origem.textContent = "Origem: " + (corrida.origem || "Não informada");
-    
-            const destino = document.createElement("p");
-            destino.textContent = "Destino: " + (corrida.destino || "Não informado");
-    
-            card.append(titulo, origem, destino);
-    
-            if (corrida.observacao) {
-                const observacao = document.createElement("p");
-                observacao.textContent = "Observação: " + corrida.observacao;
-                card.appendChild(observacao);
-                }
-          
-            const cliente = document.createElement("p");
-            cliente.textContent = "Cliente: " + corrida.nome_cliente;
-            card.appendChild(cliente);
+       
+corridas.forEach(corrida => {
+    const card = document.createElement("div");
+    card.className = "corrida-item";
 
-    
-            const botoes = document.createElement("div");
-            botoes.className = "acoes-corrida";
-    
-            const aceitar = document.createElement("button");
-            aceitar.type = "button";
-            aceitar.textContent = "Aceitar corrida";
-            aceitar.onclick = () => aceitarCorrida(corrida.id);
-    
-            const recusar = document.createElement("button");
-            recusar.type = "button";
-            recusar.textContent = "Recusar corrida";
-            recusar.onclick = () => recusarCorrida(corrida.id);
-    
-            botoes.append(aceitar, recusar);
-            card.appendChild(botoes);
-            lista.appendChild(card);
-        });
+    const cliente = document.createElement("p");
+    cliente.textContent =
+        "Cliente: " + (corrida.nome_cliente || "Nome não identificado");
+
+    const status = document.createElement("p");
+    status.innerHTML = "<strong>Status:</strong> ";
+
+    const textoStatus = document.createElement("span");
+    textoStatus.textContent = corrida.status || "aguardando";
+    status.appendChild(textoStatus);
+
+    const origem = document.createElement("p");
+    origem.innerHTML = "<strong>Origem:</strong> ";
+
+    const textoOrigem = document.createElement("span");
+    textoOrigem.textContent = corrida.origem || "Não informada";
+    origem.appendChild(textoOrigem);
+
+    const destino = document.createElement("p");
+    destino.innerHTML = "<strong>Destino:</strong> ";
+
+    const textoDestino = document.createElement("span");
+    textoDestino.textContent = corrida.destino || "Não informado";
+    destino.appendChild(textoDestino);
+
+    const titulo = document.createElement("h3");
+    titulo.textContent = "Nova solicitação de corrida";
+
+    card.append(titulo, cliente, status, origem, destino);
+
+    if (corrida.observacao) {
+        const observacao = document.createElement("p");
+        observacao.textContent = "Observação: " + corrida.observacao;
+        card.appendChild(observacao);
     }
+
+    const botoes = document.createElement("div");
+    botoes.className = "acoes-corrida";
+
+    const aceitar = document.createElement("button");
+    aceitar.type = "button";
+    aceitar.textContent = "Aceitar corrida";
+    aceitar.onclick = () => aceitarCorrida(corrida.id);
+
+    const recusar = document.createElement("button");
+    recusar.type = "button";
+    recusar.textContent = "Recusar corrida";
+    recusar.onclick = () => recusarCorrida(corrida.id);
+
+    botoes.append(aceitar, recusar);
+    card.appendChild(botoes);
+    lista.appendChild(card);
+});
 
 function ouvirNovasCorridas(motoristaId) {
 
