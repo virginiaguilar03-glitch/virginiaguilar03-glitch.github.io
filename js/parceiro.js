@@ -681,10 +681,12 @@ async function verificarSessaoParceiro() {
         await carregarCorridasDoMotorista(
             usuario.id
         );
-        // Carregar histórico e indicadores do motorista
-        await carregarHistoricoCorridasMotorista(usuario.id);
+        // Preparar o histórico fechado inicialmente.
+            obterAreaHistoricoMotorista();
+
+        // Atualizar os indicadores do motorista.
         await atualizarIndicadoresMotorista(usuario.id);
-    
+            
         // Acompanhar alterações nas corridas pelo Supabase
         ouvirAtualizacoesHistoricoMotorista(usuario.id);
         // Iniciar painel de controle da corrida ativa
@@ -1450,11 +1452,14 @@ function escaparHistoricoMotorista(valor) {
     })[caractere]);
 }
 
+
 function obterAreaHistoricoMotorista() {
     const lista = document.getElementById("listaCorridas");
 
     if (!lista || !lista.parentElement) {
-        console.error("Não encontrei #listaCorridas para montar o histórico.");
+        console.error(
+            "Não encontrei #listaCorridas para montar o histórico."
+        );
         return null;
     }
 
@@ -1472,6 +1477,8 @@ function obterAreaHistoricoMotorista() {
             border: "1px solid #333",
             borderRadius: "12px"
         });
+
+        area.hidden = true;
 
         lista.insertAdjacentElement("afterend", area);
     }
