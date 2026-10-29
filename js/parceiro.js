@@ -699,6 +699,19 @@ async function verificarSessaoParceiro() {
         await carregarCorridasDoMotorista(
             usuario.id
         );
+
+        // ====================================================
+        // CARREGAR HISTÓRICO EXCLUSIVO DO MOTORISTA LOGADO
+        // ====================================================
+        
+        console.log(
+            "Carregando histórico para o motorista:",
+            usuario.id
+        );
+        
+        await carregarHistoricoCorridasMotorista(
+            usuario.id
+        );
         // Preparar o histórico fechado inicialmente.
             obterAreaHistoricoMotorista();
 
