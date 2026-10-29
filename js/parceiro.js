@@ -424,18 +424,36 @@ async function carregarDadosMotorista(usuarioId) {
             return;
         }
 
-        
-    for (const corrida of corridas) {
-        const { data: nomeCliente, error: erroNome } =
-            await supabaseClient.rpc(
-                "nome_cliente_da_corrida",
-                { p_corrida_id: corrida.id }
-            );
-    
-        corrida.nome_cliente = erroNome
-            ? "Cliente"
-            : (nomeCliente || "Cliente");
+   
+for (const corrida of corridas) {
+    const { data: nomeCliente, error: erroNome } =
+        await supabaseClient.rpc(
+            "nome_cliente_da_corrida",
+            { p_corrida_id: corrida.id }
+        );
+
+    if (erroNome) {
+        console.error(
+            "ERRO AO BUSCAR NOME DO CLIENTE:",
+            {
+                corridaId: corrida.id,
+                clienteId: corrida.cliente_id,
+                motoristaId: corrida.motorista_id,
+                erro: erroNome
+            }
+        );
     }
+
+    corrida.nome_cliente =
+        typeof nomeCliente === "string" && nomeCliente.trim()
+            ? nomeCliente.trim()
+            : "Cliente";
+
+    console.log("Cliente da corrida:", {
+        corridaId: corrida.id,
+        nome: corrida.nome_cliente
+    });
+}
 
         lista.innerHTML = "";
     
