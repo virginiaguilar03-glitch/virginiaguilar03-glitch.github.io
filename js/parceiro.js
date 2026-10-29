@@ -1551,6 +1551,9 @@ function obterAreaHistoricoMotorista() {
 
 async function carregarHistoricoCorridasMotorista(motoristaId) {
     const area = obterAreaHistoricoMotorista();
+    console.log("=== DIAGNÓSTICO DO HISTÓRICO DO MOTORISTA ===");
+    console.log("ID recebido:", motoristaId);
+    console.log("Usuário autenticado:", (await supabaseClient.auth.getUser()).data.user?.id);
 
     if (!area || !motoristaId) return;
 
