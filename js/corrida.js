@@ -1548,64 +1548,77 @@ async function solicitarCorrida(
         );
 
 
+       
         // ====================================================
-        // INSERIR NO SUPABASE
+        // ENVIAR SOLICITAÇÃO PARA A API CENTRAL
         // ====================================================
 
+        console.log("🌐 Enviando corrida para a API Central...");
+
+        // Obter token da sessão autenticada
         const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("corridas")
-                .insert(
-                    dadosCorrida
-                )
-                .select()
-                .single();
+            data: sessaoData,
+            error: erroSessao
+        } = await supabaseClient.auth.getSession();
 
+        if (erroSessao || !sessaoData?.session?.access_token) {
 
-        // ====================================================
-        // ERRO
-        // ====================================================
-
-        if (error) {
-
-            console.error(
-                "Erro ao criar corrida:",
-                error
-            );
-
-
-            console.error(
-                "Código:",
-                error.code
-            );
-
-
-            console.error(
-                "Mensagem:",
-                error.message
-            );
-
-
-            console.error(
-                "Detalhes:",
-                error.details
-            );
-
+            console.error("❌ Sessão não encontrada:", erroSessao);
 
             mostrarMensagem(
-                "Não foi possível solicitar a corrida. Verifique o console para mais detalhes.",
+                "Sua sessão expirou. Entre novamente.",
                 "erro"
             );
 
+            restaurarBotao();
+            return;
+        }
+
+        const token = sessaoData.session.access_token;
+
+        // Enviar dados para a API
+        const resposta = await fetch(
+            "https://vaidtaxi-api.onrender.com/api/v1/corridas",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+
+                body: JSON.stringify({
+                    motorista_id: motoristaSelecionado,
+                    origem: origem,
+                    destino: destino,
+                    observacao: observacao || null
+                })
+            }
+        );
+
+        const resultado = await resposta.json();
+
+        console.log("📡 Resposta da API:", resultado);
+        console.log("📡 Status HTTP:", resposta.status);
+
+        // Verificar resposta
+        if (!resposta.ok || !resultado.sucesso || !resultado.corrida) {
+
+            console.error("❌ Erro ao solicitar corrida:", resultado);
+
+            mostrarMensagem(
+                resultado.erro || "Não foi possível solicitar a corrida.",
+                "erro"
+            );
 
             restaurarBotao();
-
             return;
-
         }
+
+        // Manter o mesmo formato de dados usado pelo restante do código
+        const data = resultado.corrida;
+
+        console.log("✅ Corrida criada pela API:", data);
 
 
         // ====================================================
