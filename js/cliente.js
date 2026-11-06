@@ -623,8 +623,8 @@ function renderizarCancelamentoCorrida(corrida) {
         return;
     }
 
-    const prazoFinal =
-        new Date(corrida.created_at).getTime() + 3 * 60 * 1000;
+   const prazoFinal =
+    new Date(corrida.created_at).getTime() + 8 * 60 * 1000;
 
     function atualizarContagem() {
         const restante = prazoFinal - Date.now();
@@ -653,7 +653,7 @@ function renderizarCancelamentoCorrida(corrida) {
             <p>
                 <i class="fa-solid fa-clock"></i>
                 Tempo para cancelar:
-                <strong id="tempoCancelarCorrida">03:00</strong>
+               <strong id="tempoCancelarCorrida">05:00</strong>
             </p>
 
             <button
