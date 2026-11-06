@@ -624,7 +624,7 @@ function renderizarCancelamentoCorrida(corrida) {
     }
 
    const prazoFinal =
-    new Date(corrida.created_at).getTime() + 8 * 60 * 1000;
+    new Date(corrida.created_at).getTime() + 5 * 60 * 1000;
 
     function atualizarContagem() {
         const restante = prazoFinal - Date.now();
