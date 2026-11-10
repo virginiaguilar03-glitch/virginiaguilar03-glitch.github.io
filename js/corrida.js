@@ -302,6 +302,7 @@ async function carregarUsuario() {
 // CARREGAR MOTORISTAS
 // ============================================================
 
+
 async function carregarMotoristas() {
 
     if (!listaMotoristas) {
@@ -311,11 +312,13 @@ async function carregarMotoristas() {
         );
 
         return;
-
     }
 
-
     if (!supabaseDisponivel()) {
+
+        console.error(
+            "Supabase indisponível."
+        );
 
         listaMotoristas.innerHTML = `
             <p class="sem-motoristas">
@@ -324,35 +327,87 @@ async function carregarMotoristas() {
         `;
 
         return;
-
     }
-
 
     try {
 
-        console.log(
-            "Buscando motoristas..."
-        );
+        console.log("🚕 Buscando motoristas pela API Central...");
 
+        // ==========================================
+        // OBTER TOKEN DA SESSÃO
+        // ==========================================
 
         const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("motoristas")
-                .select(
-                    "id, nome, telefone, email"
-                );
+            data: sessaoData,
+            error: erroSessao
+        } = await supabaseClient.auth.getSession();
 
-
-        if (error) {
+        if (
+            erroSessao ||
+            !sessaoData?.session?.access_token
+        ) {
 
             console.error(
-                "Erro ao buscar motoristas:",
-                error
+                "❌ Sessão não encontrada:",
+                erroSessao
             );
 
+            listaMotoristas.innerHTML = `
+                <p class="sem-motoristas">
+                    Sua sessão expirou. Entre novamente.
+                </p>
+            `;
+
+            return;
+        }
+
+        const token =
+            sessaoData.session.access_token;
+
+        console.log("🔐 Token obtido com sucesso.");
+
+        // ==========================================
+        // CONSULTAR API CENTRAL
+        // ==========================================
+
+        const resposta = await fetch(
+            "https://vaidtaxi-api.onrender.com/api/v1/motoristas",
+            {
+                method: "GET",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        const resultado = await resposta.json();
+
+        console.log(
+            "📡 Resposta da API:",
+            resultado
+        );
+
+        console.log(
+            "📡 Status HTTP:",
+            resposta.status
+        );
+
+        // ==========================================
+        // VERIFICAR RESPOSTA
+        // ==========================================
+
+        if (
+            !resposta.ok ||
+            !resultado.sucesso ||
+            !Array.isArray(resultado.motoristas)
+        ) {
+
+            console.error(
+                "❌ Erro ao buscar motoristas:",
+                resultado
+            );
 
             listaMotoristas.innerHTML = `
                 <p class="sem-motoristas">
@@ -361,17 +416,20 @@ async function carregarMotoristas() {
             `;
 
             return;
-
         }
 
+        const data = resultado.motoristas;
 
         console.log(
-            "Motoristas encontrados:",
+            "✅ Motoristas encontrados:",
             data
         );
 
+        // ==========================================
+        // VERIFICAR LISTA VAZIA
+        // ==========================================
 
-        if (!data || data.length === 0) {
+        if (data.length === 0) {
 
             listaMotoristas.innerHTML = `
                 <p class="sem-motoristas">
@@ -380,95 +438,85 @@ async function carregarMotoristas() {
             `;
 
             return;
-
         }
 
+        // ==========================================
+        // MONTAR CARTÕES
+        // ==========================================
 
         listaMotoristas.innerHTML = "";
 
+        data.forEach(function (motorista) {
 
-        data.forEach(
-            function (motorista) {
+            const card =
+                document.createElement("div");
 
-                const card =
-                    document.createElement(
-                        "div"
-                    );
+            card.className =
+                "card-motorista";
 
+            card.dataset.id =
+                motorista.id;
 
-                card.className =
-                    "card-motorista";
+            card.innerHTML = `
 
+                <h3>
 
-                card.dataset.id =
-                    motorista.id;
+                    <i class="fa-solid fa-user"></i>
 
+                    ${motorista.nome || "Motorista"}
 
-                card.innerHTML = `
+                </h3>
 
-                    <h3>
+                <p>
 
-                        <i class="fa-solid fa-user"></i>
+                    <i class="fa-solid fa-phone"></i>
 
-                        ${motorista.nome || "Motorista"}
+                    ${motorista.telefone || "Telefone não informado"}
 
-                    </h3>
+                </p>
 
+                <p>
 
-                    <p>
+                    <i class="fa-solid fa-envelope"></i>
 
-                        <i class="fa-solid fa-phone"></i>
+                    ${motorista.email || "E-mail não informado"}
 
-                        ${motorista.telefone || "Telefone não informado"}
+                </p>
 
-                    </p>
+                <button
+                    type="button"
+                    class="btn-escolher-motorista"
+                >
 
+                    Escolher motorista
 
-                    <p>
+                </button>
 
-                        <i class="fa-solid fa-envelope"></i>
+            `;
 
-                        ${motorista.email || "E-mail não informado"}
-
-                    </p>
-
-
-                    <button
-                        type="button"
-                        class="btn-escolher-motorista"
-                    >
-
-                        Escolher motorista
-
-                    </button>
-
-                `;
-
-
-                const botao =
-                    card.querySelector(
-                        ".btn-escolher-motorista"
-                    );
-
-
-                botao.addEventListener(
-                    "click",
-                    function () {
-
-                        selecionarMotorista(
-                            motorista,
-                            card
-                        );
-
-                    }
+            const botao =
+                card.querySelector(
+                    ".btn-escolher-motorista"
                 );
 
+            botao.addEventListener(
+                "click",
+                function () {
 
-                listaMotoristas.appendChild(
-                    card
-                );
+                    selecionarMotorista(
+                        motorista,
+                        card
+                    );
 
-            }
+                }
+            );
+
+            listaMotoristas.appendChild(card);
+
+        });
+
+        console.log(
+            "✅ Cartões de motoristas carregados pela API Central."
         );
 
     }
@@ -476,10 +524,9 @@ async function carregarMotoristas() {
     catch (erro) {
 
         console.error(
-            "Erro inesperado ao carregar motoristas:",
+            "❌ Erro inesperado ao carregar motoristas:",
             erro
         );
-
 
         listaMotoristas.innerHTML = `
             <p class="sem-motoristas">
