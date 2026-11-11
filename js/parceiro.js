@@ -394,28 +394,59 @@ async function carregarDadosMotorista(usuarioId) {
 // ============================================================
 
 
-    async function carregarCorridasDoMotorista(motoristaId) {
-        const lista = document.getElementById("listaCorridas");
     
-        if (!lista) {
-            console.error("Elemento #listaCorridas não encontrado.");
+async function carregarCorridasDoMotorista(motoristaId) {
+    const lista = document.getElementById("listaCorridas");
+
+    if (!lista) {
+        console.error("Elemento #listaCorridas não encontrado.");
+        return;
+    }
+
+    try {
+        console.log("🚕 Buscando corridas pela API Central...");
+
+        // Obter token do usuário autenticado
+        const { data: { session }, error: erroSessao } =
+            await supabaseClient.auth.getSession();
+
+        if (erroSessao || !session?.access_token) {
+            console.error("❌ Usuário sem sessão válida:", erroSessao);
+            lista.innerHTML = "<p>Faça login novamente para visualizar as corridas.</p>";
             return;
         }
-    
-        const { data: corridas, error } = await supabaseClient
-            .from("corridas")
-            .select("*")
-            .eq("motorista_id", motoristaId)
-            .eq("status", "aguardando")
-            .order("created_at", { ascending: false });
-    
-        if (error) {
-            console.error("Erro ao buscar corridas:", error);
+
+        // Consultar a API Central
+        const resposta = await fetch(
+            "https://vaidtaxi-api.onrender.com/api/v1/corridas",
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${session.access_token}`,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+
+        const resultado = await resposta.json();
+
+        console.log("📦 Resposta da API de corridas:", resultado);
+
+        if (!resposta.ok || !resultado.sucesso) {
+            console.error("❌ Erro ao consultar API:", resultado);
             lista.innerHTML = "<p>Não foi possível carregar as corridas.</p>";
             return;
         }
-    
-        if (!corridas || corridas.length === 0) {
+
+        // Manter somente as corridas aguardando deste motorista
+        const corridas = (resultado.corridas || []).filter(corrida =>
+            corrida.motorista_id === motoristaId &&
+            corrida.status === "aguardando"
+        );
+
+        console.log("✅ Corridas aguardando deste motorista:", corridas.length);
+
+        if (corridas.length === 0) {
             lista.innerHTML = `
                 <div class="sem-corridas">
                     <p>Nenhuma corrida disponível.</p>
@@ -424,116 +455,89 @@ async function carregarDadosMotorista(usuarioId) {
             return;
         }
 
-   
-for (const corrida of corridas) {
-    const { data: nomeCliente, error: erroNome } =
-        await supabaseClient.rpc(
-            "nome_cliente_da_corrida",
-            { p_corrida_id: corrida.id }
-        );
+        // Buscar o nome do cliente de cada corrida
+        for (const corrida of corridas) {
+            const { data: nomeCliente, error: erroNome } =
+                await supabaseClient.rpc(
+                    "nome_cliente_da_corrida",
+                    { p_corrida_id: corrida.id }
+                );
 
-    if (erroNome) {
-        console.error(
-            "ERRO AO BUSCAR NOME DO CLIENTE:",
-            {
-                corridaId: corrida.id,
-                clienteId: corrida.cliente_id,
-                motoristaId: corrida.motorista_id,
-                erro: erroNome
+            if (erroNome) {
+                console.error(
+                    "ERRO AO BUSCAR NOME DO CLIENTE:",
+                    {
+                        corridaId: corrida.id,
+                        clienteId: corrida.cliente_id,
+                        motoristaId: corrida.motorista_id,
+                        erro: erroNome
+                    }
+                );
             }
-        );
-    }
 
-    corrida.nome_cliente =
-        typeof nomeCliente === "string" && nomeCliente.trim()
-            ? nomeCliente.trim()
-            : "Cliente";
+            corrida.nome_cliente =
+                typeof nomeCliente === "string" && nomeCliente.trim()
+                    ? nomeCliente.trim()
+                    : "Cliente";
 
-    console.log("Cliente da corrida:", {
-        corridaId: corrida.id,
-        nome: corrida.nome_cliente
-    });
-}
+            console.log("Cliente da corrida:", {
+                corridaId: corrida.id,
+                nome: corrida.nome_cliente
+            });
+        }
 
+        // Montar os cartões das corridas
         lista.innerHTML = "";
-    
+
         corridas.forEach(corrida => {
             const card = document.createElement("div");
             card.className = "corrida-item";
-    
+
             const titulo = document.createElement("h3");
             titulo.textContent = "Nova solicitação de corrida";
-    
+
             const origem = document.createElement("p");
             origem.textContent = "Origem: " + (corrida.origem || "Não informada");
-    
+
             const destino = document.createElement("p");
             destino.textContent = "Destino: " + (corrida.destino || "Não informado");
-    
+
             card.append(titulo, origem, destino);
-    
+
             if (corrida.observacao) {
                 const observacao = document.createElement("p");
                 observacao.textContent = "Observação: " + corrida.observacao;
                 card.appendChild(observacao);
-                }
-          
+            }
+
             const cliente = document.createElement("p");
             cliente.textContent = "Cliente: " + corrida.nome_cliente;
             card.appendChild(cliente);
 
-    
             const botoes = document.createElement("div");
             botoes.className = "acoes-corrida";
-    
+
             const aceitar = document.createElement("button");
             aceitar.type = "button";
             aceitar.textContent = "Aceitar corrida";
             aceitar.onclick = () => aceitarCorrida(corrida.id);
-    
+
             const recusar = document.createElement("button");
             recusar.type = "button";
             recusar.textContent = "Recusar corrida";
             recusar.onclick = () => recusarCorrida(corrida.id);
-    
+
             botoes.append(aceitar, recusar);
             card.appendChild(botoes);
             lista.appendChild(card);
         });
+
+    } catch (erro) {
+        console.error("❌ Erro inesperado ao carregar corridas pela API:", erro);
+        lista.innerHTML = "<p>Não foi possível carregar as corridas.</p>";
     }
-
-function ouvirNovasCorridas(motoristaId) {
-
-    console.log("Iniciando escuta de novas corridas para:", motoristaId);
-
-    const canal = supabaseClient
-        .channel(`corridas-motorista-${motoristaId}`)
-        .on(
-            "postgres_changes",
-            {
-                event: "INSERT",
-                schema: "public",
-                table: "corridas",
-                filter: `motorista_id=eq.${motoristaId}`
-            },
-            (payload) => {
-
-                console.log("NOVA CORRIDA RECEBIDA:", payload);
-
-                carregarCorridasDoMotorista(motoristaId);
-            }
-        )
-        .subscribe((status) => {
-
-            console.log(
-                "Status do canal de corridas:",
-                status
-            );
-
-        });
-
-    return canal;
 }
+
 
 // ============================================================
 // VERIFICAR SESSÃO
