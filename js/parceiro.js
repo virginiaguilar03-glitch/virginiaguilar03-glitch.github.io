@@ -837,51 +837,70 @@ async function sairParceiro() {
 }
 
 
-    async function atualizarStatusCorrida(corridaId, novoStatus) {
-        const { data: usuarioData, error: erroUsuario } =
-            await supabaseClient.auth.getUser();
-    
-        const usuario = usuarioData?.user;
-    
-        if (erroUsuario || !usuario) {
+   
+async function atualizarStatusCorrida(corridaId, novoStatus) {
+    try {
+        console.log("🚕 Atualizando corrida pela API Central:", {
+            corridaId,
+            novoStatus
+        });
+
+        // Obter token da sessão
+        const { data: { session }, error: erroSessao } =
+            await supabaseClient.auth.getSession();
+
+        if (erroSessao || !session?.access_token) {
+            console.error("❌ Sessão inválida:", erroSessao);
             alert("Sua sessão expirou. Entre novamente.");
             return;
         }
-    
-        const { data, error } = await supabaseClient
-            .from("corridas")
-            .update({ status: novoStatus })
-            .eq("id", corridaId)
-            .eq("motorista_id", usuario.id)
-            .eq("status", "aguardando")
-            .select("id");
-    
-        if (error) {
-            console.error("Erro ao atualizar corrida:", error);
-            alert("Não foi possível atualizar a corrida. Verifique as permissões.");
+
+        // Atualizar status pela API Central
+        const resposta = await fetch(
+            `https://vaidtaxi-api.onrender.com/api/v1/corridas/${corridaId}/status`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Authorization": `Bearer ${session.access_token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    status: novoStatus
+                })
+            }
+        );
+
+        const resultado = await resposta.json();
+
+        console.log("📦 Resposta da atualização:", resultado);
+
+        if (!resposta.ok || !resultado.sucesso) {
+            console.error("❌ Erro ao atualizar corrida pela API:", resultado);
+
+            if (resposta.status === 404) {
+                alert("A corrida não está mais disponível ou você não tem permissão.");
+                await carregarCorridasDoMotorista(session.user.id);
+                return;
+            }
+
+            alert(resultado.erro || "Não foi possível atualizar a corrida.");
             return;
         }
-    
-        if (!data || data.length === 0) {
-            alert("A corrida não está mais disponível ou você não tem permissão.");
-            await carregarCorridasDoMotorista(usuario.id);
-            return;
-        }
-    
+
+        console.log("✅ Corrida atualizada pela API:", resultado.corrida);
+
         alert(novoStatus === "aceita"
             ? "Corrida aceita com sucesso!"
             : "Corrida recusada.");
-    
-        await carregarCorridasDoMotorista(usuario.id);
+
+        // Atualizar a lista na tela
+        await carregarCorridasDoMotorista(session.user.id);
+
+    } catch (erro) {
+        console.error("❌ Erro inesperado ao atualizar corrida:", erro);
+        alert("Erro ao atualizar a corrida. Tente novamente.");
     }
-    
-    async function aceitarCorrida(corridaId) {
-        await atualizarStatusCorrida(corridaId, "aceita");
-    }
-    
-    async function recusarCorrida(corridaId) {
-        await atualizarStatusCorrida(corridaId, "recusada");
-    }
+}
 
 
 // ============================================================
