@@ -902,6 +902,22 @@ async function atualizarStatusCorrida(corridaId, novoStatus) {
     }
 }
 
+// ============================================================
+// ACEITAR E RECUSAR CORRIDAS
+// ============================================================
+
+async function aceitarCorrida(corridaId) {
+    console.log("✅ Botão aceitar acionado:", corridaId);
+
+    await atualizarStatusCorrida(corridaId, "aceita");
+}
+
+async function recusarCorrida(corridaId) {
+    console.log("❌ Botão recusar acionado:", corridaId);
+
+    await atualizarStatusCorrida(corridaId, "recusada");
+}
+
 
 // ============================================================
 // INICIAR PAINEL
