@@ -874,6 +874,8 @@ async function atualizarStatusCorrida(corridaId, novoStatus) {
 
         console.log("📦 Resposta da atualização:", resultado);
 
+        console.log("🔎 DETALHES DO ERRO:", JSON.stringify(resultado, null, 2));
+
         if (!resposta.ok || !resultado.sucesso) {
             console.error("❌ Erro ao atualizar corrida pela API:", resultado);
 
