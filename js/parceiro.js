@@ -1176,16 +1176,50 @@ async function carregarPainelCorridaAtiva(motoristaId) {
     if (!painel || !motoristaId) return;
 
     try {
-        const { data: corrida, error } = await supabaseClient
-            .from("corridas")
-            .select("*")
-            .eq("motorista_id", motoristaId)
-            .in("status", statusAtivosMotorista)
-            .order("created_at", { ascending: false })
-            .limit(1)
-            .maybeSingle();
+                console.log("🚕 Buscando corrida ativa pela API Central...");
 
-        if (error) throw error;
+        // Obter token da sessão
+        const { data: { session }, error: erroSessao } =
+            await supabaseClient.auth.getSession();
+
+        if (erroSessao || !session?.access_token) {
+            throw new Error("Sessão inválida para consultar a corrida ativa.");
+        }
+
+        // Consultar corridas pela API Central
+        const resposta = await fetch(
+            "https://vaidtaxi-api.onrender.com/api/v1/corridas",
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${session.access_token}`,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+
+        const resultado = await resposta.json();
+
+        console.log("📦 Corridas recebidas da API:", resultado);
+
+        if (!resposta.ok || !resultado.sucesso) {
+            throw new Error(
+                resultado.erro || "Não foi possível buscar a corrida ativa."
+            );
+        }
+
+        // Manter somente a corrida ativa deste motorista
+        const corridasAtivas = (resultado.corridas || []).filter(corrida =>
+            corrida.motorista_id === motoristaId &&
+            statusAtivosMotorista.includes(corrida.status)
+        );
+
+        // Selecionar a mais recente
+        corridasAtivas.sort((a, b) =>
+            new Date(b.created_at) - new Date(a.created_at)
+        );
+
+        const corrida = corridasAtivas[0] || null;
 
         if (!corrida) {
             painel.style.display = "none";
