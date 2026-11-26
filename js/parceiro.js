@@ -1459,26 +1459,40 @@ async function atualizarEtapaCorridaMotorista(
     );
 
     try {
-        const { data, error } = await supabaseClient
-            .from("corridas")
-            .update({ status: novoStatus })
-            .eq("id", corrida.id)
-            .eq("motorista_id", motoristaId)
-            .eq("status", corrida.status)
-            .select("id,status");
+                // Obter token da sessão
+        const { data: { session }, error: erroSessao } =
+            await supabaseClient.auth.getSession();
 
-        if (error) throw error;
+        if (erroSessao || !session?.access_token) {
+            throw new Error("Sessão não encontrada.");
+        }
 
-        if (!data || data.length === 0) {
+        // Atualizar etapa pela API Central
+        const resposta = await fetch(
+            `https://vaidtaxi-api.onrender.com/api/v1/corridas/${corrida.id}/etapa`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Authorization": `Bearer ${session.access_token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    novoStatus: novoStatus
+                })
+            }
+        );
+
+        const resultado = await resposta.json();
+
+        console.log("📦 Resposta da atualização da etapa:", resultado);
+
+        if (!resposta.ok || !resultado.sucesso) {
             throw new Error(
-                "A etapa não foi atualizada. Confira o status atual da corrida."
+                resultado.erro || "Não foi possível atualizar a etapa."
             );
         }
 
-        console.log(
-            "Etapa da corrida atualizada:",
-            data[0]
-        );
+        console.log("✅ Etapa da corrida atualizada:", resultado.corrida);
 
         await carregarPainelCorridaAtiva(motoristaId);
 
