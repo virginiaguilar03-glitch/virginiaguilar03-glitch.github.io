@@ -1114,7 +1114,8 @@ if (formConfiguracoesParceiro) {
    VAIDTÁXI — CONTROLE DA CORRIDA ATIVA DO MOTORISTA
    ============================================================ */
 
-let canalAtualizacoesCorridaMotorista = null;
+let intervaloAtualizacoesCorridaMotorista = null;
+let consultandoAtualizacoesCorridaMotorista = false;
 
 const statusAtivosMotorista = [
     "aceita",
@@ -1518,40 +1519,51 @@ async function atualizarEtapaCorridaMotorista(
 }
 
 function ouvirAtualizacoesCorridaMotorista(motoristaId) {
-    if (canalAtualizacoesCorridaMotorista) {
-        supabaseClient.removeChannel(
-            canalAtualizacoesCorridaMotorista
-        );
+    if (!motoristaId) {
+        console.error("ID do motorista não informado.");
+        return;
     }
 
-    canalAtualizacoesCorridaMotorista = supabaseClient
-        .channel("atualizacoes-corrida-motorista-" + motoristaId)
-        .on(
-            "postgres_changes",
-            {
-                event: "UPDATE",
-                schema: "public",
-                table: "corridas",
-                filter: "motorista_id=eq." + motoristaId
-            },
-            async payload => {
-                console.log(
-                    "Atualização da corrida recebida pelo motorista:",
-                    payload.new
-                );
+    // Evitar criar intervalos duplicados.
+    if (intervaloAtualizacoesCorridaMotorista) {
+        clearInterval(intervaloAtualizacoesCorridaMotorista);
+    }
 
-                await carregarPainelCorridaAtiva(motoristaId);
-                await carregarCorridasDoMotorista(motoristaId);
-            }
-        )
-        .subscribe(status => {
-            console.log(
-                "Canal de atualizações do motorista:",
-                status
+    async function atualizarCorridasMotorista() {
+        if (consultandoAtualizacoesCorridaMotorista) {
+            return;
+        }
+
+        consultandoAtualizacoesCorridaMotorista = true;
+
+        try {
+            await carregarPainelCorridaAtiva(motoristaId);
+            await carregarCorridasDoMotorista(motoristaId);
+
+        } catch (erro) {
+            console.error(
+                "Erro ao atualizar corridas do motorista:",
+                erro
             );
-        });
-}
 
+        } finally {
+            consultandoAtualizacoesCorridaMotorista = false;
+        }
+    }
+
+    // Atualizar imediatamente ao iniciar.
+    atualizarCorridasMotorista();
+
+    // Repetir a atualização a cada 10 segundos.
+    intervaloAtualizacoesCorridaMotorista = setInterval(
+        atualizarCorridasMotorista,
+        10000
+    );
+
+    console.log(
+        "Acompanhamento das corridas do motorista iniciado."
+    );
+}
 /* ============================================================
    VAIDTÁXI — HISTÓRICO COMPLETO DE CORRIDAS DO MOTORISTA
    ============================================================ */
