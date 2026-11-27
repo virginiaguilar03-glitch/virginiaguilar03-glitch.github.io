@@ -1673,13 +1673,38 @@ async function carregarHistoricoCorridasMotorista(motoristaId) {
     `;
 
     try {
-        const { data: corridas, error } = await supabaseClient
-            .from("corridas")
-            .select("*")
-            .eq("motorista_id", motoristaId)
-            .order("created_at", { ascending: false });
+        const { data: { session }, error: erroSessao } =
+    await supabaseClient.auth.getSession();
 
-        if (error) throw error;
+    if (erroSessao || !session?.access_token) {
+        throw new Error("Sessão não encontrada.");
+    }
+    
+    const resposta = await fetch(
+        "https://vaidtaxi-api.onrender.com/api/v1/corridas",
+        {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${session.access_token}`
+            }
+        }
+    );
+
+        const resultado = await resposta.json();
+        
+        console.log("📚 Histórico recebido pela API:", resultado);
+        
+        if (!resposta.ok || !resultado.sucesso) {
+            throw new Error(
+                resultado.erro || "Não foi possível carregar o histórico."
+            );
+        }
+        
+        const corridas = (resultado.corridas || [])
+            .filter(corrida => corrida.motorista_id === motoristaId)
+            .sort((a, b) =>
+                new Date(b.created_at) - new Date(a.created_at)
+            );
 
         const registros = corridas || [];
 
