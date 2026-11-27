@@ -1377,42 +1377,47 @@ async function carregarPainelCorridaAtiva(motoristaId) {
                 botaoFinalizar.textContent = "Confirmando...";
 
                 try {
-                    const { data: atualizada, error } =
-                        await supabaseClient
-                            .from("corridas")
-                            .update({
-                                valor_final: valor,
-                                motorista_confirmou_finalizacao: true,
-                                motorista_confirmou_finalizacao_em:
-                                    new Date().toISOString(),
-                                status: clienteConfirmou
-                                    ? "concluida"
-                                    : "aguardando_pagamento"
-                            })
-                        
-                            .eq("id", corrida.id)
-                            .eq("motorista_id", motoristaId)
-                            .eq("status", "em_andamento")
-                            .select("id,status");
-
-                    if (error) throw error;
-
-                    if (!atualizada || atualizada.length === 0) {
-                        throw new Error(
-                            "A corrida mudou de status ou não foi possível atualizá-la."
-                        );
+                   
+                const { data: { session }, error: erroSessao } =
+                    await supabaseClient.auth.getSession();
+                
+                if (erroSessao || !session?.access_token) {
+                    throw new Error("Sessão não encontrada.");
+                }
+                
+                const resposta = await fetch(
+                    `https://vaidtaxi-api.onrender.com/api/v1/corridas/${corrida.id}/finalizacao/motorista`,
+                    {
+                        method: "PATCH",
+                        headers: {
+                            "Authorization": `Bearer ${session.access_token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            valor_final: valor
+                        })
                     }
-
-                    console.log(
-                        "Motorista confirmou a finalização:",
-                        atualizada[0]
+                );
+                
+                const resultado = await resposta.json();
+                
+                console.log("📦 Resposta da finalização:", resultado);
+                
+                if (!resposta.ok || !resultado.sucesso) {
+                    throw new Error(
+                        resultado.erro || "Não foi possível finalizar a corrida."
                     );
-
-                    alert(
-                        clienteConfirmou
-                            ? "Corrida concluída! Os dois confirmaram."
-                            : "Sua confirmação foi registrada. Agora o cliente precisa confirmar."
-                    );
+                }
+                
+                const atualizada = resultado.corrida;
+                
+                console.log("✅ Motorista confirmou a finalização:", atualizada);
+                
+                alert(
+                    atualizada.status === "concluida"
+                        ? "Corrida concluída! Os dois confirmaram."
+                        : "Sua confirmação foi registrada. Agora o cliente precisa confirmar."
+                );
 
                     await carregarPainelCorridaAtiva(motoristaId);
                     await carregarCorridasDoMotorista(motoristaId);
