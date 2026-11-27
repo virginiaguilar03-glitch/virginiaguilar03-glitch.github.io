@@ -1568,7 +1568,8 @@ function ouvirAtualizacoesCorridaMotorista(motoristaId) {
    VAIDTÁXI — HISTÓRICO COMPLETO DE CORRIDAS DO MOTORISTA
    ============================================================ */
 
-let canalHistoricoMotorista = null;
+let intervaloHistoricoMotorista = null;
+let consultandoHistoricoMotorista = false;
 
 const nomesStatusHistorico = {
     aguardando: "Pendente",
@@ -1881,35 +1882,51 @@ async function carregarHistoricoCorridasMotorista(motoristaId) {
 }
 
 function ouvirAtualizacoesHistoricoMotorista(motoristaId) {
-    if (canalHistoricoMotorista) {
-        supabaseClient.removeChannel(canalHistoricoMotorista);
+    if (!motoristaId) {
+        console.error("ID do motorista não informado.");
+        return;
     }
 
-    canalHistoricoMotorista = supabaseClient
-        .channel("historico-motorista-" + motoristaId)
-        .on(
-            "postgres_changes",
-            {
-                event: "*",
-                schema: "public",
-                table: "corridas",
-                filter: "motorista_id=eq." + motoristaId
-            },
-            async payload => {
-                console.log(
-                    "Alteração recebida no histórico:",
-                    payload
-                );
+    // Evitar intervalos duplicados.
+    if (intervaloHistoricoMotorista) {
+        clearInterval(intervaloHistoricoMotorista);
+    }
 
-                await carregarHistoricoCorridasMotorista(motoristaId);
-                await atualizarIndicadoresMotorista(motoristaId);
-            }
-        )
-        .subscribe(status => {
-            console.log("Canal do histórico:", status);
-        });
+    async function atualizarHistoricoMotorista() {
+        if (consultandoHistoricoMotorista) {
+            return;
+        }
+
+        consultandoHistoricoMotorista = true;
+
+        try {
+            await carregarHistoricoCorridasMotorista(motoristaId);
+            await atualizarIndicadoresMotorista(motoristaId);
+
+        } catch (erro) {
+            console.error(
+                "Erro ao atualizar histórico do motorista:",
+                erro
+            );
+
+        } finally {
+            consultandoHistoricoMotorista = false;
+        }
+    }
+
+    // Atualizar imediatamente ao iniciar.
+    atualizarHistoricoMotorista();
+
+    // Atualizar novamente a cada 10 segundos.
+    intervaloHistoricoMotorista = setInterval(
+        atualizarHistoricoMotorista,
+        10000
+    );
+
+    console.log(
+        "Acompanhamento do histórico do motorista iniciado."
+    );
 }
-
 /* ============================================================
    VAIDTÁXI — INDICADORES REAIS DO MOTORISTA
    ============================================================ */
@@ -1978,7 +1995,6 @@ const resposta = await fetch(
         .sort((a, b) =>
             new Date(b.created_at) - new Date(a.created_at)
         );
-            if (erroCorridas) throw erroCorridas;
 
         const corridas = corridasMesDados || [];
 
