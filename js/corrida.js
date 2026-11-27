@@ -13,7 +13,8 @@ let mapaCorrida = null;
 
 let marcadorUsuario = null;
 
-let canalCorrida = null;
+let intervaloCorrida = null;
+let buscandoCorrida = false;
 
 let motoristaSelecionado = null;
 
@@ -1821,90 +1822,95 @@ function restaurarBotao() {
 // ACOMPANHAR CORRIDA
 // ============================================================
 
-async function iniciarAcompanhamentoCorrida(
-    corridaId
-) {
+async function iniciarAcompanhamentoCorrida(corridaId) {
 
-    if (
-        !corridaId ||
-        !supabaseDisponivel()
-    ) {
-
+    if (!corridaId || !supabaseDisponivel()) {
         return;
-
     }
 
-
-    // --------------------------------------------------------
-    // REMOVER CANAL ANTERIOR
-    // --------------------------------------------------------
-
-    if (canalCorrida) {
-
-        await supabaseClient
-            .removeChannel(
-                canalCorrida
-            );
-
-        canalCorrida =
-            null;
-
+    // Evita manter acompanhamentos duplicados
+    if (intervaloCorrida) {
+        clearInterval(intervaloCorrida);
+        intervaloCorrida = null;
     }
 
+    async function consultarStatusCorrida() {
 
-    // --------------------------------------------------------
-    // CRIAR CANAL
-    // --------------------------------------------------------
+        if (buscandoCorrida) {
+            return;
+        }
 
-    canalCorrida =
-        supabaseClient
-            .channel(
-                "corrida-" +
-                corridaId
-            )
-            .on(
-                "postgres_changes",
+        buscandoCorrida = true;
+
+        try {
+
+            const { data: sessaoData, error: erroSessao } =
+                await supabaseClient.auth.getSession();
+
+            if (erroSessao || !sessaoData?.session?.access_token) {
+                throw new Error("Sessão não encontrada.");
+            }
+
+            const resposta = await fetch(
+                "https://vaidtaxi-api.onrender.com/api/v1/corridas",
                 {
-
-                    event:
-                        "UPDATE",
-
-                    schema:
-                        "public",
-
-                    table:
-                        "corridas",
-
-                    filter:
-                        "id=eq." +
-                        corridaId
-
-                },
-
-                function (payload) {
-
-                    console.log(
-                        "Atualização da corrida:",
-                        payload.new
-                    );
-
-
-                    atualizarStatusCorrida(
-                        payload.new
-                    );
-
-                }
-            )
-            .subscribe(
-                function (status) {
-
-                    console.log(
-                        "Canal da corrida:",
-                        status
-                    );
-
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${sessaoData.session.access_token}`
+                    }
                 }
             );
+
+            const resultado = await resposta.json();
+
+            if (!resposta.ok || !resultado.sucesso) {
+                throw new Error(
+                    resultado.erro || "Erro ao consultar corrida."
+                );
+            }
+
+            const corrida = (resultado.corridas || []).find(
+                item => item.id === corridaId
+            );
+
+            if (!corrida) {
+                return;
+            }
+
+            console.log("🚕 Status atualizado pela API:", corrida);
+
+            atualizarStatusCorrida(corrida);
+
+            // Encerra o acompanhamento quando a corrida termina
+            if (
+                ["concluida", "cancelada", "recusada"].includes(corrida.status)
+            ) {
+                clearInterval(intervaloCorrida);
+                intervaloCorrida = null;
+            }
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao acompanhar corrida pela API:",
+                erro
+            );
+
+        } finally {
+
+            buscandoCorrida = false;
+
+        }
+    }
+
+    // Consulta imediatamente
+    consultarStatusCorrida();
+
+    // Atualiza a cada 10 segundos
+    intervaloCorrida = setInterval(
+        consultarStatusCorrida,
+        10000
+    );
 
 }
 
@@ -2006,18 +2012,43 @@ async function carregarCorridaAtual() {
 
     try {
 
+        
         const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("corridas")
-                .select("*")
-                .eq(
-                    "id",
-                    corridaId
-                )
-                .maybeSingle();
+            data: sessaoData,
+            error: erroSessao
+        } = await supabaseClient.auth.getSession();
+        
+        if (
+            erroSessao ||
+            !sessaoData?.session?.access_token
+        ) {
+            throw new Error("Sessão não encontrada.");
+        }
+        
+        const resposta = await fetch(
+            "https://vaidtaxi-api.onrender.com/api/v1/corridas",
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${sessaoData.session.access_token}`
+                }
+            }
+        );
+        
+        const resultado = await resposta.json();
+        
+        console.log("🚕 Corridas recuperadas pela API:", resultado);
+        
+        if (!resposta.ok || !resultado.sucesso) {
+            throw new Error(
+                resultado.erro || "Não foi possível recuperar a corrida."
+            );
+        }
+        
+        const data = (resultado.corridas || []).find(
+            corrida => corrida.id === corridaId
+        ) || null;
+
 
 
         if (error) {
@@ -2078,23 +2109,18 @@ async function carregarCorridaAtual() {
 
 async function limparCorridaAtual() {
 
-    localStorage.removeItem(
-        "corridaAtual"
-    );
+    localStorage.removeItem("corridaAtual");
 
-
-    if (canalCorrida) {
-
-        await supabaseClient
-            .removeChannel(
-                canalCorrida
-            );
-
-        canalCorrida =
-            null;
-
+    if (intervaloCorrida) {
+        clearInterval(intervaloCorrida);
+        intervaloCorrida = null;
     }
 
+    buscandoCorrida = false;
+
+    console.log("Corrida atual removida.");
+
+}
 
     console.log(
         "Corrida atual removida."
