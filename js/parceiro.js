@@ -1930,16 +1930,43 @@ async function atualizarIndicadoresMotorista(motoristaId) {
         const inicioHojeISO = inicioHoje.toISOString();
 
         // Buscar corridas do mês atual.
-        const { data: corridasMesDados, error: erroCorridas } =
-            await supabaseClient
-                .from("corridas")
-                .select("id, status, valor_final, created_at")
-                .eq("motorista_id", motoristaId)
-                .gte("created_at", inicioMesISO)
-                .lte("created_at", agora.toISOString())
-                .order("created_at", { ascending: false });
+        const { data: { session }, error: erroSessao } =
+    await supabaseClient.auth.getSession();
 
-        if (erroCorridas) throw erroCorridas;
+if (erroSessao || !session?.access_token) {
+    throw new Error("Sessão não encontrada.");
+}
+
+const resposta = await fetch(
+    "https://vaidtaxi-api.onrender.com/api/v1/corridas",
+    {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${session.access_token}`
+        }
+    }
+);
+
+    const resultado = await resposta.json();
+    
+    console.log("📊 Corridas recebidas para os indicadores:", resultado);
+    
+    if (!resposta.ok || !resultado.sucesso) {
+        throw new Error(
+            resultado.erro || "Não foi possível carregar os indicadores."
+        );
+    }
+    
+    const corridasMesDados = (resultado.corridas || [])
+        .filter(corrida =>
+            corrida.motorista_id === motoristaId &&
+            corrida.created_at >= inicioMesISO &&
+            corrida.created_at <= agora.toISOString()
+        )
+        .sort((a, b) =>
+            new Date(b.created_at) - new Date(a.created_at)
+        );
+            if (erroCorridas) throw erroCorridas;
 
         const corridas = corridasMesDados || [];
 
